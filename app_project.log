@@ -1,0 +1,3960 @@
+11-24 18:26:29.356 -[Setting] Read IP from config: 192.168.1.110
+
+11-24 18:26:29.358 -[EPOLL] my_epoll_Init 
+11-24 18:26:29.359 -[EPOLL] epoll_thread_func running 
+11-24 18:26:29.515 -BCU_DealTask thread created successfully.
+
+11-24 18:26:29.516 -BMU_DealTask thread created successfully.
+
+11-24 18:26:29.517 -[OTA] SerialLedTask thread created successfully.
+
+11-24 18:26:29.519 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-24 18:26:29.519 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-24 18:26:29.522 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-24 18:26:29.522 -[SD Card] 挂载点已存在
+
+11-24 18:26:29.523 -[Xmodem] TcpServerExample task!
+
+11-24 18:26:29.528 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-24 18:26:29.529 -[Check] AnormaletectionTask thread created successfully.
+
+11-24 18:26:29.531 -Func_thread_can1_dealwith is running
+
+11-24 18:26:29.532 -Func_thread_can0_dealwith is running
+
+11-24 18:26:29.534 -[ModbusTcp] IP设置成功
+
+11-24 18:26:29.538 -[ModbusTcp] ctx =2080401824 ,modbus ip =192.168.1.110 
+
+11-24 18:26:32.529 -[SD Card] [SD Card] Time Source From Local
+11-24 18:26:32.531 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:26:32.532 -[SD Card] SD_FAULT
+
+11-24 18:31:27.480 -[Setting] Read IP from config: 192.168.1.110
+
+11-24 18:31:27.481 -[EPOLL] my_epoll_Init 
+11-24 18:31:27.482 -[EPOLL] epoll_thread_func running 
+11-24 18:31:27.533 -BCU_DealTask thread created successfully.
+
+11-24 18:31:27.534 -BMU_DealTask thread created successfully.
+
+11-24 18:31:27.535 -[OTA] SerialLedTask thread created successfully.
+
+11-24 18:31:27.536 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-24 18:31:27.537 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-24 18:31:27.538 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-24 18:31:27.539 -[Check] AnormaletectionTask thread created successfully.
+
+11-24 18:31:27.541 -[SD Card] 挂载点已存在
+
+11-24 18:31:27.542 -[Xmodem] TcpServerExample task!
+
+11-24 18:31:27.547 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-24 18:31:27.548 -bmu_DealTask is running
+
+11-24 18:31:27.553 -[CAN]Rebinding can3 interface...
+
+11-24 18:31:27.555 -Func_thread_can0_dealwith is running
+
+11-24 18:31:27.557 -[CAN]Rebinding can2 interface...
+
+11-24 18:31:27.564 -[ModbusTcp] IP设置成功
+
+11-24 18:31:27.568 -[ModbusTcp] ctx =-2080347744 ,modbus ip =192.168.1.110 
+
+11-24 18:31:27.751 -[CAN]can3 rebound successfully, new fd: 6
+
+11-24 18:31:27.752 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-24 18:31:27.760 -[CAN]can2 rebound successfully, new fd: 7
+
+11-24 18:31:27.761 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-24 18:31:30.549 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:30.550 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:30.552 -[SD Card] SD_FAULT
+
+11-24 18:31:33.552 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:33.554 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:33.555 -[SD Card] SD_FAULT
+
+11-24 18:31:36.556 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:36.556 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:36.557 -[SD Card] SD_FAULT
+
+11-24 18:31:37.556 -Drv_BMS_Analysis executed after 10s delay
+
+11-24 18:31:39.558 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:39.559 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:39.560 -[SD Card] SD_FAULT
+
+11-24 18:31:42.561 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:42.563 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:42.563 -[SD Card] SD_FAULT
+
+11-24 18:31:45.565 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:45.566 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:45.567 -[SD Card] SD_FAULT
+
+11-24 18:31:48.567 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:48.569 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:48.569 -[SD Card] SD_FAULT
+
+11-24 18:31:51.570 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:51.571 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:51.571 -[SD Card] SD_FAULT
+
+11-24 18:31:54.572 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:54.573 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:54.574 -[SD Card] SD_FAULT
+
+11-24 18:31:57.576 -[SD Card] [SD Card] Time Source From Local
+11-24 18:31:57.577 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:31:57.577 -[SD Card] SD_FAULT
+
+11-24 18:32:00.579 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:00.581 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:00.582 -[SD Card] SD_FAULT
+
+11-24 18:32:03.585 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:03.586 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:03.586 -[SD Card] SD_FAULT
+
+11-24 18:32:06.588 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:06.589 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:06.589 -[SD Card] SD_FAULT
+
+11-24 18:32:09.590 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:09.592 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:09.592 -[SD Card] SD_FAULT
+
+11-24 18:32:12.594 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:12.595 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:12.596 -[SD Card] SD_FAULT
+
+11-24 18:32:15.597 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:15.598 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:15.598 -[SD Card] SD_FAULT
+
+11-24 18:32:18.599 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:18.600 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:18.601 -[SD Card] SD_FAULT
+
+11-24 18:32:21.602 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:21.603 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:21.604 -[SD Card] SD_FAULT
+
+11-24 18:32:24.606 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:24.608 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:24.611 -[SD Card] SD_FAULT
+
+11-24 18:32:27.612 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:27.614 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:27.615 -[SD Card] SD_FAULT
+
+11-24 18:32:30.616 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:30.617 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:30.618 -[SD Card] SD_FAULT
+
+11-24 18:32:33.619 -[SD Card] [SD Card] Time Source From Local
+11-24 18:32:33.620 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-24 18:32:33.621 -[SD Card] SD_FAULT
+
+11-25 10:12:23.813 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:12:23.815 -[EPOLL] my_epoll_Init 
+11-25 10:12:23.817 -[EPOLL] epoll_thread_func running 
+11-25 10:12:23.869 -BCU_DealTask thread created successfully.
+
+11-25 10:12:23.873 -BMU_DealTask thread created successfully.
+
+11-25 10:12:23.876 -[OTA] SerialLedTask thread created successfully.
+
+11-25 10:12:23.880 -bmu_DealTask is running
+
+11-25 10:12:23.880 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 10:12:23.881 -Func_thread_can0_dealwith is running
+
+11-25 10:12:23.881 -[CAN]Rebinding can3 interface...
+
+11-25 10:12:23.883 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 10:12:23.884 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 10:12:23.884 -[CAN]Rebinding can2 interface...
+
+11-25 10:12:23.885 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 10:12:23.891 -[Xmodem] TcpServerExample task!
+
+11-25 10:12:23.896 -[SD Card] 挂载点已存在
+
+11-25 10:12:23.898 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 10:12:23.913 -[ModbusTcp] IP设置成功
+
+11-25 10:12:23.918 -[ModbusTcp] ctx =-1879021152 ,modbus ip =192.168.1.110 
+
+11-25 10:12:24.051 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 10:12:24.052 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:12:24.057 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 10:12:24.058 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 10:12:26.901 -[SD Card] [SD Card] Time Source From Local
+11-25 10:12:26.902 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:12:26.904 -[SD Card] SD_FAULT
+
+11-25 10:12:29.906 -[SD Card] [SD Card] Time Source From Local
+11-25 10:12:29.907 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:12:29.908 -[SD Card] SD_FAULT
+
+11-25 10:12:32.910 -[SD Card] [SD Card] Time Source From Local
+11-25 10:12:32.911 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:12:32.912 -[SD Card] SD_FAULT
+
+11-25 10:12:33.885 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 10:12:35.913 -[SD Card] [SD Card] Time Source From Local
+11-25 10:12:35.914 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:12:35.915 -[SD Card] SD_FAULT
+
+11-25 10:12:38.916 -[SD Card] [SD Card] Time Source From Local
+11-25 10:12:38.917 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:12:38.918 -[SD Card] SD_FAULT
+
+11-25 10:12:41.918 -[SD Card] [SD Card] Time Source From Local
+11-25 10:12:41.920 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:12:41.920 -[SD Card] SD_FAULT
+
+11-25 10:20:39.511 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:20:39.513 -[EPOLL] my_epoll_Init 
+11-25 10:20:39.514 -[EPOLL] epoll_thread_func running 
+11-25 10:20:39.564 -BCU_DealTask thread created successfully.
+
+11-25 10:20:39.566 -BMU_DealTask thread created successfully.
+
+11-25 10:20:39.566 -[OTA] SerialLedTask thread created successfully.
+
+11-25 10:20:39.567 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 10:20:39.569 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 10:20:39.571 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 10:20:39.572 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 10:20:39.573 -[Xmodem] TcpServerExample task!
+
+11-25 10:20:39.581 -bmu_DealTask is running
+
+11-25 10:20:39.583 -[SD Card] 挂载点已存在
+
+11-25 10:20:39.583 -[CAN]Rebinding can3 interface...
+
+11-25 10:20:39.586 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 10:20:39.587 -Func_thread_can0_dealwith is running
+
+11-25 10:20:39.589 -[CAN]Rebinding can2 interface...
+
+11-25 10:20:39.598 -[ModbusTcp] IP设置成功
+
+11-25 10:20:39.603 -[ModbusTcp] ctx =1476422048 ,modbus ip =192.168.1.110 
+
+11-25 10:20:39.740 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 10:20:39.741 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 10:20:39.750 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 10:20:39.751 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:20:42.587 -[SD Card] [SD Card] Time Source From Local
+11-25 10:20:42.588 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:20:42.589 -[SD Card] SD_FAULT
+
+11-25 10:20:45.591 -[SD Card] [SD Card] Time Source From Local
+11-25 10:20:45.591 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 10:20:45.592 -[SD Card] SD_FAULT
+
+11-25 10:26:09.632 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:26:09.634 -[EPOLL] my_epoll_Init 
+11-25 10:26:09.635 -[EPOLL] epoll_thread_func running 
+11-25 10:26:09.688 -BCU_DealTask thread created successfully.
+
+11-25 10:26:09.692 -BMU_DealTask thread created successfully.
+
+11-25 10:26:09.694 -[OTA] SerialLedTask thread created successfully.
+
+11-25 10:26:09.695 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 10:26:09.696 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 10:26:09.697 -Func_thread_can0_dealwith is running
+
+11-25 10:26:09.697 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 10:26:09.699 -bmu_DealTask is running
+
+11-25 10:26:09.700 -[CAN]Rebinding can2 interface...
+
+11-25 10:26:09.706 -[CAN]Rebinding can3 interface...
+
+11-25 10:26:09.705 -[Xmodem] TcpServerExample task!
+
+11-25 10:26:09.722 -[ModbusTcp] IP设置成功
+
+11-25 10:26:09.724 -[ModbusTcp] ctx =-1610585696 ,modbus ip =192.168.1.110 
+
+11-25 10:26:09.912 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 10:26:09.913 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 10:26:09.919 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 10:26:09.920 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:51:43.969 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:51:43.970 -[EPOLL] my_epoll_Init 
+11-25 10:51:43.971 -[EPOLL] epoll_thread_func running 
+11-25 10:51:44.023 -BCU_DealTask thread created successfully.
+
+11-25 10:51:44.025 -Func_thread_can0_dealwith is running
+
+11-25 10:51:44.028 -[CAN]Rebinding can2 interface...
+
+11-25 10:51:44.088 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 10:51:44.090 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:53:02.475 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:53:02.476 -[EPOLL] my_epoll_Init 
+11-25 10:53:02.477 -[EPOLL] epoll_thread_func running 
+11-25 10:54:12.133 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:54:32.121 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:54:32.122 -[EPOLL] my_epoll_Init 
+11-25 10:54:32.123 -[EPOLL] epoll_thread_func running 
+11-25 10:54:51.058 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:54:51.059 -[EPOLL] my_epoll_Init 
+11-25 10:54:51.060 -[EPOLL] epoll_thread_func running 
+11-25 10:54:51.111 -BCU_DealTask thread created successfully.
+
+11-25 10:54:51.115 -Func_thread_can0_dealwith is running
+
+11-25 10:54:51.119 -[CAN]Rebinding can2 interface...
+
+11-25 10:54:51.178 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 10:54:51.179 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:55:09.625 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:55:09.627 -[EPOLL] my_epoll_Init 
+11-25 10:55:09.628 -[EPOLL] epoll_thread_func running 
+11-25 10:56:11.666 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:56:11.667 -[EPOLL] my_epoll_Init 
+11-25 10:56:11.668 -[EPOLL] epoll_thread_func running 
+11-25 10:56:11.718 -BCU_DealTask thread created successfully.
+
+11-25 10:56:11.720 -Func_thread_can0_dealwith is running
+
+11-25 10:56:11.721 -[CAN]Rebinding can2 interface...
+
+11-25 10:56:11.778 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 10:56:11.779 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:57:12.546 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:57:12.547 -[EPOLL] my_epoll_Init 
+11-25 10:57:12.548 -[EPOLL] epoll_thread_func running 
+11-25 10:57:12.599 -BCU_DealTask thread created successfully.
+
+11-25 10:57:12.603 -Func_thread_can0_dealwith is running
+
+11-25 10:57:12.607 -[CAN]Rebinding can2 interface...
+
+11-25 10:57:12.667 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 10:57:12.668 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:58:33.149 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 10:58:33.151 -[EPOLL] my_epoll_Init 
+11-25 10:58:33.152 -[EPOLL] epoll_thread_func running 
+11-25 10:58:33.202 -BCU_DealTask thread created successfully.
+
+11-25 10:58:33.204 -Func_thread_can0_dealwith is running
+
+11-25 10:58:33.206 -[CAN]Rebinding can2 interface...
+
+11-25 10:58:33.264 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 10:58:33.265 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 10:58:43.206 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:01:12.366 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:01:12.367 -[EPOLL] my_epoll_Init 
+11-25 11:01:12.368 -[EPOLL] epoll_thread_func running 
+11-25 11:01:12.419 -BCU_DealTask thread created successfully.
+
+11-25 11:01:12.424 -Func_thread_can0_dealwith is running
+
+11-25 11:01:12.428 -[CAN]Rebinding can2 interface...
+
+11-25 11:01:12.488 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 11:01:12.489 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:01:22.430 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:01:42.197 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:01:42.198 -[EPOLL] my_epoll_Init 
+11-25 11:01:42.199 -[EPOLL] epoll_thread_func running 
+11-25 11:01:42.250 -BCU_DealTask thread created successfully.
+
+11-25 11:01:42.252 -Func_thread_can0_dealwith is running
+
+11-25 11:01:42.255 -[CAN]Rebinding can2 interface...
+
+11-25 11:01:42.316 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 11:01:42.318 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:07:31.546 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:07:31.547 -[EPOLL] my_epoll_Init 
+11-25 11:07:31.548 -[EPOLL] epoll_thread_func running 
+11-25 11:07:31.599 -BCU_DealTask thread created successfully.
+
+11-25 11:07:31.603 -Func_thread_can0_dealwith is running
+
+11-25 11:07:31.608 -[CAN]Rebinding can2 interface...
+
+11-25 11:07:31.667 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 11:07:31.668 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:09:23.668 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:09:23.669 -[EPOLL] my_epoll_Init 
+11-25 11:09:23.670 -[EPOLL] epoll_thread_func running 
+11-25 11:09:23.720 -BCU_DealTask thread created successfully.
+
+11-25 11:09:23.722 -Func_thread_can0_dealwith is running
+
+11-25 11:09:23.727 -[CAN]Rebinding can2 interface...
+
+11-25 11:09:23.791 -[CAN]can2 rebound successfully, new fd: 5
+
+11-25 11:09:23.792 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:14:16.792 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:14:16.794 -[EPOLL] my_epoll_Init 
+11-25 11:14:16.795 -[EPOLL] epoll_thread_func running 
+11-25 11:14:16.846 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:14:16.848 -BCU_DealTask thread created successfully.
+
+11-25 11:14:16.849 -Func_thread_can0_dealwith is running
+
+11-25 11:14:16.850 -[CAN]Rebinding can2 interface...
+
+11-25 11:14:16.858 -[ModbusTcp] IP设置成功
+
+11-25 11:14:16.860 -[ModbusTcp] ctx =-1610585696 ,modbus ip =192.168.1.110 
+
+11-25 11:14:16.916 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 11:14:16.917 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:14:26.898 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:15:34.502 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:15:34.503 -[EPOLL] my_epoll_Init 
+11-25 11:15:34.504 -[EPOLL] epoll_thread_func running 
+11-25 11:15:34.555 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:15:34.562 -BCU_DealTask thread created successfully.
+
+11-25 11:15:34.575 -Func_thread_can0_dealwith is running
+
+11-25 11:15:34.576 -[CAN]Rebinding can2 interface...
+
+11-25 11:15:34.583 -[ModbusTcp] IP设置成功
+
+11-25 11:15:34.585 -[ModbusTcp] ctx =-1879021152 ,modbus ip =192.168.1.110 
+
+11-25 11:15:34.643 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 11:15:34.644 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:15:44.575 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:16:14.405 -[ModbusTcp] New connection from 192.168.1.77:10691 on socket 7 
+
+11-25 11:13:40.004 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:15:00.441 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:15:00.442 -[EPOLL] my_epoll_Init 
+11-25 11:15:00.443 -[EPOLL] epoll_thread_func running 
+11-25 11:15:00.494 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:15:00.497 -BCU_DealTask thread created successfully.
+
+11-25 11:15:00.502 -Func_thread_can0_dealwith is running
+
+11-25 11:15:00.506 -[CAN]Rebinding can2 interface...
+
+11-25 11:15:00.522 -[ModbusTcp] IP设置成功
+
+11-25 11:15:00.523 -[ModbusTcp] ctx =2080401824 ,modbus ip =192.168.1.110 
+
+11-25 11:15:00.579 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 11:15:00.580 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:15:03.038 -[ModbusTcp] New connection from 192.168.1.77:3266 on socket 7 
+
+11-25 11:15:06.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:15:10.564 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:15:12.215 -[ModbusTcp] Connection closed or error on socket 7: Connection reset by peer
+
+11-25 11:15:25.319 -[ModbusTcp] New connection from 192.168.1.77:34553 on socket 7 
+
+11-25 11:15:28.005 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:19:10.944 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:19:10.946 -[EPOLL] my_epoll_Init 
+11-25 11:19:10.947 -[EPOLL] epoll_thread_func running 
+11-25 11:19:10.997 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:19:11.001 -BCU_DealTask thread created successfully.
+
+11-25 11:19:11.003 -BMU_DealTask thread created successfully.
+
+11-25 11:19:11.005 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:19:11.008 -Func_thread_can0_dealwith is running
+
+11-25 11:19:11.010 -bmu_DealTask is running
+
+11-25 11:19:11.011 -[CAN]Rebinding can2 interface...
+
+11-25 11:19:11.011 -[CAN]Rebinding can3 interface...
+
+11-25 11:19:11.031 -[ModbusTcp] IP设置成功
+
+11-25 11:19:11.038 -[ModbusTcp] ctx =-2147456608 ,modbus ip =192.168.1.110 
+
+11-25 11:19:11.181 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:19:11.182 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:19:11.184 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:19:11.184 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:19:13.479 -[ModbusTcp] New connection from 192.168.1.77:5344 on socket 8 
+
+11-25 11:19:16.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:19:20.673 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:20:56.361 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:20:56.363 -[EPOLL] my_epoll_Init 
+11-25 11:20:56.364 -[EPOLL] epoll_thread_func running 
+11-25 11:20:56.414 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:20:56.420 -BCU_DealTask thread created successfully.
+
+11-25 11:20:56.421 -BMU_DealTask thread created successfully.
+
+11-25 11:20:56.422 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:20:56.424 -Func_thread_can0_dealwith is running
+
+11-25 11:20:56.425 -bmu_DealTask is running
+
+11-25 11:20:56.431 -[CAN]Rebinding can2 interface...
+
+11-25 11:20:56.432 -[CAN]Rebinding can3 interface...
+
+11-25 11:20:56.449 -[ModbusTcp] IP设置成功
+
+11-25 11:20:56.453 -[ModbusTcp] ctx =-1946130016 ,modbus ip =192.168.1.110 
+
+11-25 11:20:56.604 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:20:56.605 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:20:56.608 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:20:56.609 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:20:57.077 -[ModbusTcp] New connection from 192.168.1.77:14816 on socket 8 
+
+11-25 11:21:00.005 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:21:06.489 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:24:41.383 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:24:41.384 -[EPOLL] my_epoll_Init 
+11-25 11:24:41.385 -[EPOLL] epoll_thread_func running 
+11-25 11:24:41.436 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:24:41.437 -BCU_DealTask thread created successfully.
+
+11-25 11:24:41.438 -BMU_DealTask thread created successfully.
+
+11-25 11:24:41.439 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:24:41.444 -Func_thread_can0_dealwith is running
+
+11-25 11:24:41.444 -bmu_DealTask is running
+
+11-25 11:24:41.446 -[CAN]Rebinding can2 interface...
+
+11-25 11:24:41.448 -[CAN]Rebinding can3 interface...
+
+11-25 11:24:41.464 -[ModbusTcp] IP设置成功
+
+11-25 11:24:41.476 -[ModbusTcp] ctx =-1610585696 ,modbus ip =192.168.1.110 
+
+11-25 11:24:41.620 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:24:41.622 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:24:41.624 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:24:41.625 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:24:41.786 -[ModbusTcp] New connection from 192.168.1.77:7627 on socket 8 
+
+11-25 11:24:45.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:24:51.843 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:27:29.425 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:27:29.426 -[EPOLL] my_epoll_Init 
+11-25 11:27:29.427 -[EPOLL] epoll_thread_func running 
+11-25 11:27:29.478 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:27:29.479 -BCU_DealTask thread created successfully.
+
+11-25 11:27:29.481 -BMU_DealTask thread created successfully.
+
+11-25 11:27:29.482 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:27:29.484 -Func_thread_can0_dealwith is running
+
+11-25 11:27:29.485 -bmu_DealTask is running
+
+11-25 11:27:29.487 -[CAN]Rebinding can3 interface...
+
+11-25 11:27:29.488 -[CAN]Rebinding can2 interface...
+
+11-25 11:27:29.513 -[ModbusTcp] IP设置成功
+
+11-25 11:27:29.514 -[ModbusTcp] ctx =-1811912288 ,modbus ip =192.168.1.110 
+
+11-25 11:27:29.658 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:27:29.659 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:27:29.662 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:27:29.663 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:27:29.742 -[ModbusTcp] New connection from 192.168.1.77:27117 on socket 8 
+
+11-25 11:27:32.004 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:27:32.005 -[BCUFD]can2 retryCount error
+
+11-25 11:27:32.006 -[BCUFD]can2 retryCount error
+
+11-25 11:27:32.008 -[BCUFD]can2 retryCount error
+
+11-25 11:27:33.796 -[BCUFD]can2 retryCount error
+
+11-25 11:27:34.024 -[BCUFD]can2 retryCount error
+
+11-25 11:27:34.400 -[BCUFD]can2 retryCount error
+
+11-25 11:27:34.775 -[BCUFD]can2 retryCount error
+
+11-25 11:27:35.134 -[BCUFD]can2 retryCount error
+
+11-25 11:27:35.509 -[BCUFD]can2 retryCount error
+
+11-25 11:27:35.884 -[BCUFD]can2 retryCount error
+
+11-25 11:27:36.255 -[BCUFD]can2 retryCount error
+
+11-25 11:27:36.624 -[BCUFD]can2 retryCount error
+
+11-25 11:27:36.995 -[BCUFD]can2 retryCount error
+
+11-25 11:27:37.369 -[BCUFD]can2 retryCount error
+
+11-25 11:27:37.734 -[BCUFD]can2 retryCount error
+
+11-25 11:27:38.105 -[BCUFD]can2 retryCount error
+
+11-25 11:27:38.469 -[BCUFD]can2 retryCount error
+
+11-25 11:27:38.835 -[BCUFD]can2 retryCount error
+
+11-25 11:27:38.852 -[BCUFD]can2 retryCount error
+
+11-25 11:27:38.852 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:27:39.210 -[BCUFD]can2 retryCount error
+
+11-25 11:27:39.580 -[BCUFD]can2 retryCount error
+
+11-25 11:27:39.949 -[BCUFD]can2 retryCount error
+
+11-25 11:27:40.320 -[BCUFD]can2 retryCount error
+
+11-25 11:27:40.690 -[BCUFD]can2 retryCount error
+
+11-25 11:27:41.060 -[BCUFD]can2 retryCount error
+
+11-25 11:27:41.425 -[BCUFD]can2 retryCount error
+
+11-25 11:28:56.871 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:28:56.875 -[EPOLL] my_epoll_Init 
+11-25 11:28:56.878 -[EPOLL] epoll_thread_func running 
+11-25 11:28:56.926 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:28:56.928 -BCU_DealTask thread created successfully.
+
+11-25 11:28:56.930 -BMU_DealTask thread created successfully.
+
+11-25 11:28:56.934 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:28:56.936 -bmu_DealTask is running
+
+11-25 11:28:56.937 -Func_thread_can0_dealwith is running
+
+11-25 11:28:56.940 -[CAN]Rebinding can3 interface...
+
+11-25 11:28:56.942 -[CAN]Rebinding can2 interface...
+
+11-25 11:28:56.967 -[ModbusTcp] IP设置成功
+
+11-25 11:28:56.969 -[ModbusTcp] ctx =-2013238880 ,modbus ip =192.168.1.110 
+
+11-25 11:28:57.114 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:28:57.115 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:28:57.116 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:28:57.117 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:28:58.897 -[ModbusTcp] New connection from 192.168.1.77:47064 on socket 8 
+
+11-25 11:29:02.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:29:02.004 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:02.006 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:02.008 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:02.077 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:02.306 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:02.671 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:03.040 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:03.405 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:03.775 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:04.144 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:04.510 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:04.885 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:05.249 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:05.620 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:05.995 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:06.364 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:06.740 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:07.105 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:07.133 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:07.136 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:29:07.475 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:07.845 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:08.208 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:08.580 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:08.947 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:09.315 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:09.680 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:29:10.055 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:30:05.601 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:30:05.602 -[EPOLL] my_epoll_Init 
+11-25 11:30:05.603 -[EPOLL] epoll_thread_func running 
+11-25 11:30:05.654 -BCU_DealTask thread created successfully.
+
+11-25 11:30:05.657 -BMU_DealTask thread created successfully.
+
+11-25 11:30:05.665 -bmu_DealTask is running
+
+11-25 11:30:05.666 -[CAN]Rebinding can3 interface...
+
+11-25 11:30:05.667 -[OTA] SerialLedTask thread created successfully.
+
+11-25 11:30:05.668 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:30:05.668 -Func_thread_can0_dealwith is running
+
+11-25 11:30:05.670 -[CAN]Rebinding can2 interface...
+
+11-25 11:30:05.670 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 11:30:05.672 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:30:05.678 -[Xmodem] TcpServerExample task!
+
+11-25 11:30:05.697 -[ModbusTcp] IP设置成功
+
+11-25 11:30:05.699 -[ModbusTcp] ctx =-2080347744 ,modbus ip =192.168.1.110 
+
+11-25 11:30:05.852 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:30:05.854 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:30:05.856 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:30:05.857 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:30:07.701 -[ModbusTcp] New connection from 192.168.1.77:54212 on socket 8 
+
+11-25 11:30:13.007 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:30:13.014 -[ModbusTcp] New connection from 192.168.1.77:32990 on socket 9 
+
+11-25 11:30:13.015 -[ModbusTcp] Connection closed or error on socket 8: Connection reset by peer
+
+11-25 11:30:15.044 -[ModbusTcp] Connection closed or error on socket 9: Connection reset by peer
+
+11-25 11:30:16.285 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:30:26.876 -[ModbusTcp] New connection from 192.168.1.77:33246 on socket 8 
+
+11-25 11:30:29.004 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:36:06.623 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:36:06.624 -[EPOLL] my_epoll_Init 
+11-25 11:36:06.625 -[EPOLL] epoll_thread_func running 
+11-25 11:36:06.675 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:36:06.677 -BCU_DealTask thread created successfully.
+
+11-25 11:36:06.678 -BMU_DealTask thread created successfully.
+
+11-25 11:36:06.680 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:36:06.683 -bmu_DealTask is running
+
+11-25 11:36:06.684 -Func_thread_can0_dealwith is running
+
+11-25 11:36:06.686 -[CAN]Rebinding can3 interface...
+
+11-25 11:36:06.688 -[CAN]Rebinding can2 interface...
+
+11-25 11:36:06.711 -[ModbusTcp] IP设置成功
+
+11-25 11:36:06.715 -[ModbusTcp] ctx =-1610585696 ,modbus ip =192.168.1.110 
+
+11-25 11:36:06.859 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:36:06.860 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:36:06.863 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:36:06.864 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:36:07.083 -[ModbusTcp] New connection from 192.168.1.77:44749 on socket 8 
+
+11-25 11:36:10.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:36:10.004 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:10.006 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:10.007 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:11.694 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:11.929 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:12.310 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:12.672 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:13.039 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:13.415 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:13.780 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:14.160 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:14.536 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:14.905 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:15.275 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:15.644 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:16.015 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:16.385 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:16.751 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:16.757 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:16.758 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:36:17.125 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:17.490 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:17.860 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:18.235 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:18.612 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:18.972 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:19.341 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:19.721 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:20.079 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:20.459 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:20.835 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:21.205 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:21.569 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:21.939 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:22.315 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:22.681 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:23.049 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:23.419 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:23.785 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:24.154 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:24.520 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:24.905 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:25.270 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:25.640 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:26.011 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:26.379 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:26.746 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:27.111 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:27.490 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:27.851 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:28.220 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:28.590 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:28.955 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:29.324 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:29.695 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:30.076 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:30.440 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:30.816 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:31.185 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:31.556 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:31.925 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:32.289 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:32.661 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:36:33.024 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:23.491 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 11:47:23.492 -[EPOLL] my_epoll_Init 
+11-25 11:47:23.493 -[EPOLL] epoll_thread_func running 
+11-25 11:47:23.544 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 11:47:23.547 -BCU_DealTask thread created successfully.
+
+11-25 11:47:23.554 -Func_thread_can0_dealwith is running
+
+11-25 11:47:23.556 -[CAN]Rebinding can2 interface...
+
+11-25 11:47:23.556 -BMU_DealTask thread created successfully.
+
+11-25 11:47:23.557 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 11:47:23.563 -bmu_DealTask is running
+
+11-25 11:47:23.564 -[CAN]Rebinding can3 interface...
+
+11-25 11:47:23.581 -[ModbusTcp] IP设置成功
+
+11-25 11:47:23.582 -[ModbusTcp] ctx =-2147456608 ,modbus ip =192.168.1.110 
+
+11-25 11:47:23.736 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 11:47:23.737 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 11:47:23.738 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 11:47:23.739 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 11:47:25.094 -[ModbusTcp] New connection from 192.168.1.77:5864 on socket 8 
+
+11-25 11:47:28.007 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 11:47:28.008 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:28.010 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:28.011 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:28.519 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:28.750 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:29.107 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:29.478 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:29.858 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:30.223 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:30.591 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:30.968 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:31.348 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:31.712 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:32.081 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:32.449 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:32.812 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:33.198 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:33.562 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:33.580 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:33.581 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 11:47:33.932 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:34.297 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:34.672 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:35.043 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:35.408 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:35.782 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:36.162 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:36.533 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:36.898 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:37.273 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:37.647 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:38.012 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:38.381 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:38.748 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:39.118 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:39.487 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:39.851 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:40.222 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:40.597 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:40.973 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:41.340 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:41.702 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:42.072 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:42.446 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:42.818 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:43.181 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:43.553 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:43.928 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:44.288 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:44.663 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:45.038 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:45.402 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:45.772 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:46.142 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:46.513 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:46.877 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:47.252 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:47.618 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:47.981 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:48.356 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:48.743 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:49.107 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:49.468 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:49.837 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:50.218 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:50.583 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:50.953 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:51.322 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:51.697 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:52.057 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:52.423 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:52.791 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:53.153 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:53.528 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:53.903 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:54.267 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:54.627 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:55.003 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:55.376 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:55.742 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:56.112 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:56.487 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:56.857 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:57.223 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:57.593 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:57.958 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:58.323 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:58.697 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:59.067 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:59.427 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:47:59.803 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:00.172 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:00.537 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:00.902 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:01.283 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:01.647 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:02.013 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:02.376 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:02.742 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:03.111 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:03.488 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:03.864 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:04.237 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:04.603 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:04.977 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:05.341 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:05.713 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:06.083 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:06.452 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:06.823 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:07.183 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:07.551 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:07.922 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:08.287 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:08.657 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:09.028 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:09.397 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:09.761 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:10.128 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:10.498 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:10.862 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:11.232 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:11.607 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:11.977 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:12.352 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:12.717 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:13.092 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:13.453 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:13.842 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:14.213 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:14.578 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:14.948 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:15.312 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:15.682 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:16.042 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:16.416 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:16.797 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:17.158 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:17.523 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:17.891 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:18.266 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:18.631 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:18.997 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:19.368 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 11:48:19.728 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:14.592 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:03:14.595 -[EPOLL] my_epoll_Init 
+11-25 13:03:14.597 -[EPOLL] epoll_thread_func running 
+11-25 13:03:14.649 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:03:14.653 -BCU_DealTask thread created successfully.
+
+11-25 13:03:14.657 -BMU_DealTask thread created successfully.
+
+11-25 13:03:14.663 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:03:14.663 -Func_thread_can0_dealwith is running
+
+11-25 13:03:14.664 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:03:14.665 -bmu_DealTask is running
+
+11-25 13:03:14.666 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:03:14.667 -[CAN]Rebinding can2 interface...
+
+11-25 13:03:14.669 -[CAN]Rebinding can3 interface...
+
+11-25 13:03:14.669 -[Xmodem] TcpServerExample task!
+
+11-25 13:03:14.671 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:03:14.673 -[SD Card] 挂载点已存在
+
+11-25 13:03:14.675 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:03:14.682 -[ModbusTcp] IP设置成功
+
+11-25 13:03:14.684 -[ModbusTcp] ctx =1811966368 ,modbus ip =192.168.1.110 
+
+11-25 13:03:14.846 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 13:03:14.847 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:03:14.851 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 13:03:14.852 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:03:14.881 -[ModbusTcp] New connection from 192.168.1.77:19653 on socket 8 
+
+11-25 13:03:14.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:03:14.004 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:14.006 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:14.008 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:14.086 -[SD Card] [SD Card] Time Source From Local
+11-25 13:03:14.088 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:14.089 -[SD Card] SD_FAULT
+
+11-25 13:03:16.012 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.232 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.598 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.967 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:13.007 -[SD Card] update time
+
+11-25 13:03:13.018 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:13.020 -[SD Card] SD_FAULT
+
+11-25 13:03:13.252 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:13.623 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:13.987 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:14.353 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:14.718 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:15.092 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:15.462 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:15.828 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.021 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:16.022 -[SD Card] SD_FAULT
+
+11-25 13:03:16.192 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.568 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.937 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.985 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:16.988 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:03:17.313 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:17.677 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:18.049 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:18.413 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:18.788 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:19.024 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:19.025 -[SD Card] SD_FAULT
+
+11-25 13:03:19.157 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:19.532 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:19.903 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:20.273 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:20.643 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:21.003 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:21.378 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:21.749 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:22.027 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:22.029 -[SD Card] SD_FAULT
+
+11-25 13:03:22.112 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:22.488 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:22.858 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:23.223 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:23.588 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:23.962 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:24.347 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:24.708 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:25.031 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:25.033 -[SD Card] SD_FAULT
+
+11-25 13:03:25.072 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:25.448 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:25.817 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:26.183 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:26.557 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:26.927 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:27.292 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:27.668 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:28.035 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:28.038 -[SD Card] SD_FAULT
+
+11-25 13:03:28.039 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:28.413 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:28.777 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:29.154 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:29.522 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:29.893 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:30.262 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:30.633 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:31.002 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:31.042 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:31.043 -[SD Card] SD_FAULT
+
+11-25 13:03:31.368 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:31.743 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:32.112 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:32.488 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:32.868 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:33.232 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:33.608 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:33.972 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:34.044 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:34.046 -[SD Card] SD_FAULT
+
+11-25 13:03:34.337 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:34.703 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:35.073 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:35.438 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:35.813 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:36.172 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:36.543 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:36.908 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:37.048 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:37.051 -[SD Card] SD_FAULT
+
+11-25 13:03:37.278 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:37.647 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:38.018 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:38.393 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:38.762 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:39.127 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:39.503 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:39.878 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:40.054 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:03:40.057 -[SD Card] SD_FAULT
+
+11-25 13:03:40.242 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:40.613 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:40.983 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:41.348 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:03:41.719 -[BCUFD] Drv_bcu_canfd_send send
+
+11-25 13:04:47.121 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:04:47.122 -[EPOLL] my_epoll_Init 
+11-25 13:04:47.124 -[EPOLL] epoll_thread_func running 
+11-25 13:04:47.174 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:04:47.177 -BCU_DealTask thread created successfully.
+
+11-25 13:04:47.181 -BMU_DealTask thread created successfully.
+
+11-25 13:04:47.182 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:04:47.185 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:04:47.185 -Func_thread_can0_dealwith is running
+
+11-25 13:04:47.186 -bmu_DealTask is running
+
+11-25 13:04:47.187 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:04:47.188 -[Xmodem] TcpServerExample task!
+
+11-25 13:04:47.189 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:04:47.189 -[CAN]Rebinding can3 interface...
+
+11-25 13:04:47.190 -[CAN]Rebinding can2 interface...
+
+11-25 13:04:47.203 -[SD Card] 挂载点已存在
+
+11-25 13:04:47.209 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:04:47.235 -[ModbusTcp] IP设置成功
+
+11-25 13:04:47.239 -[ModbusTcp] ctx =1811966368 ,modbus ip =192.168.1.110 
+
+11-25 13:04:47.388 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 13:04:47.389 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:04:47.392 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 13:04:47.393 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:04:48.997 -[ModbusTcp] New connection from 192.168.1.77:29637 on socket 8 
+
+11-25 13:04:50.214 -[SD Card] [SD Card] Time Source From Local
+11-25 13:04:50.216 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:04:50.216 -[SD Card] SD_FAULT
+
+11-25 13:04:56.004 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:04:57.474 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:04:57.475 -[SD Card] SD_FAULT
+
+11-25 13:05:00.476 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:05:00.480 -[SD Card] SD_FAULT
+
+11-25 13:05:01.446 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:05:03.482 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:05:03.484 -[SD Card] SD_FAULT
+
+11-25 13:05:06.485 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:05:06.487 -[SD Card] SD_FAULT
+
+11-25 13:05:09.488 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:05:09.490 -[SD Card] SD_FAULT
+
+11-25 13:05:12.491 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:05:12.493 -[SD Card] SD_FAULT
+
+11-25 13:14:34.266 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:14:34.267 -[EPOLL] my_epoll_Init 
+11-25 13:14:34.268 -[EPOLL] epoll_thread_func running 
+11-25 13:14:34.319 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:14:34.321 -BCU_DealTask thread created successfully.
+
+11-25 13:14:34.323 -BMU_DealTask thread created successfully.
+
+11-25 13:14:34.325 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:14:34.327 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:14:34.329 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:14:34.330 -bmu_DealTask is running
+
+11-25 13:14:34.331 -[Xmodem] TcpServerExample task!
+
+11-25 13:14:34.331 -Func_thread_can0_dealwith is running
+
+11-25 13:14:34.334 -[CAN]Rebinding can2 interface...
+
+11-25 13:14:34.334 -[CAN]Rebinding can3 interface...
+
+11-25 13:14:34.335 -[SD Card] 挂载点已存在
+
+11-25 13:14:34.336 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:14:34.336 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:14:34.359 -[ModbusTcp] IP设置成功
+
+11-25 13:14:34.362 -[ModbusTcp] ctx =-2080347744 ,modbus ip =192.168.1.110 
+
+11-25 13:14:34.545 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 13:14:34.546 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:14:34.549 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 13:14:34.551 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:14:35.332 -[ModbusTcp] New connection from 192.168.1.77:3266 on socket 8 
+
+11-25 13:14:37.300 -[SD Card] [SD Card] Time Source From Local
+11-25 13:14:37.301 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:14:37.301 -[SD Card] SD_FAULT
+
+11-25 13:14:38.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:14:40.302 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:14:40.304 -[SD Card] SD_FAULT
+
+11-25 13:14:43.305 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:14:43.307 -[SD Card] SD_FAULT
+
+11-25 13:14:44.297 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:14:46.308 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:14:46.309 -[SD Card] SD_FAULT
+
+11-25 13:15:22.235 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:15:22.236 -[EPOLL] my_epoll_Init 
+11-25 13:15:22.237 -[EPOLL] epoll_thread_func running 
+11-25 13:15:22.290 -BCU_DealTask thread created successfully.
+
+11-25 13:15:22.294 -BMU_DealTask thread created successfully.
+
+11-25 13:15:22.297 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:15:22.299 -Func_thread_can0_dealwith is running
+
+11-25 13:15:22.299 -bmu_DealTask is running
+
+11-25 13:15:22.300 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:15:22.301 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:15:22.302 -[CAN]Rebinding can3 interface...
+
+11-25 13:15:22.303 -[CAN]Rebinding can2 interface...
+
+11-25 13:15:22.304 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:15:22.310 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:15:22.311 -[Xmodem] TcpServerExample task!
+
+11-25 13:15:22.312 -[SD Card] 挂载点已存在
+
+11-25 13:15:22.317 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:15:22.330 -[ModbusTcp] IP设置成功
+
+11-25 13:15:22.332 -[ModbusTcp] ctx =2013292960 ,modbus ip =192.168.1.110 
+
+11-25 13:15:22.513 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 13:15:22.518 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:15:22.529 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 13:15:22.530 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:15:23.626 -[ModbusTcp] New connection from 192.168.1.77:20684 on socket 8 
+
+11-25 13:15:25.322 -[SD Card] [SD Card] Time Source From Local
+11-25 13:15:25.322 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:15:25.324 -[SD Card] SD_FAULT
+
+11-25 13:15:26.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:15:27.984 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:15:27.985 -[SD Card] SD_FAULT
+
+11-25 13:15:30.987 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:15:30.989 -[SD Card] SD_FAULT
+
+11-25 13:15:31.961 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:15:33.990 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:15:33.993 -[SD Card] SD_FAULT
+
+11-25 13:16:06.442 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:16:06.443 -[EPOLL] my_epoll_Init 
+11-25 13:16:06.444 -[EPOLL] epoll_thread_func running 
+11-25 13:16:06.495 -BCU_DealTask thread created successfully.
+
+11-25 13:16:06.499 -BMU_DealTask thread created successfully.
+
+11-25 13:16:06.501 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:16:06.502 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:16:06.504 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:16:06.506 -bmu_DealTask is running
+
+11-25 13:16:06.511 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:16:06.512 -[Xmodem] TcpServerExample task!
+
+11-25 13:16:06.514 -[CAN]Rebinding can3 interface...
+
+11-25 13:16:06.515 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:16:06.516 -Func_thread_can0_dealwith is running
+
+11-25 13:16:06.517 -[SD Card] 挂载点已存在
+
+11-25 13:16:06.520 -[CAN]Rebinding can2 interface...
+
+11-25 13:16:06.523 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:16:06.531 -[ModbusTcp] IP设置成功
+
+11-25 13:16:06.533 -[ModbusTcp] ctx =1476422048 ,modbus ip =192.168.1.110 
+
+11-25 13:16:06.688 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 13:16:06.689 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:16:06.691 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 13:16:06.691 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:16:07.653 -[ModbusTcp] New connection from 192.168.1.77:38650 on socket 8 
+
+11-25 13:16:10.129 -[SD Card] [SD Card] Time Source From Local
+11-25 13:16:10.130 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:10.131 -[SD Card] SD_FAULT
+
+11-25 13:16:11.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:16:13.131 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:13.133 -[SD Card] SD_FAULT
+
+11-25 13:16:16.135 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:16.136 -[SD Card] SD_FAULT
+
+11-25 13:16:17.127 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:16:19.137 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:19.138 -[SD Card] SD_FAULT
+
+11-25 13:16:22.139 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:22.142 -[SD Card] SD_FAULT
+
+11-25 13:16:25.142 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:25.144 -[SD Card] SD_FAULT
+
+11-25 13:16:28.146 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:16:28.147 -[SD Card] SD_FAULT
+
+11-25 13:34:01.507 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:34:01.508 -[EPOLL] my_epoll_Init 
+11-25 13:34:01.509 -[EPOLL] epoll_thread_func running 
+11-25 13:34:01.560 -BCU_DealTask thread created successfully.
+
+11-25 13:34:01.563 -BMU_DealTask thread created successfully.
+
+11-25 13:34:01.566 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:34:01.571 -bmu_DealTask is running
+
+11-25 13:34:01.575 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:34:01.576 -[CAN]Rebinding can3 interface...
+
+11-25 13:34:01.578 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:34:01.581 -[Xmodem] TcpServerExample task!
+
+11-25 13:34:01.582 -Func_thread_can0_dealwith is running
+
+11-25 13:34:01.583 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:34:01.584 -[CAN]Rebinding can2 interface...
+
+11-25 13:34:01.585 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:34:01.587 -[SD Card] 挂载点已存在
+
+11-25 13:34:01.590 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:34:01.594 -[ModbusTcp] IP设置成功
+
+11-25 13:34:01.596 -[ModbusTcp] ctx =1677748640 ,modbus ip =192.168.1.110 
+
+11-25 13:34:01.673 -[ModbusTcp] New connection from 192.168.1.77:43482 on socket 8 
+
+11-25 13:34:01.757 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 13:34:01.758 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:34:01.765 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 13:34:01.766 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:34:04.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:34:04.199 -[SD Card] [SD Card] Time Source From Local
+11-25 13:34:04.200 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:04.202 -[SD Card] SD_FAULT
+
+11-25 13:34:07.203 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:07.204 -[SD Card] SD_FAULT
+
+11-25 13:34:10.205 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:10.207 -[SD Card] SD_FAULT
+
+11-25 13:34:11.191 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:34:13.208 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:13.209 -[SD Card] SD_FAULT
+
+11-25 13:34:16.210 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:16.212 -[SD Card] SD_FAULT
+
+11-25 13:34:19.213 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:19.215 -[SD Card] SD_FAULT
+
+11-25 13:34:22.216 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:22.217 -[SD Card] SD_FAULT
+
+11-25 13:34:25.219 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:25.221 -[SD Card] SD_FAULT
+
+11-25 13:34:28.223 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:28.224 -[SD Card] SD_FAULT
+
+11-25 13:34:31.225 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:31.226 -[SD Card] SD_FAULT
+
+11-25 13:34:34.228 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:34.229 -[SD Card] SD_FAULT
+
+11-25 13:34:37.230 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:37.231 -[SD Card] SD_FAULT
+
+11-25 13:34:40.231 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:40.233 -[SD Card] SD_FAULT
+
+11-25 13:34:43.234 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:43.236 -[SD Card] SD_FAULT
+
+11-25 13:34:46.237 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:46.239 -[SD Card] SD_FAULT
+
+11-25 13:34:49.240 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:49.242 -[SD Card] SD_FAULT
+
+11-25 13:34:52.243 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:52.246 -[SD Card] SD_FAULT
+
+11-25 13:34:55.249 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:55.251 -[SD Card] SD_FAULT
+
+11-25 13:34:58.253 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:34:58.255 -[SD Card] SD_FAULT
+
+11-25 13:35:01.257 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:01.259 -[SD Card] SD_FAULT
+
+11-25 13:35:04.261 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:04.263 -[SD Card] SD_FAULT
+
+11-25 13:35:07.264 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:07.266 -[SD Card] SD_FAULT
+
+11-25 13:35:10.268 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:10.269 -[SD Card] SD_FAULT
+
+11-25 13:35:13.271 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:13.273 -[SD Card] SD_FAULT
+
+11-25 13:35:16.275 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:16.276 -[SD Card] SD_FAULT
+
+11-25 13:35:19.277 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:19.279 -[SD Card] SD_FAULT
+
+11-25 13:35:22.281 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:22.284 -[SD Card] SD_FAULT
+
+11-25 13:35:25.285 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:25.288 -[SD Card] SD_FAULT
+
+11-25 13:35:28.289 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:28.292 -[SD Card] SD_FAULT
+
+11-25 13:35:31.293 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:31.295 -[SD Card] SD_FAULT
+
+11-25 13:35:34.297 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:34.299 -[SD Card] SD_FAULT
+
+11-25 13:35:37.301 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:37.303 -[SD Card] SD_FAULT
+
+11-25 13:35:40.305 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:40.306 -[SD Card] SD_FAULT
+
+11-25 13:35:43.308 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:43.313 -[SD Card] SD_FAULT
+
+11-25 13:35:46.315 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:46.319 -[SD Card] SD_FAULT
+
+11-25 13:35:49.321 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:49.322 -[SD Card] SD_FAULT
+
+11-25 13:35:52.324 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:52.325 -[SD Card] SD_FAULT
+
+11-25 13:35:55.326 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:55.327 -[SD Card] SD_FAULT
+
+11-25 13:35:58.329 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:35:58.330 -[SD Card] SD_FAULT
+
+11-25 13:36:01.332 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:01.334 -[SD Card] SD_FAULT
+
+11-25 13:36:04.335 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:04.337 -[SD Card] SD_FAULT
+
+11-25 13:36:07.338 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:07.339 -[SD Card] SD_FAULT
+
+11-25 13:36:10.340 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:10.342 -[SD Card] SD_FAULT
+
+11-25 13:36:13.343 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:13.345 -[SD Card] SD_FAULT
+
+11-25 13:36:16.346 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:16.348 -[SD Card] SD_FAULT
+
+11-25 13:36:19.349 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:19.351 -[SD Card] SD_FAULT
+
+11-25 13:36:22.353 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:22.355 -[SD Card] SD_FAULT
+
+11-25 13:36:25.356 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:25.358 -[SD Card] SD_FAULT
+
+11-25 13:36:35.079 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:36:35.080 -[EPOLL] my_epoll_Init 
+11-25 13:36:35.082 -[EPOLL] epoll_thread_func running 
+11-25 13:36:35.133 -BCU_DealTask thread created successfully.
+
+11-25 13:36:35.136 -BMU_DealTask thread created successfully.
+
+11-25 13:36:35.138 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:36:35.140 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:36:35.143 -bmu_DealTask is running
+
+11-25 13:36:35.148 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:36:35.148 -[CAN]Rebinding can3 interface...
+
+11-25 13:36:35.150 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:36:35.151 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:36:35.152 -Func_thread_can0_dealwith is running
+
+11-25 13:36:35.152 -[Xmodem] TcpServerExample task!
+
+11-25 13:36:35.154 -[CAN]Rebinding can2 interface...
+
+11-25 13:36:35.155 -[SD Card] 挂载点已存在
+
+11-25 13:36:35.158 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:36:35.163 -[ModbusTcp] IP设置成功
+
+11-25 13:36:35.168 -[ModbusTcp] ctx =-1744803424 ,modbus ip =192.168.1.110 
+
+11-25 13:36:35.325 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 13:36:35.326 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:36:35.329 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 13:36:35.329 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:36:37.545 -[ModbusTcp] New connection from 192.168.1.77:59848 on socket 8 
+
+11-25 13:36:38.160 -[SD Card] [SD Card] Time Source From Local
+11-25 13:36:38.161 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:38.162 -[SD Card] SD_FAULT
+
+11-25 13:36:41.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:36:41.870 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:41.871 -[SD Card] SD_FAULT
+
+11-25 13:36:44.873 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:44.874 -[SD Card] SD_FAULT
+
+11-25 13:36:45.860 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:36:47.876 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:47.877 -[SD Card] SD_FAULT
+
+11-25 13:36:50.878 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:50.879 -[SD Card] SD_FAULT
+
+11-25 13:36:53.881 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:53.882 -[SD Card] SD_FAULT
+
+11-25 13:36:56.883 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:56.884 -[SD Card] SD_FAULT
+
+11-25 13:36:59.886 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:36:59.887 -[SD Card] SD_FAULT
+
+11-25 13:37:02.888 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:02.890 -[SD Card] SD_FAULT
+
+11-25 13:37:05.890 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:05.892 -[SD Card] SD_FAULT
+
+11-25 13:37:08.894 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:08.894 -[SD Card] SD_FAULT
+
+11-25 13:37:11.895 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:11.897 -[SD Card] SD_FAULT
+
+11-25 13:37:14.898 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:14.900 -[SD Card] SD_FAULT
+
+11-25 13:37:17.901 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:17.901 -[SD Card] SD_FAULT
+
+11-25 13:37:20.903 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:20.904 -[SD Card] SD_FAULT
+
+11-25 13:37:23.906 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:23.907 -[SD Card] SD_FAULT
+
+11-25 13:37:26.908 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:26.909 -[SD Card] SD_FAULT
+
+11-25 13:37:29.911 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:29.915 -[SD Card] SD_FAULT
+
+11-25 13:37:32.919 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:32.920 -[SD Card] SD_FAULT
+
+11-25 13:37:35.921 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:35.923 -[SD Card] SD_FAULT
+
+11-25 13:37:38.925 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:38.927 -[SD Card] SD_FAULT
+
+11-25 13:37:41.929 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:41.930 -[SD Card] SD_FAULT
+
+11-25 13:37:44.931 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:44.933 -[SD Card] SD_FAULT
+
+11-25 13:37:47.935 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:47.939 -[SD Card] SD_FAULT
+
+11-25 13:37:50.942 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:50.943 -[SD Card] SD_FAULT
+
+11-25 13:37:53.944 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:53.946 -[SD Card] SD_FAULT
+
+11-25 13:37:56.948 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:56.950 -[SD Card] SD_FAULT
+
+11-25 13:37:59.951 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:37:59.952 -[SD Card] SD_FAULT
+
+11-25 13:38:02.954 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:02.956 -[SD Card] SD_FAULT
+
+11-25 13:38:05.958 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:05.960 -[SD Card] SD_FAULT
+
+11-25 13:38:08.961 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:08.965 -[SD Card] SD_FAULT
+
+11-25 13:38:11.967 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:11.968 -[SD Card] SD_FAULT
+
+11-25 13:38:14.970 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:14.971 -[SD Card] SD_FAULT
+
+11-25 13:38:17.973 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:17.975 -[SD Card] SD_FAULT
+
+11-25 13:38:20.976 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:20.977 -[SD Card] SD_FAULT
+
+11-25 13:38:23.979 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:23.981 -[SD Card] SD_FAULT
+
+11-25 13:38:26.982 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:26.984 -[SD Card] SD_FAULT
+
+11-25 13:38:29.986 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:29.988 -[SD Card] SD_FAULT
+
+11-25 13:38:32.990 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:32.992 -[SD Card] SD_FAULT
+
+11-25 13:38:35.994 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:35.996 -[SD Card] SD_FAULT
+
+11-25 13:38:38.998 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:39.000 -[SD Card] SD_FAULT
+
+11-25 13:38:42.002 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:42.003 -[SD Card] SD_FAULT
+
+11-25 13:38:45.004 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:45.005 -[SD Card] SD_FAULT
+
+11-25 13:38:48.007 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:48.009 -[SD Card] SD_FAULT
+
+11-25 13:38:51.011 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:51.013 -[SD Card] SD_FAULT
+
+11-25 13:38:54.015 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:54.018 -[SD Card] SD_FAULT
+
+11-25 13:38:57.020 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:38:57.021 -[SD Card] SD_FAULT
+
+11-25 13:39:00.024 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:39:00.026 -[SD Card] SD_FAULT
+
+11-25 13:39:03.027 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:39:03.029 -[SD Card] SD_FAULT
+
+11-25 13:39:49.610 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 13:39:49.611 -[EPOLL] my_epoll_Init 
+11-25 13:39:49.612 -[EPOLL] epoll_thread_func running 
+11-25 13:39:49.663 -BCU_DealTask thread created successfully.
+
+11-25 13:39:49.668 -BMU_DealTask thread created successfully.
+
+11-25 13:39:49.670 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 13:39:49.678 -[OTA] SerialLedTask thread created successfully.
+
+11-25 13:39:49.679 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 13:39:49.680 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 13:39:49.680 -bmu_DealTask is running
+
+11-25 13:39:49.682 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 13:39:49.683 -[Xmodem] TcpServerExample task!
+
+11-25 13:39:49.683 -[SD Card] 挂载点已存在
+
+11-25 13:39:49.683 -Func_thread_can0_dealwith is running
+
+11-25 13:39:49.684 -[CAN]Rebinding can3 interface...
+
+11-25 13:39:49.685 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 13:39:49.686 -[CAN]Rebinding can2 interface...
+
+11-25 13:39:49.693 -[ModbusTcp] IP设置成功
+
+11-25 13:39:49.696 -[ModbusTcp] ctx =1879075232 ,modbus ip =192.168.1.110 
+
+11-25 13:39:49.887 -[CAN]can2 rebound successfully, new fd: 6
+
+11-25 13:39:49.888 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 13:39:49.896 -[CAN]can3 rebound successfully, new fd: 7
+
+11-25 13:39:49.897 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 13:39:51.613 -[ModbusTcp] New connection from 192.168.1.77:35273 on socket 8 
+
+11-25 13:39:52.686 -[SD Card] [SD Card] Time Source From Local
+11-25 13:39:52.690 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:39:52.692 -[SD Card] SD_FAULT
+
+11-25 13:39:54.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 13:39:55.330 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:39:55.331 -[SD Card] SD_FAULT
+
+11-25 13:39:58.333 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:39:58.334 -[SD Card] SD_FAULT
+
+11-25 13:39:59.322 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 13:40:01.336 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:01.336 -[SD Card] SD_FAULT
+
+11-25 13:40:04.337 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:04.339 -[SD Card] SD_FAULT
+
+11-25 13:40:07.341 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:07.342 -[SD Card] SD_FAULT
+
+11-25 13:40:10.345 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:10.346 -[SD Card] SD_FAULT
+
+11-25 13:40:13.347 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:13.349 -[SD Card] SD_FAULT
+
+11-25 13:40:16.350 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:16.352 -[SD Card] SD_FAULT
+
+11-25 13:40:19.353 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:19.355 -[SD Card] SD_FAULT
+
+11-25 13:40:22.358 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:22.360 -[SD Card] SD_FAULT
+
+11-25 13:40:25.362 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:25.363 -[SD Card] SD_FAULT
+
+11-25 13:40:28.365 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:28.366 -[SD Card] SD_FAULT
+
+11-25 13:40:31.368 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:31.372 -[SD Card] SD_FAULT
+
+11-25 13:40:34.375 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:34.377 -[SD Card] SD_FAULT
+
+11-25 13:40:37.378 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:37.379 -[SD Card] SD_FAULT
+
+11-25 13:40:40.381 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:40.383 -[SD Card] SD_FAULT
+
+11-25 13:40:43.384 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:43.385 -[SD Card] SD_FAULT
+
+11-25 13:40:46.385 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:46.386 -[SD Card] SD_FAULT
+
+11-25 13:40:49.387 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:49.389 -[SD Card] SD_FAULT
+
+11-25 13:40:52.391 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:52.393 -[SD Card] SD_FAULT
+
+11-25 13:40:55.394 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:55.396 -[SD Card] SD_FAULT
+
+11-25 13:40:58.398 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:40:58.400 -[SD Card] SD_FAULT
+
+11-25 13:41:01.402 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:01.405 -[SD Card] SD_FAULT
+
+11-25 13:41:04.407 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:04.409 -[SD Card] SD_FAULT
+
+11-25 13:41:07.410 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:07.410 -[SD Card] SD_FAULT
+
+11-25 13:41:10.411 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:10.412 -[SD Card] SD_FAULT
+
+11-25 13:41:11.128 -[ModbusTcp] Closing connection on socket 8
+
+11-25 13:41:13.413 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:13.414 -[SD Card] SD_FAULT
+
+11-25 13:41:16.415 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:16.417 -[SD Card] SD_FAULT
+
+11-25 13:41:19.418 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:19.420 -[SD Card] SD_FAULT
+
+11-25 13:41:22.421 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:22.424 -[SD Card] SD_FAULT
+
+11-25 13:41:25.426 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:25.429 -[SD Card] SD_FAULT
+
+11-25 13:41:28.432 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:28.434 -[SD Card] SD_FAULT
+
+11-25 13:41:31.435 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:31.437 -[SD Card] SD_FAULT
+
+11-25 13:41:34.438 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:34.439 -[SD Card] SD_FAULT
+
+11-25 13:41:37.440 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:37.442 -[SD Card] SD_FAULT
+
+11-25 13:41:40.443 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:40.446 -[SD Card] SD_FAULT
+
+11-25 13:41:43.448 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:43.450 -[SD Card] SD_FAULT
+
+11-25 13:41:46.451 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:46.452 -[SD Card] SD_FAULT
+
+11-25 13:41:49.453 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:49.454 -[SD Card] SD_FAULT
+
+11-25 13:41:52.455 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:52.458 -[SD Card] SD_FAULT
+
+11-25 13:41:55.460 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:55.461 -[SD Card] SD_FAULT
+
+11-25 13:41:58.462 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:41:58.463 -[SD Card] SD_FAULT
+
+11-25 13:42:01.464 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:01.465 -[SD Card] SD_FAULT
+
+11-25 13:42:04.466 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:04.467 -[SD Card] SD_FAULT
+
+11-25 13:42:07.469 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:07.470 -[SD Card] SD_FAULT
+
+11-25 13:42:10.471 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:10.472 -[SD Card] SD_FAULT
+
+11-25 13:42:13.473 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:13.475 -[SD Card] SD_FAULT
+
+11-25 13:42:16.476 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:16.477 -[SD Card] SD_FAULT
+
+11-25 13:42:19.478 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:19.479 -[SD Card] SD_FAULT
+
+11-25 13:42:22.481 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:22.482 -[SD Card] SD_FAULT
+
+11-25 13:42:25.484 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:25.486 -[SD Card] SD_FAULT
+
+11-25 13:42:28.488 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:28.489 -[SD Card] SD_FAULT
+
+11-25 13:42:31.491 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:31.492 -[SD Card] SD_FAULT
+
+11-25 13:42:34.493 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:34.494 -[SD Card] SD_FAULT
+
+11-25 13:42:37.495 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:37.496 -[SD Card] SD_FAULT
+
+11-25 13:42:40.498 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:40.499 -[SD Card] SD_FAULT
+
+11-25 13:42:43.500 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:43.501 -[SD Card] SD_FAULT
+
+11-25 13:42:46.502 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:46.505 -[SD Card] SD_FAULT
+
+11-25 13:42:49.506 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:49.508 -[SD Card] SD_FAULT
+
+11-25 13:42:52.509 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:52.510 -[SD Card] SD_FAULT
+
+11-25 13:42:55.510 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:55.511 -[SD Card] SD_FAULT
+
+11-25 13:42:58.514 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:42:58.515 -[SD Card] SD_FAULT
+
+11-25 13:43:01.516 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:01.517 -[SD Card] SD_FAULT
+
+11-25 13:43:04.518 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:04.520 -[SD Card] SD_FAULT
+
+11-25 13:43:07.522 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:07.523 -[SD Card] SD_FAULT
+
+11-25 13:43:10.525 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:10.527 -[SD Card] SD_FAULT
+
+11-25 13:43:13.529 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:13.530 -[SD Card] SD_FAULT
+
+11-25 13:43:16.531 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:16.532 -[SD Card] SD_FAULT
+
+11-25 13:43:19.533 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:19.535 -[SD Card] SD_FAULT
+
+11-25 13:43:22.536 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:22.537 -[SD Card] SD_FAULT
+
+11-25 13:43:25.539 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:25.541 -[SD Card] SD_FAULT
+
+11-25 13:43:28.543 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:28.544 -[SD Card] SD_FAULT
+
+11-25 13:43:31.545 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:31.546 -[SD Card] SD_FAULT
+
+11-25 13:43:34.547 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:34.547 -[SD Card] SD_FAULT
+
+11-25 13:43:37.548 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:37.549 -[SD Card] SD_FAULT
+
+11-25 13:43:40.550 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:40.551 -[SD Card] SD_FAULT
+
+11-25 13:43:43.552 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:43.552 -[SD Card] SD_FAULT
+
+11-25 13:43:46.553 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:46.554 -[SD Card] SD_FAULT
+
+11-25 13:43:49.555 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:49.556 -[SD Card] SD_FAULT
+
+11-25 13:43:52.557 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:52.558 -[SD Card] SD_FAULT
+
+11-25 13:43:55.560 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:55.564 -[SD Card] SD_FAULT
+
+11-25 13:43:58.566 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:43:58.567 -[SD Card] SD_FAULT
+
+11-25 13:44:01.568 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:01.571 -[SD Card] SD_FAULT
+
+11-25 13:44:04.573 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:04.574 -[SD Card] SD_FAULT
+
+11-25 13:44:07.575 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:07.576 -[SD Card] SD_FAULT
+
+11-25 13:44:10.577 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:10.578 -[SD Card] SD_FAULT
+
+11-25 13:44:13.580 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:13.581 -[SD Card] SD_FAULT
+
+11-25 13:44:16.582 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:16.582 -[SD Card] SD_FAULT
+
+11-25 13:44:19.583 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:19.584 -[SD Card] SD_FAULT
+
+11-25 13:44:22.586 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:22.589 -[SD Card] SD_FAULT
+
+11-25 13:44:25.591 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:25.592 -[SD Card] SD_FAULT
+
+11-25 13:44:28.593 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:28.594 -[SD Card] SD_FAULT
+
+11-25 13:44:31.595 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:31.596 -[SD Card] SD_FAULT
+
+11-25 13:44:34.598 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:34.599 -[SD Card] SD_FAULT
+
+11-25 13:44:37.600 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:37.602 -[SD Card] SD_FAULT
+
+11-25 13:44:40.604 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:40.605 -[SD Card] SD_FAULT
+
+11-25 13:44:43.606 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:43.607 -[SD Card] SD_FAULT
+
+11-25 13:44:46.607 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:46.609 -[SD Card] SD_FAULT
+
+11-25 13:44:49.613 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:49.615 -[SD Card] SD_FAULT
+
+11-25 13:44:52.616 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:52.618 -[SD Card] SD_FAULT
+
+11-25 13:44:55.620 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:55.620 -[SD Card] SD_FAULT
+
+11-25 13:44:58.621 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:44:58.622 -[SD Card] SD_FAULT
+
+11-25 13:45:01.623 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:01.624 -[SD Card] SD_FAULT
+
+11-25 13:45:04.626 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:04.628 -[SD Card] SD_FAULT
+
+11-25 13:45:07.630 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:07.631 -[SD Card] SD_FAULT
+
+11-25 13:45:10.632 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:10.633 -[SD Card] SD_FAULT
+
+11-25 13:45:13.634 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:13.635 -[SD Card] SD_FAULT
+
+11-25 13:45:16.637 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:16.638 -[SD Card] SD_FAULT
+
+11-25 13:45:19.640 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:19.640 -[SD Card] SD_FAULT
+
+11-25 13:45:22.642 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:22.644 -[SD Card] SD_FAULT
+
+11-25 13:45:25.645 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:25.648 -[SD Card] SD_FAULT
+
+11-25 13:45:28.650 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:28.651 -[SD Card] SD_FAULT
+
+11-25 13:45:31.652 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:31.653 -[SD Card] SD_FAULT
+
+11-25 13:45:34.654 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:34.655 -[SD Card] SD_FAULT
+
+11-25 13:45:37.656 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:37.657 -[SD Card] SD_FAULT
+
+11-25 13:45:40.658 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:40.659 -[SD Card] SD_FAULT
+
+11-25 13:45:43.660 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:43.661 -[SD Card] SD_FAULT
+
+11-25 13:45:46.662 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:46.664 -[SD Card] SD_FAULT
+
+11-25 13:45:49.665 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:49.667 -[SD Card] SD_FAULT
+
+11-25 13:45:52.668 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:52.669 -[SD Card] SD_FAULT
+
+11-25 13:45:55.671 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:55.672 -[SD Card] SD_FAULT
+
+11-25 13:45:58.673 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:45:58.676 -[SD Card] SD_FAULT
+
+11-25 13:46:01.677 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:01.678 -[SD Card] SD_FAULT
+
+11-25 13:46:04.680 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:04.681 -[SD Card] SD_FAULT
+
+11-25 13:46:07.682 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:07.684 -[SD Card] SD_FAULT
+
+11-25 13:46:10.685 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:10.686 -[SD Card] SD_FAULT
+
+11-25 13:46:13.687 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:13.689 -[SD Card] SD_FAULT
+
+11-25 13:46:16.690 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:16.691 -[SD Card] SD_FAULT
+
+11-25 13:46:19.693 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:19.694 -[SD Card] SD_FAULT
+
+11-25 13:46:22.695 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:22.696 -[SD Card] SD_FAULT
+
+11-25 13:46:25.697 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:25.698 -[SD Card] SD_FAULT
+
+11-25 13:46:28.700 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:28.701 -[SD Card] SD_FAULT
+
+11-25 13:46:31.703 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:31.703 -[SD Card] SD_FAULT
+
+11-25 13:46:34.704 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:34.706 -[SD Card] SD_FAULT
+
+11-25 13:46:37.711 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:37.713 -[SD Card] SD_FAULT
+
+11-25 13:46:40.716 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:40.717 -[SD Card] SD_FAULT
+
+11-25 13:46:43.718 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:43.719 -[SD Card] SD_FAULT
+
+11-25 13:46:46.720 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:46.724 -[SD Card] SD_FAULT
+
+11-25 13:46:49.726 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:49.727 -[SD Card] SD_FAULT
+
+11-25 13:46:52.729 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:52.732 -[SD Card] SD_FAULT
+
+11-25 13:46:55.733 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:55.734 -[SD Card] SD_FAULT
+
+11-25 13:46:58.736 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:46:58.738 -[SD Card] SD_FAULT
+
+11-25 13:47:01.739 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:01.740 -[SD Card] SD_FAULT
+
+11-25 13:47:04.741 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:04.742 -[SD Card] SD_FAULT
+
+11-25 13:47:07.744 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:07.745 -[SD Card] SD_FAULT
+
+11-25 13:47:10.746 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:10.747 -[SD Card] SD_FAULT
+
+11-25 13:47:13.749 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:13.751 -[SD Card] SD_FAULT
+
+11-25 13:47:16.754 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:16.757 -[SD Card] SD_FAULT
+
+11-25 13:47:19.759 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:19.761 -[SD Card] SD_FAULT
+
+11-25 13:47:22.762 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:22.764 -[SD Card] SD_FAULT
+
+11-25 13:47:25.765 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:25.766 -[SD Card] SD_FAULT
+
+11-25 13:47:28.767 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:28.770 -[SD Card] SD_FAULT
+
+11-25 13:47:31.772 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:31.773 -[SD Card] SD_FAULT
+
+11-25 13:47:34.774 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:34.779 -[SD Card] SD_FAULT
+
+11-25 13:47:37.780 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:37.781 -[SD Card] SD_FAULT
+
+11-25 13:47:40.782 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:40.785 -[SD Card] SD_FAULT
+
+11-25 13:47:43.786 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:43.788 -[SD Card] SD_FAULT
+
+11-25 13:47:46.789 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:46.790 -[SD Card] SD_FAULT
+
+11-25 13:47:49.792 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:49.794 -[SD Card] SD_FAULT
+
+11-25 13:47:52.795 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:52.798 -[SD Card] SD_FAULT
+
+11-25 13:47:55.800 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:55.801 -[SD Card] SD_FAULT
+
+11-25 13:47:58.802 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:47:58.805 -[SD Card] SD_FAULT
+
+11-25 13:48:01.807 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:01.809 -[SD Card] SD_FAULT
+
+11-25 13:48:04.810 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:04.811 -[SD Card] SD_FAULT
+
+11-25 13:48:07.813 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:07.816 -[SD Card] SD_FAULT
+
+11-25 13:48:10.817 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:10.819 -[SD Card] SD_FAULT
+
+11-25 13:48:13.820 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:13.822 -[SD Card] SD_FAULT
+
+11-25 13:48:16.823 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:16.826 -[SD Card] SD_FAULT
+
+11-25 13:48:19.827 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:19.829 -[SD Card] SD_FAULT
+
+11-25 13:48:22.830 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:22.831 -[SD Card] SD_FAULT
+
+11-25 13:48:25.834 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:25.835 -[SD Card] SD_FAULT
+
+11-25 13:48:28.836 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:28.837 -[SD Card] SD_FAULT
+
+11-25 13:48:31.839 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:31.840 -[SD Card] SD_FAULT
+
+11-25 13:48:34.841 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:34.842 -[SD Card] SD_FAULT
+
+11-25 13:48:37.844 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:37.845 -[SD Card] SD_FAULT
+
+11-25 13:48:40.846 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:40.848 -[SD Card] SD_FAULT
+
+11-25 13:48:43.851 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:43.852 -[SD Card] SD_FAULT
+
+11-25 13:48:46.853 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:46.854 -[SD Card] SD_FAULT
+
+11-25 13:48:49.856 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:49.857 -[SD Card] SD_FAULT
+
+11-25 13:48:52.858 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:52.860 -[SD Card] SD_FAULT
+
+11-25 13:48:55.861 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:55.862 -[SD Card] SD_FAULT
+
+11-25 13:48:58.863 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:48:58.864 -[SD Card] SD_FAULT
+
+11-25 13:49:01.866 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:01.868 -[SD Card] SD_FAULT
+
+11-25 13:49:04.870 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:04.872 -[SD Card] SD_FAULT
+
+11-25 13:49:07.874 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:07.876 -[SD Card] SD_FAULT
+
+11-25 13:49:10.878 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:10.879 -[SD Card] SD_FAULT
+
+11-25 13:49:13.880 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:13.882 -[SD Card] SD_FAULT
+
+11-25 13:49:16.883 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:16.885 -[SD Card] SD_FAULT
+
+11-25 13:49:19.886 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:19.887 -[SD Card] SD_FAULT
+
+11-25 13:49:22.888 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:22.889 -[SD Card] SD_FAULT
+
+11-25 13:49:25.890 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:25.893 -[SD Card] SD_FAULT
+
+11-25 13:49:28.895 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:28.896 -[SD Card] SD_FAULT
+
+11-25 13:49:31.897 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:31.899 -[SD Card] SD_FAULT
+
+11-25 13:49:34.901 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:34.903 -[SD Card] SD_FAULT
+
+11-25 13:49:37.904 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:37.905 -[SD Card] SD_FAULT
+
+11-25 13:49:40.906 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:40.909 -[SD Card] SD_FAULT
+
+11-25 13:49:43.910 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:43.912 -[SD Card] SD_FAULT
+
+11-25 13:49:46.913 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:46.916 -[SD Card] SD_FAULT
+
+11-25 13:49:49.918 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:49.919 -[SD Card] SD_FAULT
+
+11-25 13:49:52.921 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:52.923 -[SD Card] SD_FAULT
+
+11-25 13:49:55.925 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:55.926 -[SD Card] SD_FAULT
+
+11-25 13:49:58.928 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:49:58.930 -[SD Card] SD_FAULT
+
+11-25 13:50:01.931 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:01.933 -[SD Card] SD_FAULT
+
+11-25 13:50:04.934 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:04.936 -[SD Card] SD_FAULT
+
+11-25 13:50:07.937 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:07.939 -[SD Card] SD_FAULT
+
+11-25 13:50:10.940 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:10.941 -[SD Card] SD_FAULT
+
+11-25 13:50:13.943 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:13.944 -[SD Card] SD_FAULT
+
+11-25 13:50:16.945 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:16.946 -[SD Card] SD_FAULT
+
+11-25 13:50:19.952 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:19.954 -[SD Card] SD_FAULT
+
+11-25 13:50:22.956 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:22.957 -[SD Card] SD_FAULT
+
+11-25 13:50:25.957 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:25.959 -[SD Card] SD_FAULT
+
+11-25 13:50:28.961 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:28.963 -[SD Card] SD_FAULT
+
+11-25 13:50:31.966 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:31.968 -[SD Card] SD_FAULT
+
+11-25 13:50:34.969 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:34.970 -[SD Card] SD_FAULT
+
+11-25 13:50:37.971 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:37.972 -[SD Card] SD_FAULT
+
+11-25 13:50:40.973 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:40.973 -[SD Card] SD_FAULT
+
+11-25 13:50:43.974 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:43.975 -[SD Card] SD_FAULT
+
+11-25 13:50:46.976 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:46.978 -[SD Card] SD_FAULT
+
+11-25 13:50:49.979 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:49.980 -[SD Card] SD_FAULT
+
+11-25 13:50:52.981 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:52.982 -[SD Card] SD_FAULT
+
+11-25 13:50:55.983 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:55.985 -[SD Card] SD_FAULT
+
+11-25 13:50:58.986 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:50:58.986 -[SD Card] SD_FAULT
+
+11-25 13:51:01.987 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:01.989 -[SD Card] SD_FAULT
+
+11-25 13:51:04.990 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:04.992 -[SD Card] SD_FAULT
+
+11-25 13:51:07.992 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:07.993 -[SD Card] SD_FAULT
+
+11-25 13:51:10.994 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:10.995 -[SD Card] SD_FAULT
+
+11-25 13:51:13.996 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:13.998 -[SD Card] SD_FAULT
+
+11-25 13:51:17.000 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:17.002 -[SD Card] SD_FAULT
+
+11-25 13:51:20.003 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:20.005 -[SD Card] SD_FAULT
+
+11-25 13:51:23.006 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:23.007 -[SD Card] SD_FAULT
+
+11-25 13:51:26.008 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:26.009 -[SD Card] SD_FAULT
+
+11-25 13:51:29.010 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:29.010 -[SD Card] SD_FAULT
+
+11-25 13:51:32.011 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:32.012 -[SD Card] SD_FAULT
+
+11-25 13:51:35.013 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:35.014 -[SD Card] SD_FAULT
+
+11-25 13:51:38.015 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:38.016 -[SD Card] SD_FAULT
+
+11-25 13:51:41.017 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:41.018 -[SD Card] SD_FAULT
+
+11-25 13:51:44.019 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:44.020 -[SD Card] SD_FAULT
+
+11-25 13:51:47.020 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:47.022 -[SD Card] SD_FAULT
+
+11-25 13:51:50.023 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:50.024 -[SD Card] SD_FAULT
+
+11-25 13:51:53.025 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:53.026 -[SD Card] SD_FAULT
+
+11-25 13:51:56.027 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:56.028 -[SD Card] SD_FAULT
+
+11-25 13:51:59.029 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:51:59.030 -[SD Card] SD_FAULT
+
+11-25 13:52:02.031 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:02.032 -[SD Card] SD_FAULT
+
+11-25 13:52:05.033 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:05.035 -[SD Card] SD_FAULT
+
+11-25 13:52:08.036 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:08.037 -[SD Card] SD_FAULT
+
+11-25 13:52:11.038 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:11.039 -[SD Card] SD_FAULT
+
+11-25 13:52:14.040 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:14.041 -[SD Card] SD_FAULT
+
+11-25 13:52:17.042 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:17.043 -[SD Card] SD_FAULT
+
+11-25 13:52:20.044 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:20.045 -[SD Card] SD_FAULT
+
+11-25 13:52:23.046 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:23.047 -[SD Card] SD_FAULT
+
+11-25 13:52:26.048 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:26.050 -[SD Card] SD_FAULT
+
+11-25 13:52:29.051 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:29.052 -[SD Card] SD_FAULT
+
+11-25 13:52:32.053 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:32.054 -[SD Card] SD_FAULT
+
+11-25 13:52:35.055 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:35.056 -[SD Card] SD_FAULT
+
+11-25 13:52:38.057 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:38.058 -[SD Card] SD_FAULT
+
+11-25 13:52:41.059 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:41.061 -[SD Card] SD_FAULT
+
+11-25 13:52:44.062 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:44.064 -[SD Card] SD_FAULT
+
+11-25 13:52:47.065 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:47.066 -[SD Card] SD_FAULT
+
+11-25 13:52:50.067 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:50.068 -[SD Card] SD_FAULT
+
+11-25 13:52:53.069 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:53.069 -[SD Card] SD_FAULT
+
+11-25 13:52:56.070 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:56.072 -[SD Card] SD_FAULT
+
+11-25 13:52:59.073 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:52:59.075 -[SD Card] SD_FAULT
+
+11-25 13:53:02.076 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:02.077 -[SD Card] SD_FAULT
+
+11-25 13:53:05.078 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:05.079 -[SD Card] SD_FAULT
+
+11-25 13:53:08.080 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:08.081 -[SD Card] SD_FAULT
+
+11-25 13:53:11.082 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:11.083 -[SD Card] SD_FAULT
+
+11-25 13:53:14.084 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:14.084 -[SD Card] SD_FAULT
+
+11-25 13:53:17.085 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:17.090 -[SD Card] SD_FAULT
+
+11-25 13:53:20.092 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:20.094 -[SD Card] SD_FAULT
+
+11-25 13:53:23.095 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:23.096 -[SD Card] SD_FAULT
+
+11-25 13:53:26.097 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:26.098 -[SD Card] SD_FAULT
+
+11-25 13:53:29.099 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:29.100 -[SD Card] SD_FAULT
+
+11-25 13:53:32.101 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:32.102 -[SD Card] SD_FAULT
+
+11-25 13:53:35.103 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:35.104 -[SD Card] SD_FAULT
+
+11-25 13:53:38.105 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:38.106 -[SD Card] SD_FAULT
+
+11-25 13:53:41.107 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:41.108 -[SD Card] SD_FAULT
+
+11-25 13:53:44.109 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:44.112 -[SD Card] SD_FAULT
+
+11-25 13:53:47.113 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:47.113 -[SD Card] SD_FAULT
+
+11-25 13:53:50.114 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:50.114 -[SD Card] SD_FAULT
+
+11-25 13:53:53.115 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:53.116 -[SD Card] SD_FAULT
+
+11-25 13:53:56.117 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:56.118 -[SD Card] SD_FAULT
+
+11-25 13:53:59.119 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:53:59.121 -[SD Card] SD_FAULT
+
+11-25 13:54:02.122 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:02.124 -[SD Card] SD_FAULT
+
+11-25 13:54:05.126 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:05.128 -[SD Card] SD_FAULT
+
+11-25 13:54:08.129 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:08.130 -[SD Card] SD_FAULT
+
+11-25 13:54:11.132 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:11.133 -[SD Card] SD_FAULT
+
+11-25 13:54:14.134 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:14.135 -[SD Card] SD_FAULT
+
+11-25 13:54:17.136 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:17.137 -[SD Card] SD_FAULT
+
+11-25 13:54:20.138 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:20.139 -[SD Card] SD_FAULT
+
+11-25 13:54:23.140 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:23.142 -[SD Card] SD_FAULT
+
+11-25 13:54:26.144 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:26.145 -[SD Card] SD_FAULT
+
+11-25 13:54:29.146 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:29.147 -[SD Card] SD_FAULT
+
+11-25 13:54:32.147 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:32.148 -[SD Card] SD_FAULT
+
+11-25 13:54:35.149 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:35.150 -[SD Card] SD_FAULT
+
+11-25 13:54:38.151 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:38.153 -[SD Card] SD_FAULT
+
+11-25 13:54:41.154 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:41.155 -[SD Card] SD_FAULT
+
+11-25 13:54:44.156 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:44.158 -[SD Card] SD_FAULT
+
+11-25 13:54:47.160 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:47.161 -[SD Card] SD_FAULT
+
+11-25 13:54:50.163 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:50.163 -[SD Card] SD_FAULT
+
+11-25 13:54:53.164 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:53.165 -[SD Card] SD_FAULT
+
+11-25 13:54:56.166 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:56.167 -[SD Card] SD_FAULT
+
+11-25 13:54:59.168 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:54:59.168 -[SD Card] SD_FAULT
+
+11-25 13:55:02.169 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:02.170 -[SD Card] SD_FAULT
+
+11-25 13:55:05.171 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:05.172 -[SD Card] SD_FAULT
+
+11-25 13:55:08.173 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:08.174 -[SD Card] SD_FAULT
+
+11-25 13:55:11.174 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:11.175 -[SD Card] SD_FAULT
+
+11-25 13:55:14.176 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:14.181 -[SD Card] SD_FAULT
+
+11-25 13:55:17.182 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:17.184 -[SD Card] SD_FAULT
+
+11-25 13:55:20.185 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:20.186 -[SD Card] SD_FAULT
+
+11-25 13:55:23.187 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:23.188 -[SD Card] SD_FAULT
+
+11-25 13:55:26.189 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:26.190 -[SD Card] SD_FAULT
+
+11-25 13:55:29.192 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:29.193 -[SD Card] SD_FAULT
+
+11-25 13:55:32.194 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:32.195 -[SD Card] SD_FAULT
+
+11-25 13:55:35.196 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:35.200 -[SD Card] SD_FAULT
+
+11-25 13:55:38.201 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:38.202 -[SD Card] SD_FAULT
+
+11-25 13:55:41.203 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:41.204 -[SD Card] SD_FAULT
+
+11-25 13:55:44.205 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:44.206 -[SD Card] SD_FAULT
+
+11-25 13:55:47.206 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:47.208 -[SD Card] SD_FAULT
+
+11-25 13:55:50.209 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:50.211 -[SD Card] SD_FAULT
+
+11-25 13:55:53.214 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:53.216 -[SD Card] SD_FAULT
+
+11-25 13:55:56.218 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:56.220 -[SD Card] SD_FAULT
+
+11-25 13:55:59.221 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:55:59.222 -[SD Card] SD_FAULT
+
+11-25 13:56:02.223 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:02.224 -[SD Card] SD_FAULT
+
+11-25 13:56:05.225 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:05.226 -[SD Card] SD_FAULT
+
+11-25 13:56:08.226 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:08.229 -[SD Card] SD_FAULT
+
+11-25 13:56:11.230 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:11.232 -[SD Card] SD_FAULT
+
+11-25 13:56:14.234 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:14.236 -[SD Card] SD_FAULT
+
+11-25 13:56:17.238 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:17.239 -[SD Card] SD_FAULT
+
+11-25 13:56:20.240 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:20.241 -[SD Card] SD_FAULT
+
+11-25 13:56:23.242 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:23.244 -[SD Card] SD_FAULT
+
+11-25 13:56:26.245 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 13:56:26.246 -[SD Card] SD_FAULT
+
+11-25 14:06:34.714 -[Setting] Read IP from config: 192.168.1.110
+
+11-25 14:06:34.715 -[EPOLL] my_epoll_Init 
+11-25 14:06:34.716 -[EPOLL] epoll_thread_func running 
+11-25 14:06:34.766 -BCU_DealTask thread created successfully.
+
+11-25 14:06:34.767 -BMU_DealTask thread created successfully.
+
+11-25 14:06:34.767 -[ModbusTcp] NETConfigTask thread created successfully.
+
+11-25 14:06:34.767 -[OTA] SerialLedTask thread created successfully.
+
+11-25 14:06:34.770 -[Xmodem] TcpServerExampleTask thread created successfully.
+
+11-25 14:06:34.771 -[SD Card] SDCardDataSaveTaskCreate thread created successfully.
+
+11-25 14:06:34.772 -[Check] AnormaletectionTask thread created successfully.
+
+11-25 14:06:34.774 -[SD Card] 挂载点已存在
+
+11-25 14:06:34.775 -[SD Card] SD卡挂载 /mnt/sda 成功. 
+
+11-25 14:06:34.776 -[Xmodem] TcpServerExample task!
+
+11-25 14:06:34.782 -bmu_DealTask is running
+
+11-25 14:06:34.787 -[CAN]Rebinding can3 interface...
+
+11-25 14:06:34.792 -Func_thread_can0_dealwith is running
+
+11-25 14:06:34.793 -[CAN]Rebinding can2 interface...
+
+11-25 14:06:34.799 -[ModbusTcp] IP设置成功
+
+11-25 14:06:34.803 -[ModbusTcp] ctx =-1879021152 ,modbus ip =192.168.1.110 
+
+11-25 14:06:34.951 -[CAN]can3 rebound successfully, new fd: 6
+
+11-25 14:06:34.952 -[CAN]can3 fully recovered and re-registered to epoll
+
+11-25 14:06:34.961 -[CAN]can2 rebound successfully, new fd: 7
+
+11-25 14:06:34.962 -[CAN]can2 fully recovered and re-registered to epoll
+
+11-25 14:06:35.001 -[ModbusTcp] New connection from 192.168.1.77:28393 on socket 8 
+
+11-25 14:06:37.861 -[SD Card] [SD Card] Time Source From Local
+11-25 14:06:37.861 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:37.861 -[SD Card] SD_FAULT
+
+11-25 14:06:38.003 -[ModbusTcp] rtc_Modbus_Deal
+
+11-25 14:06:40.861 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:40.862 -[SD Card] SD_FAULT
+
+11-25 14:06:43.862 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:43.865 -[SD Card] SD_FAULT
+
+11-25 14:06:44.879 -Drv_BMS_Analysis executed after 10s delay
+
+11-25 14:06:46.868 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:46.868 -[SD Card] SD_FAULT
+
+11-25 14:06:49.869 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:49.870 -[SD Card] SD_FAULT
+
+11-25 14:06:52.871 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:52.871 -[SD Card] SD_FAULT
+
+11-25 14:06:55.872 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:55.872 -[SD Card] SD_FAULT
+
+11-25 14:06:58.873 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:06:58.873 -[SD Card] SD_FAULT
+
+11-25 14:07:01.874 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:07:01.875 -[SD Card] SD_FAULT
+
+11-25 14:07:04.875 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:07:04.875 -[SD Card] SD_FAULT
+
+11-25 14:07:07.876 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:07:07.879 -[SD Card] SD_FAULT
+
+11-25 14:07:10.880 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:07:10.880 -[SD Card] SD_FAULT
+
+11-25 14:07:13.881 -[SD Card] 错误: 设备 /dev/mmcblk1p1 不存在
+
+11-25 14:07:13.881 -[SD Card] SD_FAULT
+
