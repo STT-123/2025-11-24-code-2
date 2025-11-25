@@ -12,6 +12,7 @@ extern unsigned short g_ota_flag;
 {
     int header_length = 0;
     unsigned short data = 0;
+	unsigned char sencount = 0;
     unsigned short address = 0;
   
     header_length = modbus_get_header_length(ctx); // 获取数据长度
@@ -78,7 +79,11 @@ extern unsigned short g_ota_flag;
             }
             else if ((address == 0x6714) || (address == 0x6715) ||(address == 0x6736))//SOHCmd,SOCMinCmd,SOCMaxCmd,RelayCtl
             {
-                BatteryCalibration_ModBus_Deal(address, data);
+				for(sencount = 0;sencount < 10;sencount++){
+					BatteryCalibration_ModBus_Deal(address, data);
+					usleep(5*1000);
+				}
+                
             }
             else if (address == 0x6719)//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
             {

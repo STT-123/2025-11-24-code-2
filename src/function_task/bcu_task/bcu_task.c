@@ -27,6 +27,13 @@ void *bcu_DealTask(void *arg)
     while (1)
     {
         // usleep(200*1000);
+
+        if (call_count == 0) {
+            CANFDSendFcn_BCU_step();
+                //LOG("CANFDSendFcn_BCU_step ++  \r\n");
+        }
+        call_count = (call_count + 1) % 25;
+        
         if ((g_ota_flag == OTAIDLE || g_ota_flag == OTAFAILED || g_otactrl.deviceType == AC))
         {
             if (queue_pend(&Queue_BCURevData_FD, (unsigned char *)&canrev_frame, &len) == 0)
@@ -37,14 +44,7 @@ void *bcu_DealTask(void *arg)
                     canrev_frame.can_id &= CAN_EFF_MASK;
                     if(1 == modbusBuffInitFlag){
                         ConvertCANFDToBus(&canrev_frame, &CANFDRcvMsg);
-                        CANFDRcvFcn_BCU_step();
-                        
-                        if (call_count == 0) {
-                            CANFDSendFcn_BCU_step();
-                            //LOG("CANFDSendFcn_BCU_step ++  \r\n");
-                        }
-                        call_count = (call_count + 1) % 60;
-            
+                        CANFDRcvFcn_BCU_step();           
                         ConvertCANFDToBus(&canrev_frame, &can_msg_buf);
                         Drv_write_to_active_buffer(&can_msg_buf, 1);
                     }else{
