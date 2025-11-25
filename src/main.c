@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     {
         sleep(1);
         // printf("ret =, Mobud[0x1012] = \r\n");
-        // printf("Mobud[1122] = %x\r\n",modbusBuff[1122]);//ota上载寄存器判断
+        // printf("Mobud[1122] = %x\r\n",modbusBuff[0x462]);//ota上载寄存器判断
         // printf("Mobud[0x463] = %x\r\n",modbusBuff[0x463]);//ota上载寄存器判断
         // printf("Mobud[0x6063] = %x\r\n",modbusBuff[0x6063-0x3000]);//ota上载寄存器判断
     }

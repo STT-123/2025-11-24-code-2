@@ -269,17 +269,19 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 {
 	static uint8_t SOHCmd, SOCMaxCmd, SOCMinCmd,relayCtl = 0;
-	CANFD_MESSAGE bms_calibration_msg ;
-	memset(&bms_calibration_msg, 0, sizeof(CAN_MESSAGE));
+    static CANFD_MESSAGE bms_calibration_msg = {0}; // <-- 关键：static + 初始化一次
 
-	bms_calibration_msg.Extended = 1;
-	bms_calibration_msg.Length = 64U;
-	bms_calibration_msg.ID = 0x1824E410;
-	bms_calibration_msg.Extended = 1U;
-	bms_calibration_msg.Remote = 0;
-	bms_calibration_msg.BRS = 1;
-	bms_calibration_msg.ProtocolMode = 1;
-	bms_calibration_msg.DLC = 15U;
+    // 第一次调用时初始化结构体头（只做一次）
+    if (bms_calibration_msg.ID == 0) {
+        bms_calibration_msg.Extended = 1;
+        bms_calibration_msg.Length = 64U;
+        bms_calibration_msg.ID = 0x1824E410;
+        bms_calibration_msg.Remote = 0;
+        bms_calibration_msg.BRS = 1;
+        bms_calibration_msg.ProtocolMode = 1;
+        bms_calibration_msg.DLC = 15U;
+        // Data 数组默认为0，后续逐步填充
+    }
 
 	if (address == 0x6714)
 	{
@@ -303,7 +305,7 @@ static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 		bms_calibration_msg.Data[0] |= (relayCtl & 0x03);// 设置 bit0-1 (来自 relayCtl 的 bit0-1)
 		bms_calibration_msg.Data[0] |= (relayCtl & 0x0C);// 设置 bit2-3 (来自 relayCtl 的 bit2-3)  
 	}
-	Drv_bmu_canfd_send(&bms_calibration_msg);
+	Drv_bcu_canfd_send(&bms_calibration_msg);
 }
 
 static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)

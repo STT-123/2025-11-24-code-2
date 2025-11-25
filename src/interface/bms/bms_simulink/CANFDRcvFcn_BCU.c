@@ -7269,30 +7269,30 @@ void CANFDRcvFcn_BCU_step(void)
   CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
     4294967263U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion38 << 5));
   CANFDRcvFcn_BCU_DW.U32_to_F32_float_value = (uint32_T)rtb_DataTypeConversion29
-    /10.0f;                            // 閿熸枻鎷烽敓鏂ゆ嫹杞敓鏂ゆ嫹閿熸枻鎷�
+    /10.0f;                            // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚规潪顒勬晸閺傘倖瀚归柨鐔告灮閹凤拷
 
-  // 閿熸枻鎷烽敓鏂ゆ嫹1閿熸枻鎷蜂娇閿熸枻鎷� memcpy閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷锋寚閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鐚擃剨鎷疯悕閿熸枻鎷烽敓锟�
+  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�1闁跨喐鏋婚幏铚傚▏闁跨喐鏋婚幏锟� memcpy闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹烽攱瀵氶柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归悮鎿冨墾閹风柉鎮曢柨鐔告灮閹风兘鏁撻敓锟�
   memcpy(&CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits,
          &CANFDRcvFcn_BCU_DW.U32_to_F32_float_value, sizeof(float));
 
-  // 閿熸枻鎷烽敓鏂ゆ嫹2閿熸枻鎷风洿閿熸枻鎷锋寚閿熸枻鎷疯浆閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓杈冮潻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鐚擃剨鎷烽敓鏂ゆ嫹钀嶉敓鏂ゆ嫹閿燂拷
+  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�2闁跨喐鏋婚幏椋庢纯闁跨喐鏋婚幏閿嬪瘹闁跨喐鏋婚幏鐤祮闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸鏉堝啴娼婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗閻氭搩鍓ㄩ幏鐑芥晸閺傘倖瀚归拃宥夋晸閺傘倖瀚归柨鐕傛嫹
   // float_bits = *(uint32_t *)&float_value;
 
-  // 閿熸枻鎷峰彇閿熻鑺傦綇鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓锟� DCBA閿熸枻鎷�
+  // 闁跨喐鏋婚幏宄板絿闁跨喕顢滈懞鍌︾秶閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閿燂拷 DCBA闁跨喐鏋婚幏锟�
   CANFDRcvFcn_BCU_DW.U32_to_F32_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 24) & 0xFF;// 閿熸枻鎷烽敓鏂ゆ嫹閿熷彨褝鎷风焊閿燂拷
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 24) & 0xFF;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
   CANFDRcvFcn_BCU_DW.U32_to_F32_byteC =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 16) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_F32_byteB =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 8) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_F32_byteA = CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits
-    & 0xFF;                            // 閿熸枻鎷烽敓鏂ゆ嫹閿熷彨褝鎷风焊閿燂拷
+    & 0xFF;                            // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
 
-  // 閿熸枻鎷烽摚閿熸枻鎷烽敓鏂ゆ嫹閿燂拷 16 浣嶉敓渚ヨ揪鎷烽敓鏂ゆ嫹
+  // 闁跨喐鏋婚幏鐑芥憵闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐕傛嫹 16 娴ｅ秹鏁撴笟銉ㄦ彧閹风兘鏁撻弬銈嗗
   CANFDRcvFcn_BCU_B.BCU_V4_L = (CANFDRcvFcn_BCU_DW.U32_to_F32_byteD << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_byteC;// DC 閿熶茎杈炬嫹閿熸枻鎷�
+    CANFDRcvFcn_BCU_DW.U32_to_F32_byteC;// DC 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
   CANFDRcvFcn_BCU_B.BCU_V4_H = (CANFDRcvFcn_BCU_DW.U32_to_F32_byteB << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_byteA;// BA 閿熶茎杈炬嫹閿熸枻鎷�
+    CANFDRcvFcn_BCU_DW.U32_to_F32_byteA;// BA 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
   u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o3;
   v = fabsf(u);
   if (v < 8.388608E+6F) {
@@ -7305,30 +7305,30 @@ void CANFDRcvFcn_BCU_step(void)
 
   u = fmodf(u, 4.2949673E+9F);
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value = (u < 0.0F ? -(int32_T)
-    (uint32_T)-u : (int32_T)(uint32_T)u)/10.0f;// 閿熸枻鎷烽敓鏂ゆ嫹杞敓鏂ゆ嫹閿熸枻鎷�
+    (uint32_T)-u : (int32_T)(uint32_T)u)/10.0f;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚规潪顒勬晸閺傘倖瀚归柨鐔告灮閹凤拷
 
-  // 閿熸枻鎷烽敓鏂ゆ嫹1閿熸枻鎷蜂娇閿熸枻鎷� memcpy閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷锋寚閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鐚擃剨鎷疯悕閿熸枻鎷烽敓锟�
+  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�1闁跨喐鏋婚幏铚傚▏闁跨喐鏋婚幏锟� memcpy闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹烽攱瀵氶柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归悮鎿冨墾閹风柉鎮曢柨鐔告灮閹风兘鏁撻敓锟�
   memcpy(&CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits,
          &CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value, sizeof(float));
 
-  // 閿熸枻鎷烽敓鏂ゆ嫹2閿熸枻鎷风洿閿熸枻鎷锋寚閿熸枻鎷疯浆閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓杈冮潻鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓鏂ゆ嫹鐚擃剨鎷烽敓鏂ゆ嫹钀嶉敓鏂ゆ嫹閿燂拷
+  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�2闁跨喐鏋婚幏椋庢纯闁跨喐鏋婚幏閿嬪瘹闁跨喐鏋婚幏鐤祮闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸鏉堝啴娼婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗閻氭搩鍓ㄩ幏鐑芥晸閺傘倖瀚归拃宥夋晸閺傘倖瀚归柨鐕傛嫹
   // float_bits = *(uint32_t *)&float_value;
 
-  // 閿熸枻鎷峰彇閿熻鑺傦綇鎷烽敓鏂ゆ嫹閿熸枻鎷烽敓锟� DCBA閿熸枻鎷�
+  // 闁跨喐鏋婚幏宄板絿闁跨喕顢滈懞鍌︾秶閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閿燂拷 DCBA闁跨喐鏋婚幏锟�
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 24) & 0xFF;// 閿熸枻鎷烽敓鏂ゆ嫹閿熷彨褝鎷风焊閿燂拷
+    (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 24) & 0xFF;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC =
     (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 16) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB =
     (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 8) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA =
-    CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits & 0xFF;// 閿熸枻鎷烽敓鏂ゆ嫹閿熷彨褝鎷风焊閿燂拷
+    CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits & 0xFF;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
 
-  // 閿熸枻鎷烽摚閿熸枻鎷烽敓鏂ゆ嫹閿燂拷 16 浣嶉敓渚ヨ揪鎷烽敓鏂ゆ嫹
+  // 闁跨喐鏋婚幏鐑芥憵闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐕傛嫹 16 娴ｅ秹鏁撴笟銉ㄦ彧閹风兘鏁撻弬銈嗗
   CANFDRcvFcn_BCU_B.BCU_Curr2_L = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD <<
-    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC;// DC 閿熶茎杈炬嫹閿熸枻鎷�
+    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC;// DC 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
   CANFDRcvFcn_BCU_B.BCU_Curr2_H = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB <<
-    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA;// BA 閿熶茎杈炬嫹閿熸枻鎷�
+    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA;// BA 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
   rtb_TmpSignalConversionAtSFunct[0] = BCU_SystemWorkMode;
   rtb_TmpSignalConversionAtSFunct[1] = 0U;
   u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o4), 65536.0F);
@@ -7641,7 +7641,7 @@ void CANFDRcvFcn_BCU_step(void)
     port_len = sizeof(uint32_T [131]) / port_len;
   }
 #if 1
-// 閸︺劌鎯婇悳顖氬濞ｈ濮�
+// 闁革负鍔岄幆濠囨偝椤栨艾顤呮繛锝堫嚙婵拷
 
   while (port_index < port_len) 
   {
@@ -7649,7 +7649,12 @@ void CANFDRcvFcn_BCU_step(void)
     {           
       modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] =
         rtb_TmpSignalConversionAtSFunct[data_index];
-   
+      // if(data_index == 515){
+      //   printf("515modbusBuff[%d] = %d\r\n",CANFDRcvFcn_BCU_ConstP.index_Value[port_index],modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]]);
+      // }
+      //       if(data_index == 516){
+      //   printf("516modbusBuff[%d] = %d\r\n",CANFDRcvFcn_BCU_ConstP.index_Value[port_index],modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]]);
+      // }
       qY = data_index + 1U;
       if (data_index + 1U < data_index) {
         qY = MAX_uint32_T;
