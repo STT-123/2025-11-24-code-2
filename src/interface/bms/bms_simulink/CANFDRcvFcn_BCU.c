@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANFDRcvFcn_BCU'.
  *
- * Model version                  : 5.38
+ * Model version                  : 5.64
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Nov 25 09:51:43 2025
+ * C/C++ source code generated on : Wed Nov 26 12:09:24 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4
@@ -567,28 +567,31 @@ void CANFDRcvFcn_BCU_step(void)
 
           /* --------------- START Unpacking signal 16 ------------------*/
           {
-            uint16_T outValue = 0;
+            real32_T outValue = 0;
 
             {
-              uint16_T unpackedValue = 0;
+              uint32_T unpackedValue = 0;
 
               {
-                uint16_T tempValue = (uint16_T) (0);
+                uint32_T tempValue = (uint32_T) (0);
 
                 {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[59]);
-                  tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[58]) << 8);
+                  tempValue = tempValue | (uint32_T)(CANFDRcvMsg.Data[13]);
+                  tempValue = tempValue | (uint32_T)((uint32_T)
+                    (CANFDRcvMsg.Data[12]) << 8);
+                  tempValue = tempValue | (uint32_T)((uint32_T)
+                    (CANFDRcvMsg.Data[11]) << 16);
                 }
 
                 unpackedValue = tempValue;
               }
 
-              outValue = (uint16_T) (unpackedValue);
+              outValue = (real32_T) (unpackedValue);
             }
 
             {
-              uint16_T result = (uint16_T) outValue;
+              real32_T result = (real32_T) outValue;
+              result = result + -8.388608E+6F;
               CANFDRcvFcn_BCU_B.CANFDUnpack1_o17 = result;
             }
           }
@@ -604,9 +607,9 @@ void CANFDRcvFcn_BCU_step(void)
                 uint16_T tempValue = (uint16_T) (0);
 
                 {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[61]);
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[59]);
                   tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[60]) << 8);
+                    (CANFDRcvMsg.Data[58]) << 8);
                 }
 
                 unpackedValue = tempValue;
@@ -632,9 +635,9 @@ void CANFDRcvFcn_BCU_step(void)
                 uint16_T tempValue = (uint16_T) (0);
 
                 {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[63]);
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[61]);
                   tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[62]) << 8);
+                    (CANFDRcvMsg.Data[60]) << 8);
                 }
 
                 unpackedValue = tempValue;
@@ -660,9 +663,9 @@ void CANFDRcvFcn_BCU_step(void)
                 uint16_T tempValue = (uint16_T) (0);
 
                 {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[57]);
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[63]);
                   tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[56]) << 8);
+                    (CANFDRcvMsg.Data[62]) << 8);
                 }
 
                 unpackedValue = tempValue;
@@ -678,6 +681,34 @@ void CANFDRcvFcn_BCU_step(void)
           }
 
           /* --------------- START Unpacking signal 20 ------------------*/
+          {
+            uint16_T outValue = 0;
+
+            {
+              uint16_T unpackedValue = 0;
+
+              {
+                uint16_T tempValue = (uint16_T) (0);
+
+                {
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[57]);
+                  tempValue = tempValue | (uint16_T)((uint16_T)
+                    (CANFDRcvMsg.Data[56]) << 8);
+                }
+
+                unpackedValue = tempValue;
+              }
+
+              outValue = (uint16_T) (unpackedValue);
+            }
+
+            {
+              uint16_T result = (uint16_T) outValue;
+              CANFDRcvFcn_BCU_B.CANFDUnpack1_o21 = result;
+            }
+          }
+
+          /* --------------- START Unpacking signal 21 ------------------*/
           {
             real32_T outValue = 0;
 
@@ -700,35 +731,6 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               real32_T result = (real32_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack1_o21 = result;
-            }
-          }
-
-          /* --------------- START Unpacking signal 21 ------------------*/
-          {
-            real32_T outValue = 0;
-
-            {
-              uint16_T unpackedValue = 0;
-
-              {
-                uint16_T tempValue = (uint16_T) (0);
-
-                {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[23]);
-                  tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[22]) << 8);
-                }
-
-                unpackedValue = tempValue;
-              }
-
-              outValue = (real32_T) (unpackedValue);
-            }
-
-            {
-              real32_T result = (real32_T) outValue;
-              result = result * 0.1F;
               CANFDRcvFcn_BCU_B.CANFDUnpack1_o22 = result;
             }
           }
@@ -744,9 +746,9 @@ void CANFDRcvFcn_BCU_step(void)
                 uint16_T tempValue = (uint16_T) (0);
 
                 {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[21]);
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[23]);
                   tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[20]) << 8);
+                    (CANFDRcvMsg.Data[22]) << 8);
                 }
 
                 unpackedValue = tempValue;
@@ -773,9 +775,9 @@ void CANFDRcvFcn_BCU_step(void)
                 uint16_T tempValue = (uint16_T) (0);
 
                 {
-                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[19]);
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[21]);
                   tempValue = tempValue | (uint16_T)((uint16_T)
-                    (CANFDRcvMsg.Data[18]) << 8);
+                    (CANFDRcvMsg.Data[20]) << 8);
                 }
 
                 unpackedValue = tempValue;
@@ -802,6 +804,35 @@ void CANFDRcvFcn_BCU_step(void)
                 uint16_T tempValue = (uint16_T) (0);
 
                 {
+                  tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[19]);
+                  tempValue = tempValue | (uint16_T)((uint16_T)
+                    (CANFDRcvMsg.Data[18]) << 8);
+                }
+
+                unpackedValue = tempValue;
+              }
+
+              outValue = (real32_T) (unpackedValue);
+            }
+
+            {
+              real32_T result = (real32_T) outValue;
+              result = result * 0.1F;
+              CANFDRcvFcn_BCU_B.CANFDUnpack1_o25 = result;
+            }
+          }
+
+          /* --------------- START Unpacking signal 25 ------------------*/
+          {
+            real32_T outValue = 0;
+
+            {
+              uint16_T unpackedValue = 0;
+
+              {
+                uint16_T tempValue = (uint16_T) (0);
+
+                {
                   tempValue = tempValue | (uint16_T)(CANFDRcvMsg.Data[1]);
                   tempValue = tempValue | (uint16_T)((uint16_T)
                     (CANFDRcvMsg.Data[0]) << 8);
@@ -816,7 +847,7 @@ void CANFDRcvFcn_BCU_step(void)
             {
               real32_T result = (real32_T) outValue;
               result = result * 0.1F;
-              CANFDRcvFcn_BCU_B.CANFDUnpack1_o25 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack1_o26 = result;
             }
           }
         }
@@ -1237,31 +1268,27 @@ void CANFDRcvFcn_BCU_step(void)
 
           /* --------------- START Unpacking signal 14 ------------------*/
           {
-            int32_T outValue = 0;
+            uint8_T outValue = 0;
 
             {
-              uint32_T unpackedValue = 0;
+              uint8_T unpackedValue = 0;
 
               {
-                uint32_T tempValue = (uint32_T) (0);
+                uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint32_T)(CANFDRcvMsg.Data[54]);
-                  tempValue = tempValue | (uint32_T)((uint32_T)
-                    (CANFDRcvMsg.Data[53]) << 8);
-                  tempValue = tempValue | (uint32_T)((uint32_T)
-                    (CANFDRcvMsg.Data[52]) << 16);
+                  tempValue = tempValue | (uint8_T)((uint8_T)(CANFDRcvMsg.Data
+                    [27]) & (uint8_T)(0x3U));
                 }
 
                 unpackedValue = tempValue;
               }
 
-              outValue = (int32_T) (unpackedValue);
+              outValue = (uint8_T) (unpackedValue);
             }
 
             {
-              int32_T result = (int32_T) outValue;
-              result = result + -8388608;
+              uint8_T result = (uint8_T) outValue;
               CANFDRcvFcn_BCU_B.CANFDUnpack3_o15 = result;
             }
           }
@@ -1277,8 +1304,8 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)((uint8_T)(CANFDRcvMsg.Data
-                    [27]) & (uint8_T)(0x3U));
+                  tempValue = tempValue | (uint8_T)((uint8_T)((uint8_T)
+                    (CANFDRcvMsg.Data[27]) & (uint8_T)(0x30U)) >> 4);
                 }
 
                 unpackedValue = tempValue;
@@ -1305,7 +1332,7 @@ void CANFDRcvFcn_BCU_step(void)
 
                 {
                   tempValue = tempValue | (uint8_T)((uint8_T)((uint8_T)
-                    (CANFDRcvMsg.Data[27]) & (uint8_T)(0x30U)) >> 4);
+                    (CANFDRcvMsg.Data[27]) & (uint8_T)(0xCU)) >> 2);
                 }
 
                 unpackedValue = tempValue;
@@ -1331,8 +1358,7 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)((uint8_T)((uint8_T)
-                    (CANFDRcvMsg.Data[27]) & (uint8_T)(0xCU)) >> 2);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[56]);
                 }
 
                 unpackedValue = tempValue;
@@ -1358,7 +1384,7 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[56]);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[55]);
                 }
 
                 unpackedValue = tempValue;
@@ -1374,32 +1400,6 @@ void CANFDRcvFcn_BCU_step(void)
           }
 
           /* --------------- START Unpacking signal 19 ------------------*/
-          {
-            uint8_T outValue = 0;
-
-            {
-              uint8_T unpackedValue = 0;
-
-              {
-                uint8_T tempValue = (uint8_T) (0);
-
-                {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[55]);
-                }
-
-                unpackedValue = tempValue;
-              }
-
-              outValue = (uint8_T) (unpackedValue);
-            }
-
-            {
-              uint8_T result = (uint8_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o20 = result;
-            }
-          }
-
-          /* --------------- START Unpacking signal 20 ------------------*/
           {
             int16_T outValue = 0;
 
@@ -1422,11 +1422,11 @@ void CANFDRcvFcn_BCU_step(void)
             {
               int16_T result = (int16_T) outValue;
               result = result + -40;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o21 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o20 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 21 ------------------*/
+          /* --------------- START Unpacking signal 20 ------------------*/
           {
             uint16_T outValue = 0;
 
@@ -1448,11 +1448,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o22 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o21 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 22 ------------------*/
+          /* --------------- START Unpacking signal 21 ------------------*/
           {
             int16_T outValue = 0;
 
@@ -1475,11 +1475,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               int16_T result = (int16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o23 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o22 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 23 ------------------*/
+          /* --------------- START Unpacking signal 22 ------------------*/
           {
             real32_T outValue = 0;
 
@@ -1502,11 +1502,11 @@ void CANFDRcvFcn_BCU_step(void)
             {
               real32_T result = (real32_T) outValue;
               result = result * 0.1F;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o24 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o23 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 24 ------------------*/
+          /* --------------- START Unpacking signal 23 ------------------*/
           {
             uint16_T outValue = 0;
 
@@ -1530,11 +1530,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o25 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o24 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 25 ------------------*/
+          /* --------------- START Unpacking signal 24 ------------------*/
           {
             int16_T outValue = 0;
 
@@ -1556,11 +1556,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               int16_T result = (int16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o26 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o25 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 26 ------------------*/
+          /* --------------- START Unpacking signal 25 ------------------*/
           {
             real32_T outValue = 0;
 
@@ -1583,11 +1583,11 @@ void CANFDRcvFcn_BCU_step(void)
             {
               real32_T result = (real32_T) outValue;
               result = result * 0.1F;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o27 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o26 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 27 ------------------*/
+          /* --------------- START Unpacking signal 26 ------------------*/
           {
             uint16_T outValue = 0;
 
@@ -1609,11 +1609,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o28 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o27 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 28 ------------------*/
+          /* --------------- START Unpacking signal 27 ------------------*/
           {
             uint16_T outValue = 0;
 
@@ -1635,11 +1635,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o29 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o28 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 29 ------------------*/
+          /* --------------- START Unpacking signal 28 ------------------*/
           {
             int16_T outValue = 0;
 
@@ -1662,11 +1662,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               int16_T result = (int16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o30 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o29 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 30 ------------------*/
+          /* --------------- START Unpacking signal 29 ------------------*/
           {
             uint16_T outValue = 0;
 
@@ -1689,11 +1689,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o31 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o30 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 31 ------------------*/
+          /* --------------- START Unpacking signal 30 ------------------*/
           {
             uint16_T outValue = 0;
 
@@ -1716,11 +1716,11 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o32 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o31 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 32 ------------------*/
+          /* --------------- START Unpacking signal 31 ------------------*/
           {
             int16_T outValue = 0;
 
@@ -1743,11 +1743,11 @@ void CANFDRcvFcn_BCU_step(void)
             {
               int16_T result = (int16_T) outValue;
               result = result + -40;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o33 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o32 = result;
             }
           }
 
-          /* --------------- START Unpacking signal 33 ------------------*/
+          /* --------------- START Unpacking signal 32 ------------------*/
           {
             uint8_T outValue = 0;
 
@@ -1769,6 +1769,32 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint8_T result = (uint8_T) outValue;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o33 = result;
+            }
+          }
+
+          /* --------------- START Unpacking signal 33 ------------------*/
+          {
+            uint16_T outValue = 0;
+
+            {
+              uint8_T unpackedValue = 0;
+
+              {
+                uint8_T tempValue = (uint8_T) (0);
+
+                {
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[17]);
+                }
+
+                unpackedValue = tempValue;
+              }
+
+              outValue = (uint16_T) (unpackedValue);
+            }
+
+            {
+              uint16_T result = (uint16_T) outValue;
               CANFDRcvFcn_BCU_B.CANFDUnpack3_o34 = result;
             }
           }
@@ -1784,7 +1810,7 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[17]);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[18]);
                 }
 
                 unpackedValue = tempValue;
@@ -1810,7 +1836,8 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[18]);
+                  tempValue = tempValue | (uint8_T)((uint8_T)((uint8_T)
+                    (CANFDRcvMsg.Data[13]) & (uint8_T)(0x8U)) >> 3);
                 }
 
                 unpackedValue = tempValue;
@@ -1836,8 +1863,7 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)((uint8_T)((uint8_T)
-                    (CANFDRcvMsg.Data[13]) & (uint8_T)(0x8U)) >> 3);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[10]);
                 }
 
                 unpackedValue = tempValue;
@@ -1863,7 +1889,7 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[10]);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[3]);
                 }
 
                 unpackedValue = tempValue;
@@ -1880,7 +1906,7 @@ void CANFDRcvFcn_BCU_step(void)
 
           /* --------------- START Unpacking signal 38 ------------------*/
           {
-            uint16_T outValue = 0;
+            int16_T outValue = 0;
 
             {
               uint8_T unpackedValue = 0;
@@ -1889,17 +1915,18 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[3]);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
               }
 
-              outValue = (uint16_T) (unpackedValue);
+              outValue = (int16_T) (unpackedValue);
             }
 
             {
-              uint16_T result = (uint16_T) outValue;
+              int16_T result = (int16_T) outValue;
+              result = result + -40;
               CANFDRcvFcn_BCU_B.CANFDUnpack3_o39 = result;
             }
           }
@@ -1915,7 +1942,7 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[2]);
                 }
 
                 unpackedValue = tempValue;
@@ -1942,33 +1969,6 @@ void CANFDRcvFcn_BCU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[2]);
-                }
-
-                unpackedValue = tempValue;
-              }
-
-              outValue = (int16_T) (unpackedValue);
-            }
-
-            {
-              int16_T result = (int16_T) outValue;
-              result = result + -40;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o41 = result;
-            }
-          }
-
-          /* --------------- START Unpacking signal 41 ------------------*/
-          {
-            int16_T outValue = 0;
-
-            {
-              uint8_T unpackedValue = 0;
-
-              {
-                uint8_T tempValue = (uint8_T) (0);
-
-                {
                   tempValue = tempValue | (uint8_T)(CANFDRcvMsg.Data[1]);
                 }
 
@@ -1981,7 +1981,7 @@ void CANFDRcvFcn_BCU_step(void)
             {
               int16_T result = (int16_T) outValue;
               result = result + -40;
-              CANFDRcvFcn_BCU_B.CANFDUnpack3_o42 = result;
+              CANFDRcvFcn_BCU_B.CANFDUnpack3_o41 = result;
             }
           }
         }
@@ -3250,7 +3250,7 @@ void CANFDRcvFcn_BCU_step(void)
 
   u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o7), 4.2949673E+9F);
   data_index = u < 0.0F ? (uint32_T)-(int32_T)(uint32_T)-u : (uint32_T)u;
-  u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o18;
+  u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o19;
   if (u >= 0.5F) {
     tmp = (int32_T)floorf(u + 0.5F);
   } else {
@@ -4498,7 +4498,7 @@ void CANFDRcvFcn_BCU_step(void)
     }
   }
 
-  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o24;
+  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o25;
   v = fabsf(u);
   if (v < 8.388608E+6F) {
     if (v >= 0.5F) {
@@ -7265,70 +7265,86 @@ void CANFDRcvFcn_BCU_step(void)
   CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
     4294967287U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion30 << 3));
   CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
-    4294967279U) | (uint32_T)((CANFDRcvFcn_BCU_B.CANFDUnpack3_o31 != 0) << 4));
+    4294967279U) | (uint32_T)((CANFDRcvFcn_BCU_B.CANFDUnpack3_o30 != 0) << 4));
   CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
     4294967263U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion38 << 5));
-  CANFDRcvFcn_BCU_DW.U32_to_F32_float_value = (uint32_T)rtb_DataTypeConversion29
-    /10.0f;                            // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚规潪顒勬晸閺傘倖瀚归柨鐔告灮閹凤拷
+  CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_value =
+    CANFDRcvFcn_BCU_B.CANFDUnpack1_o17;// ÕûÐÍ×ª¸¡µã
 
-  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�1闁跨喐鏋婚幏铚傚▏闁跨喐鏋婚幏锟� memcpy闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹烽攱瀵氶柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归悮鎿冨墾閹风柉鎮曢柨鐔告灮閹风兘鏁撻敓锟�
-  memcpy(&CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits,
-         &CANFDRcvFcn_BCU_DW.U32_to_F32_float_value, sizeof(float));
+  // ·½·¨1£ºÊ¹ÓÃ memcpy£¨±ÜÃâÖ¸Õë±ðÃûÎÊÌâ£¬ÍÆ¼ö£©
+  memcpy(&CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits,
+         &CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_value, sizeof(float));
 
-  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�2闁跨喐鏋婚幏椋庢纯闁跨喐鏋婚幏閿嬪瘹闁跨喐鏋婚幏鐤祮闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸鏉堝啴娼婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗閻氭搩鍓ㄩ幏鐑芥晸閺傘倖瀚归拃宥夋晸閺傘倖瀚归柨鐕傛嫹
+  // ·½·¨2£ºÖ±½ÓÖ¸Õë×ª»»£¨¿ÉÄÜÓÐÑÏ¸ñ±ðÃûÎÊÌâ£¬²»ÍÆ¼ö£©
   // float_bits = *(uint32_t *)&float_value;
 
-  // 闁跨喐鏋婚幏宄板絿闁跨喕顢滈懞鍌︾秶閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閿燂拷 DCBA闁跨喐鏋婚幏锟�
-  CANFDRcvFcn_BCU_DW.U32_to_F32_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 24) & 0xFF;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
-  CANFDRcvFcn_BCU_DW.U32_to_F32_byteC =
-    (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 16) & 0xFF;
-  CANFDRcvFcn_BCU_DW.U32_to_F32_byteB =
-    (CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits >> 8) & 0xFF;
-  CANFDRcvFcn_BCU_DW.U32_to_F32_byteA = CANFDRcvFcn_BCU_DW.U32_to_F32_float_bits
-    & 0xFF;                            // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
+  // ÌáÈ¡×Ö½Ú£¨´ó¶ËÐò DCBA£©
+  CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteD =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 24) & 0xFF;// ×î¸ßÓÐÐ§×Ö½Ú
+  CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteC =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 16) & 0xFF;
+  CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteB =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 8) & 0xFF;
+  CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteA =
+    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits & 0xFF;// ×îµÍÓÐÐ§×Ö½Ú
 
-  // 闁跨喐鏋婚幏鐑芥憵闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐕傛嫹 16 娴ｅ秹鏁撴笟銉ㄦ彧閹风兘鏁撻弬銈嗗
-  CANFDRcvFcn_BCU_B.BCU_V4_L = (CANFDRcvFcn_BCU_DW.U32_to_F32_byteD << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_byteC;// DC 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
-  CANFDRcvFcn_BCU_B.BCU_V4_H = (CANFDRcvFcn_BCU_DW.U32_to_F32_byteB << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_byteA;// BA 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
-  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o3;
-  v = fabsf(u);
-  if (v < 8.388608E+6F) {
-    if (v >= 0.5F) {
-      u = floorf(u + 0.5F);
-    } else {
-      u = 0.0F;
-    }
-  }
+  // ×éºÏ³ÉÁ½¸ö 16 Î»¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_B.BCU_RealtimePower_H =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteD << 8) |
+    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteC;// DC ¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_B.BCU_RealtimePower_L =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteB << 8) |
+    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteA;// BA ¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_value = (uint32_T)
+    rtb_DataTypeConversion29 /10.0f;   // ÕûÐÍ×ª¸¡µã
 
-  u = fmodf(u, 4.2949673E+9F);
-  CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value = (u < 0.0F ? -(int32_T)
-    (uint32_T)-u : (int32_T)(uint32_T)u)/10.0f;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚规潪顒勬晸閺傘倖瀚归柨鐔告灮閹凤拷
+  // ·½·¨1£ºÊ¹ÓÃ memcpy£¨±ÜÃâÖ¸Õë±ðÃûÎÊÌâ£¬ÍÆ¼ö£©
+  memcpy(&CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits,
+         &CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_value, sizeof(float));
 
-  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�1闁跨喐鏋婚幏铚傚▏闁跨喐鏋婚幏锟� memcpy闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹烽攱瀵氶柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归悮鎿冨墾閹风柉鎮曢柨鐔告灮閹风兘鏁撻敓锟�
+  // ·½·¨2£ºÖ±½ÓÖ¸Õë×ª»»£¨¿ÉÄÜÓÐÑÏ¸ñ±ðÃûÎÊÌâ£¬²»ÍÆ¼ö£©
+  // float_bits = *(uint32_t *)&float_value;
+
+  // ÌáÈ¡×Ö½Ú£¨´ó¶ËÐò DCBA£©
+  CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteD =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 24) & 0xFF;// ×î¸ßÓÐÐ§×Ö½Ú
+  CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteC =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 16) & 0xFF;
+  CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteB =
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 8) & 0xFF;
+  CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteA =
+    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits & 0xFF;// ×îµÍÓÐÐ§×Ö½Ú
+
+  // ×éºÏ³ÉÁ½¸ö 16 Î»¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_B.BCU_V4_L = (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteD << 8) |
+    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteC;// DC ¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_B.BCU_V4_H = (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteB << 8) |
+    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteA;// BA ¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value =
+    CANFDRcvFcn_BCU_B.CANFDUnpack1_o3; // ÕûÐÍ×ª¸¡µã
+
+  // ·½·¨1£ºÊ¹ÓÃ memcpy£¨±ÜÃâÖ¸Õë±ðÃûÎÊÌâ£¬ÍÆ¼ö£©
   memcpy(&CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits,
          &CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value, sizeof(float));
 
-  // 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚�2闁跨喐鏋婚幏椋庢纯闁跨喐鏋婚幏閿嬪瘹闁跨喐鏋婚幏鐤祮闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸鏉堝啴娼婚幏鐑芥晸閺傘倖瀚归柨鐔告灮閹风兘鏁撻弬銈嗗閻氭搩鍓ㄩ幏鐑芥晸閺傘倖瀚归拃宥夋晸閺傘倖瀚归柨鐕傛嫹
+  // ·½·¨2£ºÖ±½ÓÖ¸Õë×ª»»£¨¿ÉÄÜÓÐÑÏ¸ñ±ðÃûÎÊÌâ£¬²»ÍÆ¼ö£©
   // float_bits = *(uint32_t *)&float_value;
 
-  // 闁跨喐鏋婚幏宄板絿闁跨喕顢滈懞鍌︾秶閹风兘鏁撻弬銈嗗闁跨喐鏋婚幏鐑芥晸閿燂拷 DCBA闁跨喐鏋婚幏锟�
+  // ÌáÈ¡×Ö½Ú£¨´ó¶ËÐò DCBA£©
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 24) & 0xFF;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
+    (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 24) & 0xFF;// ×î¸ßÓÐÐ§×Ö½Ú
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC =
     (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 16) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB =
     (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 8) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA =
-    CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits & 0xFF;// 闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐔峰建瑜濋幏椋庣剨闁跨噦鎷�
+    CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits & 0xFF;// ×îµÍÓÐÐ§×Ö½Ú
 
-  // 闁跨喐鏋婚幏鐑芥憵闁跨喐鏋婚幏鐑芥晸閺傘倖瀚归柨鐕傛嫹 16 娴ｅ秹鏁撴笟銉ㄦ彧閹风兘鏁撻弬銈嗗
-  CANFDRcvFcn_BCU_B.BCU_Curr2_L = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD <<
-    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC;// DC 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
-  CANFDRcvFcn_BCU_B.BCU_Curr2_H = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB <<
-    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA;// BA 闁跨喍鑼庢潏鐐闁跨喐鏋婚幏锟�
+  // ×éºÏ³ÉÁ½¸ö 16 Î»¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_B.BCU_Curr2_H = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD <<
+    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC;// DC ¼Ä´æÆ÷
+  CANFDRcvFcn_BCU_B.BCU_Curr2_L = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB <<
+    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA;// BA ¼Ä´æÆ÷
   rtb_TmpSignalConversionAtSFunct[0] = BCU_SystemWorkMode;
   rtb_TmpSignalConversionAtSFunct[1] = 0U;
   u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o4), 65536.0F);
@@ -7402,7 +7418,7 @@ void CANFDRcvFcn_BCU_step(void)
   rtb_TmpSignalConversionAtSFunct[57] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o8;
   rtb_TmpSignalConversionAtSFunct[58] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o9;
   rtb_TmpSignalConversionAtSFunct[59] = BCU_SOC;
-  u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o20;
+  u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o21;
   if (u >= 0.5F) {
     tmp = (int32_T)floorf(u + 0.5F);
   } else {
@@ -7464,7 +7480,7 @@ void CANFDRcvFcn_BCU_step(void)
   u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o2), 65536.0F);
   rtb_TmpSignalConversionAtSFunct[82] = (uint16_T)(u < 0.0F ? (int32_T)(uint16_T)
     -(int16_T)(uint16_T)-u : (int32_T)(uint16_T)u);
-  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o22;
+  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o23;
   v = fabsf(u);
   if (v < 8.388608E+6F) {
     if (v >= 0.5F) {
@@ -7477,7 +7493,7 @@ void CANFDRcvFcn_BCU_step(void)
   u = fmodf(u, 65536.0F);
   rtb_TmpSignalConversionAtSFunct[83] = (uint16_T)(u < 0.0F ? (int32_T)(uint16_T)
     -(int16_T)(uint16_T)-u : (int32_T)(uint16_T)u);
-  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o23;
+  u = 10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o24;
   v = fabsf(u);
   if (v < 8.388608E+6F) {
     if (v >= 0.5F) {
@@ -7528,20 +7544,20 @@ void CANFDRcvFcn_BCU_step(void)
     ((uint8_T)(CANFDRcvFcn_BCU_B.CANFDUnpack2_o32 - 1) << 7) + ((uint32_T)
     CANFDRcvFcn_BCU_B.CANFDUnpack2_o35 << 3)) >> 3);
   rtb_TmpSignalConversionAtSFunct[465] = (uint16_T)
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o21;
-  rtb_TmpSignalConversionAtSFunct[466] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o22;
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o20;
+  rtb_TmpSignalConversionAtSFunct[466] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o21;
   rtb_TmpSignalConversionAtSFunct[467] = (uint16_T)
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o33;
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o32;
   rtb_TmpSignalConversionAtSFunct[468] = (uint16_T)
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o26;
-  rtb_TmpSignalConversionAtSFunct[469] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o39;
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o25;
+  rtb_TmpSignalConversionAtSFunct[469] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o38;
   rtb_TmpSignalConversionAtSFunct[470] = (uint16_T)(10 *
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o40);
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o39);
   rtb_TmpSignalConversionAtSFunct[471] = (uint16_T)(10 *
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o41);
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o40);
   rtb_TmpSignalConversionAtSFunct[472] = (uint16_T)(10 *
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o42);
-  u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o17;
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o41);
+  u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o18;
   if (u >= 0.5F) {
     tmp = (int32_T)floorf(u + 0.5F);
   } else {
@@ -7550,13 +7566,13 @@ void CANFDRcvFcn_BCU_step(void)
 
   rtb_TmpSignalConversionAtSFunct[473] = (uint16_T)fmodf((real32_T)tmp, 65536.0F);
   rtb_TmpSignalConversionAtSFunct[474] = (uint16_T)
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o23;
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o22;
   rtb_TmpSignalConversionAtSFunct[475] = (uint16_T)
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o30;
-  u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o24), 65536.0F);
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o29;
+  u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o23), 65536.0F);
   rtb_TmpSignalConversionAtSFunct[476] = (uint16_T)(u < 0.0F ? (int32_T)
     (uint16_T)-(int16_T)(uint16_T)-u : (int32_T)(uint16_T)u);
-  u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o27), 65536.0F);
+  u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o26), 65536.0F);
   rtb_TmpSignalConversionAtSFunct[477] = (uint16_T)(u < 0.0F ? (int32_T)
     (uint16_T)-(int16_T)(uint16_T)-u : (int32_T)(uint16_T)u);
   rtb_TmpSignalConversionAtSFunct[478] = CANFDRcvFcn_BCU_B.CFunction11;
@@ -7566,17 +7582,17 @@ void CANFDRcvFcn_BCU_step(void)
     CANFDRcvFcn_BCU_B.CANFDUnpack2_o13;
   rtb_TmpSignalConversionAtSFunct[481] = (uint16_T)
     CANFDRcvFcn_BCU_B.CANFDUnpack2_o11;
-  u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o25), 65536.0F);
+  u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.CANFDUnpack1_o26), 65536.0F);
   rtb_TmpSignalConversionAtSFunct[482] = (uint16_T)(u < 0.0F ? (int32_T)
     (uint16_T)-(int16_T)(uint16_T)-u : (int32_T)(uint16_T)u);
   rtb_TmpSignalConversionAtSFunct[483] =
     CANFDRcvFcn_BCU_ConstB.DataTypeConversion65;
-  rtb_TmpSignalConversionAtSFunct[484] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o25;
+  rtb_TmpSignalConversionAtSFunct[484] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o24;
   rtb_TmpSignalConversionAtSFunct[485] = (uint16_T)
     (CANFDRcvFcn_BCU_B.CANFDUnpack2_o3 >> 16);
   rtb_TmpSignalConversionAtSFunct[486] = (uint16_T)
     (CANFDRcvFcn_BCU_B.CANFDUnpack2_o3 & 65535U);
-  u = fmodf(floorf(CANFDRcvFcn_BCU_B.CANFDUnpack1_o21), 65536.0F);
+  u = fmodf(floorf(CANFDRcvFcn_BCU_B.CANFDUnpack1_o22), 65536.0F);
   rtb_TmpSignalConversionAtSFunct[487] = (uint16_T)(u < 0.0F ? (int32_T)
     (uint16_T)-(int16_T)(uint16_T)-u : (int32_T)(uint16_T)u);
   rtb_TmpSignalConversionAtSFunct[488] =
@@ -7612,18 +7628,16 @@ void CANFDRcvFcn_BCU_step(void)
   rtb_TmpSignalConversionAtSFunct[503] = (uint16_T)
     CANFDRcvFcn_BCU_B.CANFDUnpack_o15;
   rtb_TmpSignalConversionAtSFunct[504] = (uint16_T)((uint32_T)
-    (CANFDRcvFcn_BCU_B.CANFDUnpack3_o28 << 8) |
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o29);
+    (CANFDRcvFcn_BCU_B.CANFDUnpack3_o27 << 8) |
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o28);
   rtb_TmpSignalConversionAtSFunct[505] = (uint16_T)((uint32_T)
-    (CANFDRcvFcn_BCU_B.CANFDUnpack3_o35 << 8) |
-    CANFDRcvFcn_BCU_B.CANFDUnpack3_o36);
-  rtb_TmpSignalConversionAtSFunct[506] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o34;
-  rtb_TmpSignalConversionAtSFunct[507] = (uint16_T)((uint32_T)
-    (CANFDRcvFcn_BCU_B.CANFDUnpack3_o15 - 8388608) >> 16);
-  rtb_TmpSignalConversionAtSFunct[508] = (uint16_T)((uint32_T)
-    (CANFDRcvFcn_BCU_B.CANFDUnpack3_o15 - 8388608) & 65535U);
-  rtb_TmpSignalConversionAtSFunct[509] = CANFDRcvFcn_BCU_B.BCU_V4_H;
-  rtb_TmpSignalConversionAtSFunct[510] = CANFDRcvFcn_BCU_B.BCU_V4_L;
+    (CANFDRcvFcn_BCU_B.CANFDUnpack3_o34 << 8) |
+    CANFDRcvFcn_BCU_B.CANFDUnpack3_o35);
+  rtb_TmpSignalConversionAtSFunct[506] = CANFDRcvFcn_BCU_B.CANFDUnpack3_o33;
+  rtb_TmpSignalConversionAtSFunct[507] = CANFDRcvFcn_BCU_B.BCU_RealtimePower_H;
+  rtb_TmpSignalConversionAtSFunct[508] = CANFDRcvFcn_BCU_B.BCU_RealtimePower_L;
+  rtb_TmpSignalConversionAtSFunct[509] = CANFDRcvFcn_BCU_B.BCU_V4_L;
+  rtb_TmpSignalConversionAtSFunct[510] = CANFDRcvFcn_BCU_B.BCU_V4_H;
   rtb_TmpSignalConversionAtSFunct[511] = CFunction_o1;
   rtb_TmpSignalConversionAtSFunct[512] = CFunction_o2;
   rtb_TmpSignalConversionAtSFunct[513] = CFunction1_o1;
@@ -7640,21 +7654,11 @@ void CANFDRcvFcn_BCU_step(void)
   } else {
     port_len = sizeof(uint32_T [131]) / port_len;
   }
-#if 1
-// 闁革负鍔岄幆濠囨偝椤栨艾顤呮繛锝堫嚙婵拷
 
-  while (port_index < port_len) 
-  {
-    if (CANFDRcvFcn_BCU_ConstP.portDimensions_Value[port_index] == 1U) 
-    {           
+  while (port_index < port_len) {
+    if (CANFDRcvFcn_BCU_ConstP.portDimensions_Value[port_index] == 1U) {
       modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] =
         rtb_TmpSignalConversionAtSFunct[data_index];
-      // if(data_index == 515){
-      //   printf("515modbusBuff[%d] = %d\r\n",CANFDRcvFcn_BCU_ConstP.index_Value[port_index],modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]]);
-      // }
-      //       if(data_index == 516){
-      //   printf("516modbusBuff[%d] = %d\r\n",CANFDRcvFcn_BCU_ConstP.index_Value[port_index],modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]]);
-      // }
       qY = data_index + 1U;
       if (data_index + 1U < data_index) {
         qY = MAX_uint32_T;
@@ -7688,7 +7692,6 @@ void CANFDRcvFcn_BCU_step(void)
 
     port_index++;
   }
-  #endif
 }
 
 /* Model initialize function */
