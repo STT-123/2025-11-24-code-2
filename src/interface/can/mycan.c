@@ -433,6 +433,8 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
                 break;
             default:
                 LOG("[CAN] Write failed: errno=%d (%s)\n", errno, strerror(errno));
+
+				printf("[CAN] HAL_can_writefd = %d\r\n",fd);
                 break;
         }
 	}

@@ -19,6 +19,11 @@ static void bmu_can_epoll_msg_transmit(void *arg)
 
     memset(&can_rev, 0, sizeof(struct can_frame));
     memset(&bmu_message, 0, sizeof(CAN_MESSAGE));
+
+    if(BMU_CAN_FD < 0){
+        return;
+    }
+
     if (HAL_can_read(BMU_CAN_FD, &can_rev, 1) > 0) //   后期改小这个参数
     {
         Convert_can_frame_to_CAN_MESSAGE(&can_rev, &bmu_message);

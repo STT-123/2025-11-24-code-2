@@ -28,8 +28,8 @@ void *ota_Upgrade_Task(void *arg)
     unsigned char ReOtaFlag = 0;
     char matched_filename[256] = {0};
 
-#if 1
-    sleep(12);
+#if 0
+    sleep(20);
     //BMU
     // set_ota_OTAFilename("XC_BMU_V302.bin");
     // set_ota_deviceType(BMU);
@@ -198,14 +198,15 @@ void *ota_Upgrade_Task(void *arg)
                         CANFDSendFcn_BCU_step();
                         usleep(200*1000);
                     }                 
-                    
+
                     // 主业务判断：检查CAN2是否就绪
-                    if (!is_can2_ready()) {
+                    if (!is_bcu_can_ready()) {
                         LOG("[OTA] CAN2 not ready, waiting...\n");
                         // 可以等待几秒或直接报错
                         int wait_count = 0;
-                        while (!is_can2_ready() && wait_count < 10) {
+                        while (!is_bcu_can_ready() && wait_count < 10) {
                             usleep(500000); // 500ms
+                            can_monitor_fun();//检查CAN 状态
                             wait_count++;
                         }
                     }
@@ -216,11 +217,14 @@ void *ota_Upgrade_Task(void *arg)
                     // // 不需要等待，继续执行后续代码
                     // usleep(300*1000); // 稍微等待一下
                     BCUOtaFlag = 0;
-                    if (is_can2_ready())
+                    if (is_bcu_can_ready())
                     {
                         while(BCUOtaFlag < 3)
                         {
                             set_ota_OTAStart(1);
+                            queue_destroy(&Queue_BCURevData);
+                            queue_init(&Queue_BCURevData);//情况缓存消息队列
+
                             XCP_OTA();
                             if ((xcpstatus.ErrorReg == 0) && (get_ota_OTAStart() == 0))
                             {
@@ -244,19 +248,21 @@ void *ota_Upgrade_Task(void *arg)
                     unsigned int start_percent = 7;
                     unsigned int end_percent = 100;
                     
-                    // 主业务判断：检查CAN2是否就绪
-                    if (!is_can3_ready()) {
+                    can_monitor_fun();//检查CAN 状态
+                    // 主业务判断：检查CAN3是否就绪
+                    if (!is_bmu_can_ready()) {
                         LOG("[OTA] CAN3 not ready, waiting...\n");
                         // 可以等待几秒或直接报错
                         int wait_count = 0;
-                        while (!is_can3_ready() && wait_count < 10) {
+                        while (!is_bmu_can_ready() && wait_count < 10) {
                             usleep(500000); // 500ms
                             wait_count++;
                         }
                     }
-                    if (is_can3_ready())
+                    if (is_bmu_can_ready())
                     {
-                        for (int i = 0; i < BMUMAXNUM; i++)
+                        // BMUMAXNUM
+                        for (int i = 0; i < 1; i++)
                         {
                             LOG("[OTA] BMU OTA start! i : ,ReOtaFlag = %d %d\r\n", i,ReOtaFlag);
                             ReOtaFlag = 0;

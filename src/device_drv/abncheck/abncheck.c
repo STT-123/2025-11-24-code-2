@@ -25,8 +25,8 @@ int ERROR = 0;
 
 ecu_fault_t ecu_fault ={0};
 ecu_fault_t ecu_fault_last = {0};
-static int g_can2_ready = 0;
-static int g_can3_ready = 0;
+static int g_bcu_can_ready = 0;
+static int g_bmu_can_ready = 0;
 /*----------------------*/
 struct timespec lasttimes ;
 struct timespec lastCheckTick = {0};
@@ -144,7 +144,6 @@ void log_eror_csv(void)
 			get_BCU_FaultInfoLv4HValue(),
 			get_BCU_FaultInfoLv4LValue(),
 			get_BCU_SOCValue(),
-			get_BCU_SystemStatusValue(),
 			get_BCU_SystemWorkModeValue());
 	}
 }
@@ -396,46 +395,20 @@ void check_bcu_rx_timeout(void)
  * 检测CAN 是否异常函数
 */
 int can_monitor_fun(void) {
-
-// #ifdef testcan
-// 	int bcu_state  = bcu_can_check_state();
-// 	if(bcu_state == 0){
-// 		g_can2_ready = 1;
-// 	}else{
-// 		g_can2_ready = 0;
-// 	}
-// #elif
-//     // 检查 can2
-// 	int can2_state = check_can_state(BCU_CAN_DEVICE_NAME);
-// 	if (can2_state == 0 && g_can2_ready == 1) {
-// 		LOG("[Check] can2 abnormal, restarting...\n");
-// 		restart_can_interface(BCU_CAN_DEVICE_NAME);
-// 	}
-// 	g_can2_ready = can2_state;
-
-// 	// 检查 can3
-// 	int can3_state = check_can_state(BMU_CAN_DEVICE_NAME);
-// 	if (can3_state == 0 && g_can3_ready == 1) {
-// 		LOG("[Check] can3 abnormal, restarting...\n");
-// 		restart_can_interface("can3");
-// 	}
-// 	g_can3_ready = can3_state;
-// #endif
-
-	int can2_state = check_can_state(BCU_CAN_DEVICE_NAME);
-	if (can2_state == 0 && g_can2_ready == 1) {
+	int bcu_can_state = check_can_state(BCU_CAN_DEVICE_NAME);
+	if (bcu_can_state == 0 && g_bcu_can_ready == 1) {
 		LOG("[Check] can2 abnormal, restarting...\n");
 		restart_can_interface(BCU_CAN_DEVICE_NAME);
 	}
-	g_can2_ready = can2_state;
+	g_bcu_can_ready = bcu_can_state;
 
 	// 检查 can3
-	int can3_state = check_can_state(BMU_CAN_DEVICE_NAME);
-	if (can3_state == 0 && g_can3_ready == 1) {
+	int bmu_can_state = check_can_state(BMU_CAN_DEVICE_NAME);
+	if (bmu_can_state == 0 && g_bmu_can_ready == 1) {
 		LOG("[Check] can3 abnormal, restarting...\n");
 		restart_can_interface("can3");
 	}
-	g_can3_ready = can3_state;
+	g_bmu_can_ready = bmu_can_state;
 }
 
 // 重启CAN接口
@@ -461,11 +434,11 @@ int check_can_state(const char* can_if) {
 }
 
 // 主业务判断函数
-int is_can2_ready(void) {
-    return g_can2_ready;
+int is_bcu_can_ready(void) {
+    return g_bcu_can_ready;
 }
-int is_can3_ready(void) {
-    return g_can3_ready;
+int is_bmu_can_ready(void) {
+    return g_bmu_can_ready;
 }
 
 

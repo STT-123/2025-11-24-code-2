@@ -15,7 +15,6 @@ my_event_data_t bcuCanEventData = {
 };
 
 extern my_event_data_t bmuCanEventData ;
-
 static pthread_mutex_t can_recover_mutex = PTHREAD_MUTEX_INITIALIZER; //恢复锁，当需要can复位的时候，避免两个任务都复位
 
 static int Drv_bcu_resetcan_device(const char *can_name)
@@ -44,6 +43,10 @@ static void bcu_can_epoll_msg_transmit(void *arg)
 
     memset(&can_rev, 0, sizeof(struct canfd_frame));
     memset(&can_send, 0, sizeof(CAN_MESSAGE));
+
+    if(BCU_CAN_FD <0){
+        return;
+    }
     int frame_type = HAL_canfd_read(BCU_CAN_FD, &can_rev, 1);
 
     time(&g_last_bcu_rx_time);
@@ -148,6 +151,9 @@ int Drv_bcu_can_send(CAN_MESSAGE *pFrame)
     Convert_CAN_MESSAGE_to_can_frame(pFrame, &can_frame);
     while (retryCount < maxRetries)
     {
+        if(BCU_CAN_FD <0){
+            return;
+        }
         if (HAL_can_write(BCU_CAN_FD, &can_frame))
         {
             return 0;
@@ -175,6 +181,9 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
 
     while (retryCount < maxRetries)
     {
+        if(BCU_CAN_FD <0){
+            return;
+        }
         if (HAL_canfd_write(BCU_CAN_FD, &canfd_frame))
         {
             return 0;
@@ -202,6 +211,7 @@ bool Drv_BMS_Analysis(unsigned char can_flag)
 
 int bcu_can_check_state(void)
 { 
+    printf("bcu_can_check_state in Drv_can_auto_recover\r\n");
     return Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,
                            &BCU_CAN_FD, bcu_can_epoll_msg_transmit);
 }
@@ -337,6 +347,7 @@ int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr,
     // }
     else 
     {
+        LOG("[CAN]%s physical link is UP, not need rebind\n", can_name);
         ret = 0;
         goto unlock; // 使用goto确保锁被释放
         // 获取状态失败，也需要重新绑定

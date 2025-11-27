@@ -787,11 +787,12 @@ void Drv_write_buffer_to_file(void)
     if (newFileNeeded)// 判断是否需要重新创建一个文件开始写
     {
         CreateAscFilePathWithTime(nowTimeInfo, filePath);// 将时间转换为文件路径
+
         filePath[sizeof(filePath) - 1] = '\0';
     }
   
     FILE *file = NULL;// 打开目标文件
-    
+
     if (OpenNowWriteAscFile(filePath, &file) != 0  || file == NULL)
     {
         LOG("[SD Card] ERROR: OpenNowWriteAscFile failed for: %s\n", filePath);

@@ -314,5 +314,4 @@ real_T get_BCU_FaultInfoLv2LValue(void) { return BCU_FaultInfoLv2L; }
 real_T get_BCU_FaultInfoLv3LValue(void) { return BCU_FaultInfoLv3L; }
 real_T get_BCU_FaultInfoLv4LValue(void) { return BCU_FaultInfoLv4L; }
 real_T get_BCU_SOCValue(void) { return BCU_SOC; }
-real_T get_BCU_SystemStatusValue(void) { return BCU_SystemStatus; }
 real_T get_BCU_SystemWorkModeValue(void) { return BCU_SystemWorkMode; }

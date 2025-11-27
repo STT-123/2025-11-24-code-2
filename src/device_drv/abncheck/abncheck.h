@@ -65,7 +65,7 @@ int can_monitor_fun(void) ;
 static void restart_can_interface(const char* can_if);
 void get_BCU_FaultInfo(uint32_T faultValue_4H,uint32_T faultValue_3H,uint32_T faultValue_2H);
 int check_can_state(const char* can_if) ;
-int is_can2_ready(void);
-int is_can3_ready(void);
+int is_bcu_can_ready(void);
+int is_bmu_can_ready(void);
 int check_and_fix_ip(const char *if_name);
 #endif

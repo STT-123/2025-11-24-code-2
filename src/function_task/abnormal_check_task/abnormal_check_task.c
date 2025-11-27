@@ -21,7 +21,7 @@ void *AbnormalDetection(void *arg)
         PHYlinktate(); //网口物理连接检测 
         get_BCU_FaultInfo(get_BCU_FaultInfoLv4HValue(),get_BCU_FaultInfoLv3HValue(),get_BCU_FaultInfoLv2HValue());
         ECUfault_process(); // 各种故障检测
-        can_monitor_fun();//CAN 通道 通道检测
+        //can_monitor_fun();//CAN 通道 通道检测
         log_eror_csv();  //存储
         check_and_fix_ip(MODBUS_ETH_NUM);//检测ip地址是否被修改并自动更正
         usleep(1000 * 1000);
