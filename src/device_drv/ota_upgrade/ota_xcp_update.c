@@ -697,7 +697,7 @@ static int ReadFileAndSendData(FILE *rfile, XCPStatus *xcpstatus)
                 if(xcpstatus->ErrorReg != 0)
                 {
                     LOG("[OTA] if(xcpstatus.ErrorReg != 0)");
-                    return;
+                    return 1;
                 }
                 ProgramProgress = (int)((float)i/totalpack*100);
 

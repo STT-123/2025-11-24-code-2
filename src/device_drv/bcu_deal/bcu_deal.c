@@ -84,9 +84,14 @@ static void bcu_can_epoll_msg_transmit(void *arg)
         else{
         }
     }
-    else
+    else if(frame_type < 0)
     {
-        // printf("[bcu_can_epoll_msg_transmit] Received CAN frame with ID: %d, Length: %d\n", can_rev.can_id, can_rev.len);
+        if (errno == EBADF) 
+        {
+            LOG("[BCU] CAN fd is bad, triggering recovery...\n");
+            Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE, 
+                               &BCU_CAN_FD, bcu_can_epoll_msg_transmit);
+        }
     }
 }
 
@@ -309,32 +314,34 @@ int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr,
         need_rebind = true;
     }
     // 2. 检查CAN控制器状态
-    else if (HAL_can_get_state(can_name, &canState) == 0) 
-    {
-        if (canState != 0) 
-        {
-            /**  canState
-             *  case 0x00: printf("状态: ERROR_ACTIVE (正常)\n"); break;
-                case 0x01: printf("状态: ERROR_WARNING (警告)\n"); break;
-                case 0x02: printf("状态: ERROR_PASSIVE (错误被动)\n"); break;//拔掉can总线0x02，不排除其他错误也会造成这个
-                case 0x03: printf("状态: BUS_OFF (总线关闭)\n"); break;
-                case 0x04: printf("状态: STOPPED (停止)\n"); break;
-                case 0x05: printf("状态: SLEEPING (睡眠)\n"); break;
-            */
-            LOG("[CAN]%s controller state is abnormal: 0x%02X, need rebind\n", can_name, canState);
-            need_rebind = true;
-        } 
-        else 
-        {
-            ret = 0;
-            goto unlock; // 使用goto确保锁被释放
-        }
-    }
+    // else if (HAL_can_get_state(can_name, &canState) == 0) 
+    // {
+    //     if (canState != 0) 
+    //     {
+    //         /**  canState
+    //          *  case 0x00: printf("状态: ERROR_ACTIVE (正常)\n"); break;
+    //             case 0x01: printf("状态: ERROR_WARNING (警告)\n"); break;
+    //             case 0x02: printf("状态: ERROR_PASSIVE (错误被动)\n"); break;//拔掉can总线0x02，不排除其他错误也会造成这个
+    //             case 0x03: printf("状态: BUS_OFF (总线关闭)\n"); break;
+    //             case 0x04: printf("状态: STOPPED (停止)\n"); break;
+    //             case 0x05: printf("状态: SLEEPING (睡眠)\n"); break;
+    //         */
+    //         LOG("[CAN]%s controller state is abnormal: 0x%02X, need rebind\n", can_name, canState);
+    //         need_rebind = true;
+    //     } 
+    //     else 
+    //     {
+    //         ret = 0;
+    //         goto unlock; // 使用goto确保锁被释放
+    //     }
+    // }
     else 
     {
+        ret = 0;
+        goto unlock; // 使用goto确保锁被释放
         // 获取状态失败，也需要重新绑定
-        LOG("[CAN]%s failed to get controller state, need rebind\n", can_name);
-        need_rebind = true;
+        // LOG("[CAN]%s failed to get controller state, need rebind\n", can_name);
+        // need_rebind = true;
     }
 
     // 如果需要重新绑定
@@ -346,4 +353,8 @@ unlock:
     // 确保锁被释放
     pthread_mutex_unlock(&can_recover_mutex);
     return ret;
+}
+
+int get_BCU_CAN_FD(void){
+    return BCU_CAN_FD;
 }

@@ -28,14 +28,13 @@ void *bcu_DealTask(void *arg)
     {
         // usleep(200*1000);
 
-        if (call_count == 0) {
-            CANFDSendFcn_BCU_step();
-                //LOG("CANFDSendFcn_BCU_step ++  \r\n");
-        }
-        call_count = (call_count + 1) % 25;
-        
-        if ((g_ota_flag == OTAIDLE || g_ota_flag == OTAFAILED || g_otactrl.deviceType == AC))
+        if ((get_ota_OTAStart() == 0) || (g_otactrl.deviceType == AC))
         {
+            if (call_count == 0) {
+                CANFDSendFcn_BCU_step();
+            }
+            call_count = (call_count + 1) % 25;
+
             if (queue_pend(&Queue_BCURevData_FD, (unsigned char *)&canrev_frame, &len) == 0)
             {
                 

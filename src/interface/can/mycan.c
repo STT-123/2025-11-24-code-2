@@ -464,6 +464,7 @@ int HAL_canfd_read(int fd, struct canfd_frame *pFrame, unsigned int msTimeout)
 		else
 		{
 			perror("HAL_canfd_read failed");
+			LOG("HAL_canfd_read fd = %d\r\n",fd);
 			return 0;
 		}
 	}
@@ -488,6 +489,7 @@ int HAL_can_read(int fd, struct can_frame *pFrame, unsigned int msTimeout)
 		else
 		{
 			perror("HAL_can_read failed");
+			printf("HAL_can_read fd = %d\r\n",fd);
 			return 0; // 读取失败
 		}
 	}

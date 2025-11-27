@@ -32,4 +32,5 @@ int Drv_can_bind_interface(const char *can_name, int bitrate, int *can_fd_ptr,vo
 int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr, void (*callback)(void));
 
 int bcu_can_check_state(void);
+int get_BCU_CAN_FD(void);
 #endif

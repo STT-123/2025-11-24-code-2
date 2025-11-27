@@ -28,7 +28,7 @@ void *ota_Upgrade_Task(void *arg)
     unsigned char ReOtaFlag = 0;
     char matched_filename[256] = {0};
 
-#if 0
+#if 1
     sleep(12);
     //BMU
     // set_ota_OTAFilename("XC_BMU_V302.bin");
@@ -220,6 +220,7 @@ void *ota_Upgrade_Task(void *arg)
                     {
                         while(BCUOtaFlag < 3)
                         {
+                            set_ota_OTAStart(1);
                             XCP_OTA();
                             if ((xcpstatus.ErrorReg == 0) && (get_ota_OTAStart() == 0))
                             {
