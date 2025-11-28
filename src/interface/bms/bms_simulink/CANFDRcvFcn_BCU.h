@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANFDRcvFcn_BCU'.
  *
- * Model version                  : 5.95
+ * Model version                  : 5.102
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Wed Nov 26 16:53:08 2025
+ * C/C++ source code generated on : Fri Nov 28 16:29:16 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4
@@ -48,6 +48,7 @@ typedef struct {
   real32_T CANFDUnpack1_o24;           /* '<S1>/CAN FD Unpack1' */
   real32_T CANFDUnpack1_o25;           /* '<S1>/CAN FD Unpack1' */
   real32_T CANFDUnpack1_o26;           /* '<S1>/CAN FD Unpack1' */
+  real32_T CANFDUnpack1_o27;           /* '<S1>/CAN FD Unpack1' */
   real32_T CANFDUnpack3_o6;            /* '<S1>/CAN FD Unpack3' */
   real32_T CANFDUnpack3_o7;            /* '<S1>/CAN FD Unpack3' */
   real32_T CANFDUnpack3_o8;            /* '<S1>/CAN FD Unpack3' */
@@ -334,12 +335,12 @@ typedef struct {
   /* Computed Parameter: index_Value
    * Referenced by: '<Root>/index'
    */
-  uint32_T index_Value[125];
+  uint32_T index_Value[126];
 
   /* Computed Parameter: portDimensions_Value
    * Referenced by: '<Root>/portDimensions'
    */
-  uint32_T portDimensions_Value[125];
+  uint32_T portDimensions_Value[126];
 } ConstP_CANFDRcvFcn_BCU_T;
 
 /* Real-time Model Data Structure */

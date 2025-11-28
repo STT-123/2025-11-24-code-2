@@ -9,6 +9,16 @@
 #include <time.h>
 
 
+
+/*===*/
+static uint32_t frame_counter = 0;
+static struct timespec last_store_time = {0};
+static const uint32_t STORE_INTERVAL_MS = 3000;  // 3秒
+static const uint32_t FRAMES_PER_STORE = 12;     // 每次存储12帧
+// 特定ID触发存储
+static uint8_t trigger_store_flag = 0;
+static struct timespec trigger_store_time = {0};
+/*==*/
 DoubleRingBuffer canDoubleRingBuffer;
 static bool newFileNeeded = true;
 Rtc_Ip_TimedateType initialTime = {0};
@@ -150,7 +160,7 @@ static int GetNowTime(struct tm *nowTime)
         struct tm *tm_info = localtime(&now);
         timeinfo = *tm_info;
         mktime(&timeinfo);
-        LOG("[SD Card] [SD Card] Time Source From Local");
+        // LOG("[SD Card] [SD Card] Time Source From Local");
     }
 
     // 得到当前时间
@@ -328,75 +338,97 @@ static int AscFileWriteTimeHeader(FILE *file, struct tm *timeinfo)
 // 查找指定CAN ID的历史消息，并与当前消息对比
 static int Drv_check_and_update_message(const CANFD_MESSAGE *msg)
 {
+    static old_BMSWorkMode_value = 0;
     for (int i = 0; i < CAN_ID_HISTORY_SIZE; i++)
     {
-        // printf("msg->ID :%x\r\n",msg->ID);
         if (can_msg_cache[i].ID == msg->ID)
         {
-            if (msg->ID == 0x1A0110E4)
+            if(msg->ID == 0x180110E4)
             {
-                if ((msg->Data[0] > 8) || (msg->Data[0] == 0))
+                if ( get_BCU_SystemWorkModeValue() != old_BMSWorkMode_value)
                 {
-                    return 0;
-                }
-                if (memcmp(&can_msg_1A0110E4_cache[msg->Data[0] - 1].Data, msg->Data, 64) == 0)
-                {
-                    return 0; // 表示消息未修改
-                }
-                else
-                {
-                    memcpy(&can_msg_1A0110E4_cache[msg->Data[0] - 1].Data, msg->Data, 64);
-                    return 1; // 表示消息已修改
-                }
-            }
-            if (msg->ID == 0x1B0110E4)
-            {
-                if ((msg->Data[0] > 2) || (msg->Data[0] == 0))
-                {
-                    return 0;
-                }
-                if (memcmp(&can_msg_1B0110E4_cache[msg->Data[0] - 1].Data, msg->Data, 64) == 0)
-                {
-                    return 0; // 表示消息未修改
-                }
-                else
-                {
-                    memcpy(&can_msg_1B0110E4_cache[msg->Data[0] - 1].Data, msg->Data, 64);
-                    return 1; // 表示消息已修改
-                }
-            }
-            if (msg->ID == 0x180410E4)
-            {
-                if ((msg->Data[0] > 1) || (msg->Data[0] == 0))
-                {
-                    return 0;
-                }
-                if (memcmp(&can_msg_180410E4_cache[msg->Data[0] - 1].Data, msg->Data, 64) == 0)
-                {
-                    return 0; // 表示消息未修改
-                }
-                else
-                {
-                    memcpy(&can_msg_180410E4_cache[msg->Data[0] - 1].Data, msg->Data, 64);
-                    return 1; // 表示消息已修改
-                }
+                    LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n",
+                        old_BMSWorkMode_value, msg->Data[6]);
+                    old_BMSWorkMode_value = get_BCU_SystemWorkModeValue();
+                    
+                    // 触发存储，重置计数器
+                    trigger_store_flag = 1;
+                    frame_counter = 0;
+                    clock_gettime(CLOCK_MONOTONIC, &trigger_store_time);
+                    clock_gettime(CLOCK_MONOTONIC, &last_store_time);  // ← 关键：同时重置常规存储时间
+                    LOG("[CAN Trigger] Both trigger and normal storage timers reset\n");
+                }  
             }
 
-            if (memcmp(&can_msg_cache[i].Data, msg->Data, 64) == 0)
-            {
-                return 0; // 表示消息未修改
-            }
-            else
-            {
-                // 如果消息不同，则更新历史消息
-                memcpy(&can_msg_cache[i].Data, msg->Data, 64);
-                return 1; // 表示消息已修改
-            }
+            return 1;
         }
     }
+
     return 0; // 如果未找到该 CAN ID
 }
 
+
+
+// 判断当前帧是否应该存储
+static int should_store_frame(void)
+{
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    
+    // 检查触发存储条件（优先级更高）
+    if (trigger_store_flag) 
+    {
+        long elapsed_ms = (now.tv_sec - trigger_store_time.tv_sec) * 1000 +
+                         (now.tv_nsec - trigger_store_time.tv_nsec) / 1000000;
+        
+        if (elapsed_ms < STORE_INTERVAL_MS && frame_counter < FRAMES_PER_STORE) {
+            // LOG("[CAN Trigger] In trigger window: %ld/%d ms, frame %d/12\n",
+                // elapsed_ms, STORE_INTERVAL_MS, frame_counter + 1);
+            return 1;
+        } else if (frame_counter >= FRAMES_PER_STORE) {
+            LOG("[CAN Trigger] Trigger storage completed: %d frames stored\n", frame_counter);
+            trigger_store_flag = 0;
+            return 0;
+        } else if (elapsed_ms >= STORE_INTERVAL_MS) {
+            LOG("[CAN Trigger] Trigger window timeout: stored %d frames in %ld ms\n", 
+                frame_counter, elapsed_ms);
+            trigger_store_flag = 0;
+            return 0;
+        }
+    }
+    
+    // 常规3秒存储逻辑
+    // 如果是第一次，初始化时间
+    if (last_store_time.tv_sec == 0 && last_store_time.tv_nsec == 0) {
+        clock_gettime(CLOCK_MONOTONIC, &last_store_time);
+        frame_counter = 0;
+        LOG("[CAN Normal] Starting first 3s storage window\n");
+        return 1;
+    }
+    
+    // 计算时间差
+    long elapsed_ms = (now.tv_sec - last_store_time.tv_sec) * 1000 +
+                     (now.tv_nsec - last_store_time.tv_nsec) / 1000000;
+    
+    // 如果超过3秒，开始新的存储周期
+    if (elapsed_ms >= STORE_INTERVAL_MS) {
+        // LOG("[CAN Normal] 3s elapsed, starting new window. Previous: %d frames\n", frame_counter);
+        frame_counter = 0;
+        clock_gettime(CLOCK_MONOTONIC, &last_store_time);
+        return 1;
+    }
+    
+    // 在3秒窗口内且未达到12帧，允许存储
+    if (frame_counter < FRAMES_PER_STORE) {
+        // LOG("[CAN Normal] Storing frame %d/12 (elapsed: %ldms)\n", 
+            // frame_counter + 1, elapsed_ms);
+        return 1;
+    }
+    
+    // 窗口已满
+    // LOG("[CAN Normal] Window full: %d/12 frames\n", frame_counter);
+    return 0;
+}
 
 static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms)
 {
@@ -707,21 +739,30 @@ int ensure_mount_point(const char *path)
 void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 {
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
-
+    uint8_t ret = 0;
     if (((msg->ID == 0x1cb0e410) && (msg->Data[0] == 0xC9)) ||
         (msg->ID == 0x1cb010e4) || (msg->ID == 0x1823E410) || (msg->ID == 0))
     {
         return;
     }
 
-    if (Drv_check_and_update_message(msg) == 0)
-    {
-        return; // 临时取消
+    ret = Drv_check_and_update_message(msg);
+    
+    // 如果是异常ID（不在缓存中），直接返回，不存储
+    if (ret == 0) {
+        //LOG("[CAN Filter] Abnormal ID=0x%08lX filtered out\n", (unsigned long)msg->ID);
+        return;
+    }
+    
+    // 检查是否应该存储（包括常规3秒和触发存储）
+    if (!should_store_frame()) {
+        return;
     }
 
     pthread_mutex_lock(&drb->switchMutex);
     RingBuffer *activeBuffer = &drb->buffers[drb->activeBuffer];
     pthread_mutex_lock(&activeBuffer->mutex);
+
 
     CAN_LOG_MESSAGE *logMsg = &activeBuffer->buffer[activeBuffer->writeIndex];
     logMsg->relativeTimestamp = GetTimeDifference_ms(start_tick);
@@ -741,7 +782,33 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 
     pthread_mutex_unlock(&activeBuffer->mutex);
     pthread_mutex_unlock(&drb->switchMutex);
+
+        // 更新计数器
+    frame_counter++;
+    // LOG("[CAN Storage] Successfully stored frame %d/12\n", frame_counter);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // 将缓冲区数据写到sd卡
@@ -758,12 +825,24 @@ void Drv_write_buffer_to_file(void)
 
     // 交换当前使用的缓冲区
     pthread_mutex_lock(&drb->switchMutex);
+
+
+    // LOG("[SD Write] Before switch - Active buffer: %d, Buffer0 count: %d, Buffer1 count: %d\n",
+    //     drb->activeBuffer, 
+    //     drb->buffers[0].count, 
+    //     drb->buffers[1].count);
+
+
     drb->activeBuffer = 1 - drb->activeBuffer;
     pthread_mutex_unlock(&drb->switchMutex);
 
     // 获取需要写入的缓冲区
     int inactiveBufferIndex = 1 - drb->activeBuffer;
     RingBuffer *inactiveBuffer = &drb->buffers[inactiveBufferIndex];
+
+
+    // LOG("[SD Write] Writing from buffer %d, message count: %d\n", 
+    //     inactiveBufferIndex, inactiveBuffer->count);
 
     // 获取文件互斥锁
     ret = pthread_mutex_lock(&inactiveBuffer->mutex);
@@ -799,6 +878,9 @@ void Drv_write_buffer_to_file(void)
         goto QUIT_FLAG; // 打开失败 直接返回
     }
   
+    fseek(file, 0, SEEK_END);
+    long startFileSize = ftell(file);
+
     if (newFileNeeded)// 如果是新创建的文件
     {
         LOG("[SD Card] 9. Writing headers for new file\n");
@@ -815,6 +897,10 @@ void Drv_write_buffer_to_file(void)
 
     // 如果不是新创建的文件 从文件的末尾追加写入
     fseek(file, 0, SEEK_END);
+    int originalCount = inactiveBuffer->count;
+    int messagesWritten = 0;
+    // LOG("[SD Card] Starting to write %d messages to file: %s\n", originalCount, filePath);
+
     while (inactiveBuffer->count > 0)
     {
         CAN_LOG_MESSAGE *logMsg = &inactiveBuffer->buffer[inactiveBuffer->readIndex];
@@ -870,7 +956,6 @@ void Drv_write_buffer_to_file(void)
     if ((fileSize > (10*1024*1024) )|| (judgeTimetoUpdate())) // 大于10M或者年月日发生变化
     {
         LOG("[SD Card] fileSize = %ld\r\n",fileSize);
-
         LOG("[SD Card] judgeTimetoUpdate = %d\r\n",judgeTimetoUpdate());
         newFileNeeded = true; // 下一轮就要创建新文件
     }

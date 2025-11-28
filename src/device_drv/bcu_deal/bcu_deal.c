@@ -192,7 +192,7 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
     }
     if (retryCount >= maxRetries)
     {
-        LOG("[BCUFD]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
+        // LOG("[BCUFD]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
         Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
         // Drv_bcu_resetcan_device(BCU_CAN_DEVICE_NAME);
     }
@@ -347,7 +347,7 @@ int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr,
     // }
     else 
     {
-        LOG("[CAN]%s physical link is UP, not need rebind\n", can_name);
+        // printf("[CAN]%s physical link is UP, not need rebind\n", can_name);
         ret = 0;
         goto unlock; // 使用goto确保锁被释放
         // 获取状态失败，也需要重新绑定

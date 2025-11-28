@@ -98,7 +98,8 @@
     "canfdrcvfcn_bcu_types.h": "c",
     "canfdrcvfcn_bcu.h": "c",
     "canrcvfcn_bmu.h": "c",
-    "canfdsendfcn_bcu.h": "c"
+    "canfdsendfcn_bcu.h": "c",
+    "globalvariable.h": "c"
   },
   "C_Cpp_Runner.msvcBatchPath": "",
   "C_Cpp_Runner.cCompilerPath": "gcc",

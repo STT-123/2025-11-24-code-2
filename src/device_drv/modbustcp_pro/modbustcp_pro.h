@@ -15,7 +15,7 @@
 
 #define LOGO 0x9528  //公司标识
 #define ECU_VERSION 0x116 //  表示v1.01 格式xx。yy xx 高八位yy低八位
-
+// #define ETH2_TEST 1 //  测试使用
 #define REGISTERS_NB 0x4000 // 寄存器数量
 
 #define MDBUS_ADDR_BECU_FAULT0 0x3440

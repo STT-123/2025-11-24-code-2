@@ -51,13 +51,12 @@ typedef struct
     pthread_mutex_t switchMutex; // 用于保护缓冲区切换
 } DoubleRingBuffer;
 
-
 static int  Drv_check_and_update_message(const CANFD_MESSAGE *msg);
 static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms);
 static void Drv_RTCGetTime(Rtc_Ip_TimedateType *rtcTime);
 static int  mount_sdcard_fat32(void);
 static int  judgeTimetoUpdate(void);
-
+static int should_store_frame(void);
 int  SD_Initialize(void);
 int  ensure_mount_point(const char *path);
 void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel);

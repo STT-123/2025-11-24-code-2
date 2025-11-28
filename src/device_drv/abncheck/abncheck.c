@@ -131,10 +131,11 @@ void log_eror_csv(void)
 
 	if (log_flag == 1)
 	{
-		LOG_CSV("%d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d",
+		LOG_CSV("[LOG_CSV] = %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x",
 			ecu_fault.emcu_fault0,
 			ecu_fault.emcu_fault1,
 			ecu_fault.emcu_fault2,
+			ecu_fault.emcu_fault3,
 			get_BCU_FaultInfoLv1HValue(),
 			get_BCU_FaultInfoLv1LValue(),
 			get_BCU_FaultInfoLv2HValue(),
