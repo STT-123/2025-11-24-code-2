@@ -8,12 +8,19 @@
 #include <stdio.h>
 #include "project.h"
 #include "interface/log/log.h"
+#include <stdatomic.h>
+
+
 static const char *ocpp_url = "wss://ocpp.xcharger.net:7274/ocpp";
 static const char *ocpp_id = "C8A215DPWUDYDTAWLL";
 // 保存当前连接 wsi
 static struct lws *global_wsi = NULL;
 static pthread_mutex_t wsi_lock = PTHREAD_MUTEX_INITIALIZER;
 void handle_writeable(struct lws *wsi);
+
+// 全局标志：0=未连接/失败，1=已连接
+static atomic_int g_ocpp_connected = ATOMIC_VAR_INIT(0);
+
 // 外部调用函数，请求触发写事件
 void websocket_request_write(void)
 {
@@ -35,6 +42,7 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
         global_wsi = wsi;
         pthread_mutex_unlock(&wsi_lock);
         lwsl_user("WebSocket connected\n");
+        atomic_store(&g_ocpp_connected, 1); // 标记已连接
         lws_callback_on_writable(wsi);
         break;
     case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -55,9 +63,11 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
         {
             lwsl_err("WebSocket connection error: Unknown error\n");
         }
+        atomic_store(&g_ocpp_connected, 0); // 标记连接失败
         break;
     case LWS_CALLBACK_CLIENT_CLOSED:
         lwsl_err("WebSocket closed, reason: %s\n", in ? (char *)in : "Unknown reason");
+        atomic_store(&g_ocpp_connected, 0); // 标记连接失败
         break;
     default:
         break;
@@ -108,16 +118,47 @@ void *ocppCommunicationTask(void *arg)
         struct lws *wsi = lws_client_connect_via_info(&ccinfo);//建立连接
         if (!wsi)
         {
-            LOG("[Ocpp]WebSocket connection failed, retrying...");
+            LOG("[Ocpp]Connection failed. Retrying in 5 seconds...");
+            sleep(5);
+            continue;  //  关键：跳过 service 循环
         }
 
-        while (lws_service(context, 1000) >= 0)
-            ;
+        // 等待连接结果（最多 10 秒）
+        bool connected = false;
+        for (int i = 0; i < 10; i++) {
+            if (lws_service(context, 1000) < 0) {
+                break; // 上下文错误
+            }
+            if (atomic_load(&g_ocpp_connected)) {
+                connected = true;
+                break;
+            }
+            // 如果回调已设置为 0（比如立即失败），也退出等待
+            if (atomic_load(&g_ocpp_connected) == 0 && i > 0) {
+                // 可能已触发 CONNECTION_ERROR
+                break;
+            }
+        }
 
-        sleep(5); // 自动重连等待
+        if (!connected) {
+            LOG("[Ocpp]Connection failed or timed out.");
+            sleep(5);
+            continue;
+        }
+
+        LOG("[Ocpp]Connected! Entering main communication loop.");
+
+        // 主通信循环：只要连接保持，就继续服务
+        while (atomic_load(&g_ocpp_connected) && lws_service(context, 1000) >= 0) {
+            // 可在此添加心跳发送、状态检查等
+        }
+
+        LOG("[Ocpp]Exited communication loop. Reconnecting in 5 seconds...");
+        sleep(5);
     }
 
     lws_context_destroy(context);
+
     return NULL;
 }
 
