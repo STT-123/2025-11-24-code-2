@@ -19,7 +19,7 @@ static pthread_mutex_t wsi_lock = PTHREAD_MUTEX_INITIALIZER;
 void handle_writeable(struct lws *wsi);
 
 // 全局标志：0=未连接/失败，1=已连接
-static atomic_int g_ocpp_connected = ATOMIC_VAR_INIT(0);
+static _Atomic(conn_state_t) g_ocpp_conn_state = CONN_STATE_IDLE;
 
 // 外部调用函数，请求触发写事件
 void websocket_request_write(void)
@@ -42,7 +42,7 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
         global_wsi = wsi;
         pthread_mutex_unlock(&wsi_lock);
         lwsl_user("WebSocket connected\n");
-        atomic_store(&g_ocpp_connected, 1); // 标记已连接
+        atomic_store(&g_ocpp_conn_state, CONN_STATE_CONNECTED);
         lws_callback_on_writable(wsi);
         break;
     case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -63,11 +63,11 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
         {
             lwsl_err("WebSocket connection error: Unknown error\n");
         }
-        atomic_store(&g_ocpp_connected, 0); // 标记连接失败
+        atomic_store(&g_ocpp_conn_state, CONN_STATE_FAILED);
         break;
     case LWS_CALLBACK_CLIENT_CLOSED:
         lwsl_err("WebSocket closed, reason: %s\n", in ? (char *)in : "Unknown reason");
-        atomic_store(&g_ocpp_connected, 0); // 标记连接失败
+        atomic_store(&g_ocpp_conn_state, CONN_STATE_FAILED);
         break;
     default:
         break;
@@ -99,20 +99,20 @@ void *ocppCommunicationTask(void *arg)
         ccinfo.context = context;
 
         // ccinfo.address = "ocpp.xcharger.net";// 服务器地址localhost
-        // ccinfo.port = 7274;// 服务器端口
         ccinfo.address = "localhost";// 服务器地址
+
         ccinfo.port = 7274;// 服务器端口
-        // ccinfo.path = "/ocpp/C8A215DPLEXHGRKLGU";// OCPP 端点路径
+        ccinfo.path = "/ocpp/C8A215DPLEXHGRKLGU";// OCPP 端点路径
 
         ccinfo.host = ccinfo.address;
         ccinfo.origin = ccinfo.address;
         ccinfo.protocol = protocols[0].name;// 使用 "ocpp1.6" 协议
 
-        // ccinfo.ssl_connection = LCCSCF_USE_SSL |
-        //                         LCCSCF_ALLOW_SELFSIGNED |
-        //                         LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK |
-        //                         LCCSCF_ALLOW_EXPIRED |
-        //                         LCCSCF_ALLOW_INSECURE; // LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验
+        ccinfo.ssl_connection = LCCSCF_USE_SSL |
+                                LCCSCF_ALLOW_SELFSIGNED |
+                                LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK |
+                                LCCSCF_ALLOW_EXPIRED |
+                                LCCSCF_ALLOW_INSECURE; // LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验
 
 
         struct lws *wsi = lws_client_connect_via_info(&ccinfo);//建立连接
@@ -123,21 +123,25 @@ void *ocppCommunicationTask(void *arg)
             continue;  //  关键：跳过 service 循环
         }
 
-        // 等待连接结果（最多 10 秒）
+        // 等待结果（最多 15 秒，避免无限等待）
+        atomic_store(&g_ocpp_conn_state, CONN_STATE_CONNECTING);
         bool connected = false;
-        for (int i = 0; i < 10; i++) {
+
+        for (int i = 0; i < 15; i++) {
             if (lws_service(context, 1000) < 0) {
-                break; // 上下文错误
+                atomic_store(&g_ocpp_conn_state, CONN_STATE_FAILED);
+                break;
             }
-            if (atomic_load(&g_ocpp_connected)) {
+
+            conn_state_t state = atomic_load(&g_ocpp_conn_state);
+            if (state == CONN_STATE_CONNECTED) {
                 connected = true;
                 break;
             }
-            // 如果回调已设置为 0（比如立即失败），也退出等待
-            if (atomic_load(&g_ocpp_connected) == 0 && i > 0) {
-                // 可能已触发 CONNECTION_ERROR
+            if (state == CONN_STATE_FAILED) {
                 break;
             }
+            // 否则继续等待（状态仍是 CONNECTING）
         }
 
         if (!connected) {
@@ -148,12 +152,14 @@ void *ocppCommunicationTask(void *arg)
 
         LOG("[Ocpp]Connected! Entering main communication loop.");
 
-        // 主通信循环：只要连接保持，就继续服务
-        while (atomic_load(&g_ocpp_connected) && lws_service(context, 1000) >= 0) {
-            // 可在此添加心跳发送、状态检查等
+        // 主循环：只要连接未断开，就持续服务
+        while (atomic_load(&g_ocpp_conn_state) == CONN_STATE_CONNECTED) {
+            if (lws_service(context, 1000) < 0) {
+                break;
+            }
         }
 
-        LOG("[Ocpp]Exited communication loop. Reconnecting in 5 seconds...");
+        LOG("[Ocpp]Disconnected. Reconnecting in 5 seconds...");
         sleep(5);
     }
 

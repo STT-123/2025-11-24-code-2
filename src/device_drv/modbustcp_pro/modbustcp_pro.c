@@ -269,7 +269,7 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 {
 	static uint8_t SOHCmd, SOCMaxCmd, SOCMinCmd,relayCtl = 0;
-    static CANFD_MESSAGE bms_calibration_msg = {0}; // <-- 关键：static + 初始化一次
+    static CANFD_MESSAGE bms_calibration_msg = {0}; // <-- 关键：static + 初始化一次,参考DBC文件，要是DBC 文件改了，这个也要动
 
     // 第一次调用时初始化结构体头（只做一次）
     if (bms_calibration_msg.ID == 0) {
@@ -300,10 +300,10 @@ static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 	else if (address == 0x6736)
 	{
 		relayCtl = data;
-
-		bms_calibration_msg.Data[0] &= 0xF0; // 保留其他位，只清空 bit0-3		
-		bms_calibration_msg.Data[0] |= (relayCtl & 0x03);// 设置 bit0-1 (来自 relayCtl 的 bit0-1)
-		bms_calibration_msg.Data[0] |= (relayCtl & 0x0C);// 设置 bit2-3 (来自 relayCtl 的 bit2-3)  
+		// 清除 Data[0] 的 bit2~5（共4位），保留其他位
+    	bms_calibration_msg.Data[0] &= ~0x3C;  // 0x3C = 0b00111100，取反后为 ...11000011，即只更改Pos和Neg
+    	uint8_t shifted = (relayCtl & 0x0F) << 2;  // 只取低4位，然后左移2，将 relayCtl 的 bit0~3 左移 2 位，对齐到目标位置（bit2~5）
+		bms_calibration_msg.Data[0] |= shifted;// 写入到 Data[0]
 	}
 	Drv_bcu_canfd_send(&bms_calibration_msg);
 }

@@ -36,15 +36,15 @@ int main(int argc, char **argv)
     my_epoll_Init(); // 初始化epoll环境
    
     // // /*=================任务初始化部分================*/
-    // bcu_DealTaskCreate();
+    bcu_DealTaskCreate();
     // bmu_DealTaskCreate();
-    // modbusTcpServerTaskCreate();//moduTCP服务
-    // ota_Upgrade_TaskCreate();//代码升级任务
+    modbusTcpServerTaskCreate();//moduTCP服务
+    ota_Upgrade_TaskCreate();//代码升级任务
 
-    // xmodemCommTaskCreatee();//监听OTA 存储升级文件Xmodem协议
-    // SDCardDataSaveTaskCreate(); // SD卡写任务
-    // abnormalDetectionTaskCreate(); // 异常监测任务
-    ocppCommunicationTaskCreate(); //ocpp通信任务
+    xmodemCommTaskCreatee();//监听OTA 存储升级文件Xmodem协议
+    SDCardDataSaveTaskCreate(); // SD卡写任务
+    abnormalDetectionTaskCreate(); // 异常监测任务
+    // ocppCommunicationTaskCreate(); //ocpp通信任务
     // FtpServiceThreadCreate();
 
     int ret = 0;
