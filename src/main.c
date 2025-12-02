@@ -44,14 +44,15 @@ int main(int argc, char **argv)
     xmodemCommTaskCreatee();//监听OTA 存储升级文件Xmodem协议
     SDCardDataSaveTaskCreate(); // SD卡写任务
     abnormalDetectionTaskCreate(); // 异常监测任务
-    //ocppCommunicationTaskCreate(); //ocpp通信任务
-    //FtpServiceThreadCreate();
+    ocppCommunicationTaskCreate(); //ocpp通信任务
+    // FtpServiceThreadCreate();
 
     int ret = 0;
 
     while (1)
     {
         sleep(1);
+
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // //  printf("ret =, Mobud[0x1012] = \r\n");
         // // printf("Mobud[1122] = %x\r\n",modbusBuff[0x462]);//ota上载寄存器判断

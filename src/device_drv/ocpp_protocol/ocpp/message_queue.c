@@ -35,6 +35,7 @@ static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
  * 返回 true 表示成功，false 表示队列已满
  */
 bool enqueue_message(struct json_object *msg) {
+
     bool result = false;
     if(msg==NULL)
     {
@@ -43,12 +44,11 @@ bool enqueue_message(struct json_object *msg) {
     pthread_mutex_lock(&lock);
 
     if (count < QUEUE_SIZE) {
-        queue[tail] = msg;  //json_object_get(msg);  
+        queue[tail] = msg;  //json_object_get(msg);  不需要再增加引用计数,不然会内存泄露
         tail = (tail + 1) % QUEUE_SIZE;
         count++;
         result = true;
     }
-
     pthread_mutex_unlock(&lock);
     websocket_request_write();
     return result;
@@ -67,7 +67,6 @@ struct json_object *dequeue_message() {
         head = (head + 1) % QUEUE_SIZE;
         count--;
     }
-
     pthread_mutex_unlock(&lock);
     return msg;
 }

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <json-c/json.h>
+#include "ocpp_messages.h"
 #include <stdio.h>
 #include "project.h"
 #include "interface/log/log.h"
@@ -73,34 +74,38 @@ void *ocppCommunicationTask(void *arg)
     struct lws_context_creation_info info = {0};
     struct lws_context *context;
 
-    info.port = CONTEXT_PORT_NO_LISTEN;
-    info.protocols = protocols;
-    info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
+    info.port = CONTEXT_PORT_NO_LISTEN;// 不监听端口（客户端模式）
+    info.protocols = protocols;// 注册协议处理
+    info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;// SSL 初始化
 
 
-    context = lws_create_context(&info);
+    context = lws_create_context(&info);// 创建 WebSocket 上下文
+    printf("libwebsockets version: %s\n", lws_get_library_version());
+    printf("json-c version: %s\n", JSON_C_VERSION);
 
     while (1)
     {
         struct lws_client_connect_info ccinfo = {0};
         ccinfo.context = context;
 
-        ccinfo.address = "ocpp.xcharger.net";
-        ccinfo.port = 7274;
-        ccinfo.path = "/ocpp/C8A215DPLEXHGRKLGU";
+        // ccinfo.address = "ocpp.xcharger.net";// 服务器地址localhost
+        // ccinfo.port = 7274;// 服务器端口
+        ccinfo.address = "localhost";// 服务器地址
+        ccinfo.port = 7274;// 服务器端口
+        // ccinfo.path = "/ocpp/C8A215DPLEXHGRKLGU";// OCPP 端点路径
 
         ccinfo.host = ccinfo.address;
         ccinfo.origin = ccinfo.address;
-        ccinfo.protocol = protocols[0].name;
+        ccinfo.protocol = protocols[0].name;// 使用 "ocpp1.6" 协议
 
-        ccinfo.ssl_connection = LCCSCF_USE_SSL |
-                                LCCSCF_ALLOW_SELFSIGNED |
-                                LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK |
-                                LCCSCF_ALLOW_EXPIRED |
-                                LCCSCF_ALLOW_INSECURE; // LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验
+        // ccinfo.ssl_connection = LCCSCF_USE_SSL |
+        //                         LCCSCF_ALLOW_SELFSIGNED |
+        //                         LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK |
+        //                         LCCSCF_ALLOW_EXPIRED |
+        //                         LCCSCF_ALLOW_INSECURE; // LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验
 
 
-        struct lws *wsi = lws_client_connect_via_info(&ccinfo);
+        struct lws *wsi = lws_client_connect_via_info(&ccinfo);//建立连接
         if (!wsi)
         {
             LOG("[Ocpp]WebSocket connection failed, retrying...");
@@ -130,13 +135,19 @@ static send_state_t send_state = {0}; // 线程安全时应加锁访问
 
 void handle_writeable(struct lws *wsi)
 {
+
     static unsigned char buf[LWS_PRE + 2048];
 
     if (!send_state.msg)
     {
         send_state.msg = dequeue_message();
         if (!send_state.msg)
+        {            
             return;
+        }
+        // 尝试访问对象类型（安全操作）
+        enum json_type type = json_object_get_type(send_state.msg);
+
 #if (BUILD_X86)
         send_state.text = json_object_to_json_string(send_state.msg);
 #else
@@ -145,7 +156,6 @@ void handle_writeable(struct lws *wsi)
         send_state.total_len = strlen(send_state.text);
         send_state.sent_pos = 0;
     }
-
     size_t remaining = send_state.total_len - send_state.sent_pos;
     size_t chunk_size = remaining > 2048 ? 2048 : remaining;
 
@@ -172,7 +182,7 @@ void handle_writeable(struct lws *wsi)
     int n = lws_write(wsi, &buf[LWS_PRE], chunk_size, flags);
     if (n < 0)
     {
-        fprintf(stderr, "lws_write failed: %d\n", n);
+        fprintf(stderr, "[ERROR] lws_write failed on msg=%p\n", (void*)send_state.msg);
         json_object_put(send_state.msg);
         memset(&send_state, 0, sizeof(send_state));
         return;
@@ -183,15 +193,23 @@ void handle_writeable(struct lws *wsi)
     if (send_state.sent_pos < send_state.total_len)
     {
         lws_callback_on_writable(wsi);
-        // 有问题
         return;
     }
 
     // 完成发送
-    // printf("send: %s\n", send_state.text);
     json_object_put(send_state.msg);
     memset(&send_state, 0, sizeof(send_state));
 
     // 准备下一条
-    lws_callback_on_writable(wsi);
+    // lws_callback_on_writable(wsi);
+    //立即尝试取下一条消息，避免依赖外部触发
+    struct json_object *next_msg = dequeue_message();
+    if (next_msg) {
+        send_state.msg = next_msg;
+        // 重新进入发送流程（下一次 writable 回调会处理）
+        lws_callback_on_writable(wsi);
+    } else {
+        // 队列空了，等待下次 enqueue 时由外部触发
+        // 或者什么都不做
+    }
 }

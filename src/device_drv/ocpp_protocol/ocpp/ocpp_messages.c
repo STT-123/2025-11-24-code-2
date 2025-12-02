@@ -7,6 +7,8 @@
 #include "project.h"
 #include "updownfile.h"
 #include "interface/log/log.h"
+#include <json-c/json_object.h>
+
 void handle_call_message(struct lws *wsi, json_object *json);
 void handle_call_result_message(struct lws *wsi, json_object *json);
 void handle_call_error_message(struct lws *wsi, json_object *json);
@@ -28,20 +30,7 @@ int send_ocpp_message(json_object *msg) {
     {
         printf("enqueu_msg error\n");
         return -1;
-    }
-    // int len = strlen(message);
-    // char *send_buffer = malloc(LWS_PRE + len);
-    // if (!send_buffer) {
-    //     printf("内存分配失败\n");
-    //     return -1;
-    // }
-    
-    // memcpy(send_buffer + LWS_PRE, message, len);
-    // lws_write(wsi, (unsigned char *)(send_buffer + LWS_PRE), len, LWS_WRITE_TEXT);
-    // free(send_buffer);
-    
-    // save_message_to_db(message, 0);
-    
+    }    
 }
 
 // 处理OCPP消息
@@ -64,13 +53,13 @@ int process_ocpp_message(struct lws *wsi, const char *message)
     
     switch (msg_type) {
         case 2:
-            handle_call_message(wsi, json);
+            handle_call_message(wsi, json);//调用请求
             break;
         case 3:
-            handle_call_result_message(wsi, json);
+            handle_call_result_message(wsi, json);//调用结果
             break;
         case 4:
-            handle_call_error_message(wsi, json);
+            handle_call_error_message(wsi, json);//调用错误
             break;
         default:
             LOG("未知的OCPP消息类型: %d\n", msg_type);
@@ -149,12 +138,22 @@ void handle_call_error_message(struct lws *wsi, json_object *json) {
 
 // 处理心跳请求
 void handle_heartbeat(struct lws *wsi, json_object *json) {
+
     json_object *response = json_object_new_array();//创建一个JSON数组对象
+    // printf("Refcount: %d\n", json_object_get_refcount(response));
+    /*-----------
+        1.新建对象1
+        json_object *temp = json_object_new_int(3); // refcount = 1
+        json_object_array_add(response, temp);      // response 拥有 temp
+    -------------*/
+
     json_object_array_add(response, json_object_new_int(3));//增加一个元素到json数组的末尾 ；//创建josn的int 32对象
+    //2.新建对象2
+    json_object *orig_msg_id  = json_object_array_get_idx(json, 1);//按照索引获取json数组的对象
+    const char *msg_id_str = json_object_get_string(orig_msg_id);
+    json_object_array_add(response, json_object_new_string(msg_id_str)); // 
     
-    json_object *msg_id_obj = json_object_array_get_idx(json, 1);//按照索引获取json数组的对象
-    json_object_array_add(response, msg_id_obj);//增加一个元素到json数组的末尾
-    
+    //3.新建对象3
     json_object *payload = json_object_new_object();//创建一个新的JSON对象，引用计数为1，该指针具有唯一的所有权
     time_t now = time(NULL);
     char timestamp[26];
@@ -162,7 +161,7 @@ void handle_heartbeat(struct lws *wsi, json_object *json) {
     timestamp[24] = '\0';
     json_object_object_add(payload, "currentTime", json_object_new_string(timestamp));//添加一个键值对到JSON对象中
     json_object_array_add(response, payload);//增加一个元素到json数组的末尾
-    
+
     send_ocpp_message(response); /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/; 
 }
 

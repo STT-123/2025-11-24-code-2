@@ -825,7 +825,7 @@ unsigned short crcGet(unsigned char *ptr, int len)
 
 
 
-void delete_files_with_prefix(const char *path, const char *prefix) {
+void delete_files_with_prefix(const char *path, const char *substring) {
     DIR *dir;
     struct dirent *entry;
 
@@ -851,7 +851,7 @@ void delete_files_with_prefix(const char *path, const char *prefix) {
         }
 
         // Check prefix match
-        if (strncmp(prefix, entry->d_name, strlen(prefix)) == 0) {
+        if (strstr(entry->d_name, substring) != NULL){
             if (unlink(filepath) == 0) {
                 printf("Deleted: %s\n", filepath);
             } else {

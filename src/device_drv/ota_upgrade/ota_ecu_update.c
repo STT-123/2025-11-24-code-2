@@ -112,7 +112,8 @@ void ECU_OTA(void)
         }
         set_ota_OTAStart(0);
     }
-    else{
+    else
+    {
         LOG("[OTA] get_ota_deviceID() = 0x%x, get_ota_deviceType() = %d\r\n",get_ota_deviceID(),get_ota_deviceType());
         ecustatus.ErrorReg = 1;
         ecustatus.ErrorDeviceID = get_ota_deviceID();
@@ -125,6 +126,11 @@ void FinshhECUOtaAndCleanup(void)
 {
     set_ota_deviceType(0);
     set_ota_OTAStart(0);
+    printf("[OTA ECU] OTA finished, cleaning up...\n");
+    delete_files_with_prefix(USB_MOUNT_POINT, "XC");//  这个要删除升级文件，判断xcpstatus状态，成功或者失败删除
+    delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
+    delete_files_with_prefix(USB_MOUNT_POINT, "deb"); // 删除升级文件
+    delete_files_with_prefix(USB_MOUNT_POINT, "tar"); // 删除升级文件
 	g_otactrl.UpDating = 0;//1130(升级结束)
 	ecustatus.CANStartOTA = 0;
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);

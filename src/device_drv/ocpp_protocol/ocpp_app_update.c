@@ -101,7 +101,7 @@ int upgarde_file_type(const char *filename,const char *filetype)
             LOG("[Ocpp]ECU_OTA_otadeviceType: %u\r\n",g_otactrl.deviceType);
             LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);
             memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
-            memcpy(g_otactrl.OTAFilename, filetype, strlen(filetype));
+            memcpy(g_otactrl.OTAFilename, matched_filename, strlen(matched_filename));
             LOG("[Ocpp]g_otactrl.OTAFilename : %s\r\n",g_otactrl.OTAFilename);
             g_otactrl.OTAStart = 1;
         }
@@ -264,8 +264,8 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 	bool byd_bat_ota_flag = false;
 
 	memset(str, 0, sizeof(str));
-	sprintf(str, "tar tf %s ", filename);
-    // sprintf(str, "unzip -l %s", filename); 
+	sprintf(str, "tar tf %s ", filename);//列出来所有tar里面的目录，但是不实际解压
+	printf("1111\r\n");
 	fp = NULL;
 	fp = popen(str, "r");
 	Log_DebugOut("str:%s \r\n", str);
@@ -276,12 +276,11 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 		return result;
 	}
 	memset(str, 0, sizeof(str));
-    printf("11111\r\n");
 	while (fgets(str, sizeof(str), fp) != NULL)
 	{
         printf("str:%s \r\n", str);
 		Log_DebugOut("get %s %s  \r\n", filename, str);
-
+		printf("2222\r\n");
 		p = NULL;
 		printf("filetype :%s\r\n",filetype);
 		p = strstr((char *)str, filetype); //升级app 文件
@@ -299,7 +298,7 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
             out_matched_filename[max_len - 1] = '\0';  // 确保结尾
             printf("out_matched_filename Matched filename: %s\n", out_matched_filename);
         }
-
+		printf("3333\r\n");
 		p = NULL;
 		p = strstr((char *)str, ANY_SCRIPT_FILE); //主机 执行脚本文件
 		if (p)
@@ -310,17 +309,15 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 
 		
 	}
-    printf("22222\r\n");
 	if (fp != NULL)
 	{
 		pclose(fp);
 	}
-    printf("33333\r\n");
 	if(app_upgrade_flag == true) //解压压缩包 校验应用的MD5值
 	{
-        printf("44444\r\n");
 		memset(str, 0, sizeof(str));
-		sprintf(str, "cd %s \n tar xvf %s \n", USB_MOUNT_POINT, filename);
+		printf("44444\r\n");
+		sprintf(str, "cd %s && tar xvf %s", USB_MOUNT_POINT, filename); 
 		Log_DebugOut("%s \r\n", str);
 		system(str);
 		//校验MD5值
@@ -337,6 +334,7 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 		}
 		memset(str, 0, sizeof(str));
 		app_upgrade_flag = false;
+		printf("55555\r\n");
 		while (fgets(str, sizeof(str), fp) != NULL)
 		{
 			Log_DebugOut("get %s  \r\n", str);
@@ -357,7 +355,6 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 			pclose(fp);
 		}
 	}
-    printf("55555\r\n");
 	if (app_upgrade_flag == true)
 	{
 		Log_DebugOut("%s ready upgrade  \r\n", filetype);
@@ -367,8 +364,6 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 	{
 		set_app_upgrade_flag(app_upgrade_flag);
 	}
-
-   printf("666666\r\n");
 
 	if (any_script_flag == true) //解压压缩包 校验应用的MD5值
 	{
@@ -410,7 +405,7 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 			pclose(fp);
 		}
 	}
-    printf("77777\r\n");
+
 	if (any_script_flag == true)
 	{
 		Log_DebugOut("%s ready upgrade  \r\n", ANY_SCRIPT_FILE);

@@ -1100,8 +1100,9 @@ void FinshhBCUBMUOtaAndCleanup(void)
 {
     set_ota_deviceType(0);//停止升级
     set_ota_OTAStart(0);
-	// delete_files_with_prefix(USB_MOUNT_POINT, "XC");//  这个要删除升级文件，判断xcpstatus状态，成功或者失败删除
-    // delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
+	delete_files_with_prefix(USB_MOUNT_POINT, "XC");//  这个要删除升级文件，判断xcpstatus状态，成功或者失败删除
+    delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
+    delete_files_with_prefix(USB_MOUNT_POINT, "tar"); 
 	g_otactrl.UpDating = 0;//1130(升级结束)
 	memset(&xcpstatus,0,sizeof(xcpstatus));
 	// set_charger_cmd(BMS_POWER_DEFAULT);
