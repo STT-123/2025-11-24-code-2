@@ -37,7 +37,7 @@ int main(int argc, char **argv)
    
     // // /*=================任务初始化部分================*/
     bcu_DealTaskCreate();
-    // bmu_DealTaskCreate();
+    bmu_DealTaskCreate();
     modbusTcpServerTaskCreate();//moduTCP服务
     ota_Upgrade_TaskCreate();//代码升级任务
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
         sleep(1);
 
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
-         printf("main printf sleep(1) \r\n");
+        //  printf("main printf sleep(1) \r\n");
         // // printf("Mobud[1122] = %x\r\n",modbusBuff[0x462]);//ota上载寄存器判断
         // // printf("Mobud[0x463] = %x\r\n",modbusBuff[0x463]);//ota上载寄存器判断
         // // printf("Mobud[0x6063] = %x\r\n",modbusBuff[0x6063-0x3000]);//ota上载寄存器判断

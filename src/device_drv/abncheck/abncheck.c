@@ -220,6 +220,7 @@ int CheckSinglePHYStatus(const char *ifname)
 void PHYlinktate()
 {
 	static struct timespec lastCheckTick = {0};
+	clock_gettime(CLOCK_MONOTONIC, &lastCheckTick); // 记录lastCheckTick初始时间
 	static int PHY_RECOVER_FLAG = 0;
 	static int PHY_ERROR_FLAG = 0;
 

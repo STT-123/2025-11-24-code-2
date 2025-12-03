@@ -26,7 +26,7 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
     uint32_t sendSuccessCount = 0;           // 已发送的字节数
     uint16_t blockCount = 0;                 // 块数量
     unsigned int bytesRead;
-    struct timespec acpdcdcota_start;
+    struct timespec acpdcdcota_start = {0};
     uint8_t zeroBuffer[ACPDC_BLOCK_SIZE] = {0};
     CAN_MESSAGE CanMes;
     CAN_MESSAGE CanMes_1;
@@ -51,7 +51,7 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
     blockCount = (totalCount + ACPDC_BLOCK_SIZE - 1) / ACPDC_BLOCK_SIZE;
     printf("blockCount : %d\r\n", blockCount);
     unsigned int percent_count = blockCount/80;
-	clock_gettime(CLOCK_MONOTONIC, &acpdcdcota_start);
+	clock_gettime(CLOCK_MONOTONIC, &acpdcdcota_start);//更新系统启动时间
 	queue_clear(&Queue_BCURevData);
     for (uint16_t count = 0; count < blockCount; count++) 
 	{

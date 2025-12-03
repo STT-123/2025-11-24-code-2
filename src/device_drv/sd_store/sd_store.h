@@ -57,6 +57,7 @@ static void Drv_RTCGetTime(Rtc_Ip_TimedateType *rtcTime);
 static int  mount_sdcard_fat32(void);
 static int  judgeTimetoUpdate(void);
 static int should_store_frame(void);
+static uint8_t CalculateDLC(uint8_t data_length);
 int  SD_Initialize(void);
 int  ensure_mount_point(const char *path);
 void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel);

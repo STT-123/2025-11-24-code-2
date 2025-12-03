@@ -24,7 +24,6 @@ static bool newFileNeeded = true;
 Rtc_Ip_TimedateType initialTime = {0};
 Rtc_Ip_TimedateType currentTime = {0};
 struct timespec start_tick = {0};
-
 uint32_t CAN_IDs[] = {
     0x180110E4,
     0x180210E4,
@@ -479,38 +478,68 @@ static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms)
             }
         }
         
-        char timeStampedMessage[BUFFERED_WRITE_SIZE] = {0};// 构造带时间戳的字符串
-        unsigned char offset = 0;
+        // 准备ID字符串
+        char id_str[10];
+        uint32_t can_id = logMsg->ID;
+        
+        // 你的ID都是29位扩展ID，所以都加'x'
+        snprintf(id_str, sizeof(id_str), "%08Xx", can_id & 0x1FFFFFFF);
+        
+        // 计算DLC
+        uint8_t dlc = CalculateDLC(logMsg->Length);
+          
+        // 构建完整的日志行
+        char timeStampedMessage[BUFFERED_WRITE_SIZE];
+        int len = 0;
 
-        // 时间戳
-        offset += snprintf(timeStampedMessage + offset, sizeof(timeStampedMessage),
-                           "%d.%03d 1 ", timestamp_ms / 1000, timestamp_ms % 1000);
-        // ID + 长度
-        offset += snprintf(timeStampedMessage + offset, sizeof(timeStampedMessage),
-                           "%03Xx Rx d %d ", logMsg->ID, logMsg->Length);
+        // 第一部分：时间戳和基础信息
+        len = snprintf(timeStampedMessage, sizeof(timeStampedMessage),
+                      "%d.%03d CANFD 1 %s Rx 0 0 d %d %d ",
+                      timestamp_ms / 1000,
+                      timestamp_ms % 1000,
+                      id_str,
+                      dlc,
+                      logMsg->Length);
         
-        for (int j = 0; j < logMsg->Length; ++j)// 数据
-        {
-            offset += snprintf(timeStampedMessage + offset, 4,
-                               "%02X ", logMsg->Data[j]);
+        if (len <= 0 || len >= BUFFERED_WRITE_SIZE) {
+            LOG("[SD Card] Error: Failed to format header\n");
+            continue;
         }
-        
-        offset += snprintf(timeStampedMessage + offset, 4, "\r\n");// 换行
-        
-        size_t err = fseek(file, 0, SEEK_END);// 写入文件//阻塞
-        if (err != 0)
-        {
+
+        // 第二部分：数据
+        for (int j = 0; j < logMsg->Length; j++) {
+            // 检查剩余空间
+            if (len + 4 >= BUFFERED_WRITE_SIZE) {
+                LOG("[SD Card] Warning: Buffer overflow\n");
+                break;
+            }
+            
+            int written = snprintf(timeStampedMessage + len, 
+                                  BUFFERED_WRITE_SIZE - len,
+                                  "%02X ", logMsg->Data[j]);
+            if (written > 0) {
+                len += written;
+            }
+        }
+
+        // 第三部分：换行
+        if (len + 3 < BUFFERED_WRITE_SIZE) {
+            len += snprintf(timeStampedMessage + len, 
+                           BUFFERED_WRITE_SIZE - len,
+                           "\r\n");
+        }
+        // 写入文件
+        if (fseek(file, 0, SEEK_END) != 0) {
             perror("fseek");
             LOG("[SD Card] Failed to seek to end of file\n");
-            return;
+            continue;
         }
-
-        err = fwrite(timeStampedMessage, 1, offset, file);
-        if (err != offset)
-        {
-            LOG("[SD Card] Failed to write to file\n");
-            return;
-        }
+        
+        size_t written = fwrite(timeStampedMessage, 1, len, file);
+        if (written != (size_t)len) {
+            LOG("[SD Card] Failed to write to file, expected %d, wrote %zu\n", 
+                len, written);
+        }       
     }
     fflush(file);
 }
@@ -765,7 +794,9 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 
 
     CAN_LOG_MESSAGE *logMsg = &activeBuffer->buffer[activeBuffer->writeIndex];
+
     logMsg->relativeTimestamp = GetTimeDifference_ms(start_tick);
+
     memcpy(&logMsg->msg, msg, sizeof(CANFD_MESSAGE));
     logMsg->channel = channel;
 
@@ -906,7 +937,9 @@ void Drv_write_buffer_to_file(void)
         CAN_LOG_MESSAGE *logMsg = &inactiveBuffer->buffer[inactiveBuffer->readIndex];
 
         char dataStr[3 * 64 + 1] = {0};
-        int bytes = logMsg->msg.Length;
+
+        int bytes = logMsg->msg.Length;//数据长度
+
         if (bytes > 64) bytes = 64; // 双保险
 
         for (int i = 0; i < bytes; ++i) {
@@ -916,15 +949,19 @@ void Drv_write_buffer_to_file(void)
         }
         // 2) 方向标记
         const char *dir = (logMsg->channel == 0) ? "Rx" : "Tx";
+
+        uint8_t dlc = CalculateDLC(bytes);
+
         // 3) 直接一次性写入最终字符串（避免中间缓冲 + memmove）
         char line[BUFFERED_WRITE_SIZE]; // 请把 BUFFERED_WRITE_SIZE 设为 >= 512
         int lineLen = snprintf(
             line, sizeof(line),
-            "%d.%03d 1 %08lX %s d %d %s\r\n",
+            "%d.%03d CANFD 1 %08lXx %s 0 0 d %d %d %s\r\n",
             logMsg->relativeTimestamp / 1000,
             logMsg->relativeTimestamp % 1000,
             (unsigned long)logMsg->msg.ID,
             dir,
+            dlc,
             logMsg->msg.Length,
             dataStr
         );
@@ -1062,4 +1099,25 @@ void checkSDCardCapacity(void)
         Func_DeleteOldestFolder();
     }
     usleep(1000*1000);
+}
+
+
+static uint8_t CalculateDLC(uint8_t data_length) {
+    if (data_length <= 8) {
+        return data_length;
+    } else if (data_length <= 12) {
+        return 9;
+    } else if (data_length <= 16) {
+        return 10;
+    } else if (data_length <= 20) {
+        return 11;
+    } else if (data_length <= 24) {
+        return 12;
+    } else if (data_length <= 32) {
+        return 13;
+    } else if (data_length <= 48) {
+        return 14;
+    } else { // 64字节
+        return 15;
+    }
 }

@@ -192,7 +192,6 @@ static int XCPCANOTAMSGParseMult(XCPStatus *xcpstatus)
     int xStatus;
     int err;
     struct timespec xStartTime;
-    clock_gettime(CLOCK_MONOTONIC, &xStartTime);
 	static CAN_MESSAGE canmsg;
 	memset(&canmsg, 0, sizeof(CAN_MESSAGE));
     clock_gettime(CLOCK_MONOTONIC, &xStartTime); // 初始化起始时间戳

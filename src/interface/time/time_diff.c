@@ -7,6 +7,7 @@
 uint32_t GetTimeDifference_ms(struct timespec start_tick)
 {
     struct timespec current_tick;
+
     clock_gettime(CLOCK_MONOTONIC, &current_tick);
     // gettimeofday(&current_tick,NULL);
     uint32_t diff_sec = current_tick.tv_sec - start_tick.tv_sec;

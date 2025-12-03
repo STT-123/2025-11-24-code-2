@@ -11,6 +11,7 @@
 
 pthread_t BCURecDel_TASKHandle = 0;
 extern uint8_t modbusBuffInitFlag ;//保证modbusBuff空间分配好了,bcu才能使用,不然bcu操作空指针会段错误
+extern struct timespec start_tick;
 void *bcu_DealTask(void *arg)
 {
     struct canfd_frame canrev_frame = {0};
@@ -19,9 +20,7 @@ void *bcu_DealTask(void *arg)
     unsigned int call_count = 0;
     int len = 0;
     int bms_analysis_done = 0;
-    struct timespec start_time;
-    clock_gettime(CLOCK_MONOTONIC, &start_time); // 记录线程开始时间
-
+    clock_gettime(CLOCK_MONOTONIC, &start_tick); // 记录线程开始时间
     bcu_Init();// ecu 和 bcu通信can初始化（打开can口 绑定回调）
 
     while (1)
@@ -58,16 +57,10 @@ void *bcu_DealTask(void *arg)
                 // 仅在初始化后10秒执行一次
                 if (!bms_analysis_done)
                 {
-                    struct timespec now;
-                    clock_gettime(CLOCK_MONOTONIC, &now);
-                    long elapsed_ms = (now.tv_sec - start_time.tv_sec) * 1000 +
-                                      (now.tv_nsec - start_time.tv_nsec) / 1000000;
 
-                    if (elapsed_ms >= 10000) // 10秒后执行
-                    {
+                    if(GetTimeDifference_ms(start_tick) >= 10000){
                         CANFDRcvFcn_BCU_step();
                         CANFDSendFcn_BCU_step();
-
                         bms_analysis_done = 1;
                         LOG("Drv_BMS_Analysis executed after 10s delay\r\n");
                     }
