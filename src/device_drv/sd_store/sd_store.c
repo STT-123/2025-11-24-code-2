@@ -320,7 +320,7 @@ static int AscFileWriteTimeHeader(FILE *file, struct tm *timeinfo)
     
     // 写入文件
     size_t written = fwrite(header, 1, total_len, file);
-    LOG("[SD Card] Bytes written: %zu, expected: %d\n", written, total_len);
+    //LOG("[SD Card] Bytes written: %zu, expected: %d\n", written, total_len);
     
     if (written != (size_t)total_len)
     {

@@ -10,6 +10,7 @@
 
 // modbus服务器信息
 modbus_t *ctx = NULL;
+modbus_t *ctxtest = NULL;
 modbus_mapping_t *g_mb_mapping = NULL;
 modbus_mapping_t *g_mb_mapping_test = NULL;
 unsigned char modbus_ip[16] = IP_ADDRESS;
@@ -21,6 +22,7 @@ uint8_t modbusBuffInitFlag = 0;//保证modbusBuff空间分配好了,bcu才能使
 pthread_t NetConfig_TASKHandle = 0;
 pthread_t NetConfig_TASKHandle_TEST = 0;
 static int timeout_flag = 0;
+static int timeout_flagtest = 0;
 int get_timeout_flag(void)
 {
     return timeout_flag;
@@ -198,14 +200,14 @@ void *ModbusTCPServerTESTTask(void *arg)
         LOG("[ModbusTcp] IP设置成功\n");
     }
     
-    ctx = modbus_new_tcp(modbus_ip_test, 502);//新建一个tcp服务端
-    LOG("[ModbusTcp] ctx =%d ,modbus ip =%s \r\n", ctx, modbus_ip_test);
+    ctxtest = modbus_new_tcp(modbus_ip_test, 502);//新建一个tcp服务端
+    LOG("[ModbusTcp] ctxtest =%d ,modbus ip =%s \r\n", ctxtest, modbus_ip_test);
 
     // 创建寄存器映射，只创建保持寄存器
     g_mb_mapping_test = modbus_mapping_new_start_address(0, 0, 0, 0, REGISTERS_START_ADDRESS, REGISTERS_NB, 0, 0);
     if (g_mb_mapping_test == NULL){
         LOG("[ModbusTcp] Failed to allocate the mapping: %s \r\n", modbus_strerror(errno));
-        modbus_free(ctx);
+        modbus_free(ctxtest);
         for (;;){
             usleep(5000);
         }
@@ -214,7 +216,7 @@ void *ModbusTCPServerTESTTask(void *arg)
     modbusBuffTest = g_mb_mapping_test->tab_registers;// 全局 外部在用
     modbusBuffInitFlag = 1;// 保证modbusBuff空间分配好了,bcu才能使用,不然bcu操作空指针会段错误
 
-    server_socket = modbus_tcp_listen(ctx, NB_CONNECTION);// 开启监听
+    server_socket = modbus_tcp_listen(ctxtest, NB_CONNECTION);// 开启监听
     FD_ZERO(&refset); //初始化集合为NULL
     FD_SET(server_socket, &refset); // 将服务器socket加入集合
     fdmax = server_socket;
@@ -228,7 +230,7 @@ void *ModbusTCPServerTESTTask(void *arg)
         rdset = refset;// 复制参考集合到读集合    
         if (select(fdmax + 1, &rdset, NULL, NULL, &timeout) == 0)//阻塞10s
         {      
-            timeout_flag = 1;// select超时处理
+            timeout_flagtest = 1;// select超时处理
              // 清理所有客户端连接
             for (master_socket = 0; master_socket <= fdmax; master_socket++){
                 if (FD_ISSET(master_socket, &refset) && master_socket != server_socket){ //判断当前fd是否为refset中的集合
@@ -239,7 +241,7 @@ void *ModbusTCPServerTESTTask(void *arg)
                 }
             }
         }else{
-            timeout_flag = 0;
+            timeout_flagtest = 0;
         }
 
         // 遍历所有可能的socket
@@ -289,13 +291,13 @@ void *ModbusTCPServerTESTTask(void *arg)
                 {
                     // 处理已连接客户端的请求
                     unsigned char query[MODBUS_TCP_MAX_ADU_LENGTH];
-                    modbus_set_socket(ctx, master_socket); // 设置当前socket到modbus上下文
+                    modbus_set_socket(ctxtest, master_socket); // 设置当前socket到modbus上下文
                     
-                    rc = modbus_receive(ctx, query);// 接收Modbus请求
+                    rc = modbus_receive(ctxtest, query);// 接收Modbus请求
                     if (rc != -1)
                     {
-                        // modbus_write_reg_deal(ctx, query, rc); // 写寄存器处理
-                        modbus_reply(ctx, query, rc, g_mb_mapping); // 回复寄存器
+                        // modbus_write_reg_deal(ctxtest, query, rc); // 写寄存器处理
+                        modbus_reply(ctxtest, query, rc, g_mb_mapping); // 回复寄存器
                     }
                     else
                     {

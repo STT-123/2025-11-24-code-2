@@ -58,8 +58,14 @@ int main(int argc, char **argv)
         // // printf("Mobud[1122] = %x\r\n",modbusBuff[0x462]);//ota上载寄存器判断
         // // printf("Mobud[0x463] = %x\r\n",modbusBuff[0x463]);//ota上载寄存器判断
         // // printf("Mobud[0x6063] = %x\r\n",modbusBuff[0x6063-0x3000]);//ota上载寄存器判断
-        printf("Mobud[0x3462] = %x\r\n",modbusBuff[0x3462-0x3000]);//ota上载寄存器判断
-        printf("Mobud[0x3463] = %x\r\n",modbusBuff[0x3463-0x3000]);//ota上载寄存器判断,这是浮点数
+        LOG("Mobud[0x6060] = %.1f\r\n",(float)modbusBuff[0x6060-0x3000] * 0.1);//ota上载寄存器判断
+        LOG("modbusBuffTest[0x6060] = %.1f\r\n",(float)modbusBuffTest[0x6060-0x3000] * 0.1);//ota上载寄存器判断
+
+        // printf("Mobud[0x3462] = %x\r\n",modbusBuff[0x3462-0x3000]);//ota上载寄存器判断
+        // printf("Mobud[0x3463] = %x\r\n",modbusBuff[0x3463-0x3000]);//ota上载寄存器判断,这是浮点数
+
+        // printf("modbusBuffTest[0x3462] = %x\r\n",modbusBuffTest[0x3462-0x3000]);//ota上载寄存器判断
+        // printf("modbusBuffTest[0x3463] = %x\r\n",modbusBuffTest[0x3463-0x3000]);//ota上载寄存器判断,这是浮点数
     }
 }
 
