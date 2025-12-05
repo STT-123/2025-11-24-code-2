@@ -529,22 +529,36 @@ void handle_cwd_command(FTPState *state, const char *args)
         args = USB_MOUNT_POINT;
     }
 
-    if (chdir(args) == 0)
-    {
+    if (chdir(args) == 0) {
         send_response(state->control_sock, "250 Directory changed.\r\n");
-
-        // 更新会话中的路径
-        if (strlen(args) < sizeof(state->path))
-        {
-            strncpy(state->path, args, sizeof(state->path) - 1);
-            state->path[sizeof(state->path) - 1] = '\0'; // 确保路径是null-terminated
+        
+        // 获取实际的工作目录
+        char cwd[256];
+        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+            strncpy(state->path, cwd, sizeof(state->path) - 1);
+            state->path[sizeof(state->path) - 1] = '\0';
+            printf("Changed to directory: %s\n", state->path);
         }
-    }
-    else
-    {
+    } else {
         printf("Failed to change directory: %s\n", strerror(errno));
         send_response(state->control_sock, "550 Failed to change directory.\r\n");
     }
+    // if (chdir(args) == 0)
+    // {
+    //     send_response(state->control_sock, "250 Directory changed.\r\n");
+
+    //     // 更新会话中的路径
+    //     if (strlen(args) < sizeof(state->path))
+    //     {
+    //         strncpy(state->path, args, sizeof(state->path) - 1);
+    //         state->path[sizeof(state->path) - 1] = '\0'; // 确保路径是null-terminated
+    //     }
+    // }
+    // else
+    // {
+    //     printf("Failed to change directory: %s\n", strerror(errno));
+    //     send_response(state->control_sock, "550 Failed to change directory.\r\n");
+    // }
 }
 
 void handle_type_command(FTPState *state, char *args)
