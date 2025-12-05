@@ -56,7 +56,7 @@ int process_ocpp_message(struct lws *wsi, const char *message)
             handle_call_message(wsi, json);//调用请求
             break;
         case 3:
-            handle_call_result_message(wsi, json);//调用结果
+            handle_call_result_message(wsi, json);//调用结果，不处理
             break;
         case 4:
             handle_call_error_message(wsi, json);//调用错误
@@ -75,7 +75,7 @@ void handle_call_message(struct lws *wsi, json_object *json) {
     json_object *action_obj = json_object_array_get_idx(json, 2);
     const char *action = json_object_get_string(action_obj);
     
-    printf("收到CALL消息，动作: %s\n", action);
+    //printf("收到CALL消息，动作: %s\n", action);
     
     if (strcmp(action, "Heartbeat") == 0) {
         handle_heartbeat(wsi, json);
@@ -198,7 +198,6 @@ void handle_update_firmware(struct lws *wsi, json_object *json) {
     json_object_array_add(ack, json_object_new_object()); // Empty payload
 
     send_ocpp_message(ack);
-    //json_object_put(ack);  // 释放内存
 
     // 2. 提取参数
     json_object *location_obj = NULL;
@@ -208,19 +207,19 @@ void handle_update_firmware(struct lws *wsi, json_object *json) {
     json_object_object_get_ex(payload, "retrieveDate", &retrieve_date_obj);
 
     if (!location_obj || !retrieve_date_obj || !json_object_is_type(location_obj, json_type_string) || !json_object_is_type(retrieve_date_obj, json_type_string)) {
-        printf("Missing or invalid location/retrieveDate in payload.\n");
+        LOG("Missing or invalid location/retrieveDate in payload.\n");
         return;
     }
 
     const char *location = json_object_get_string(location_obj);
     const char *retrieve_date = json_object_get_string(retrieve_date_obj);
 
-    printf("UpdateFirmware: location=%s, retrieveDate=%s\n", location, retrieve_date);
+    LOG("UpdateFirmware: location=%s, retrieveDate=%s\n", location, retrieve_date);
     char *filetype = extract_after_xc(location);
     if (filetype) {
-        printf("固件文件名为: %s\n", filetype);
+        LOG("固件文件名为: %s\n", filetype);
     } else {
-        printf("提取文件名失败。\n");
+        LOG("提取文件名失败。\n");
     }
     // 3. 下载固件文件
     int success = download_file(location,filetype);
@@ -236,8 +235,6 @@ void handle_update_firmware(struct lws *wsi, json_object *json) {
     json_object_array_add(status_msg, status_payload);
 
     send_ocpp_message(status_msg);
-    //json_object_put(status_msg);
-
 }
 
 
@@ -298,7 +295,7 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
 
     const char *upload_url = json_object_get_string(location_obj);
 
-    printf("Uploading diagnostics to %s\n", upload_url);
+    LOG("Uploading diagnostics to %s\n", upload_url);
 
     // Step 3: 调用上传函数
     int success = ocpp_upload_file(upload_url);
@@ -318,7 +315,7 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
 
     if (success == 0) {
     if (remove(UPLOAD_FILE_PATH) == 0) {
-        printf("文件 %s 删除成功。\n", UPLOAD_FILE_PATH);
+        LOG("文件 %s 删除成功。\n", UPLOAD_FILE_PATH);
     } else {
         perror("删除文件失败");
     }
@@ -347,7 +344,7 @@ void handle_firmware_status_notification(struct lws *wsi, json_object *json) {
     json_object *status_obj = json_object_object_get(payload, "status");
     const char *status = json_object_get_string(status_obj);
     
-    printf("收到固件状态通知: %s\n", status);
+    LOG("收到固件状态通知: %s\n", status);
     
     json_object *response = json_object_new_array();
     json_object_array_add(response, json_object_new_int(3));
@@ -381,34 +378,6 @@ void handle_diagnostics_status_notification(struct lws *wsi, json_object *json) 
     send_ocpp_message(response); /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/;
 }
 
-
-// // 处理触发报告能量存储状态V2
-// void handle_trigger_report_energy_storage_status_v2(struct lws *wsi, json_object *json) {
-//     if (!json_object_is_type(json, json_type_array)) {
-//         printf("Invalid TriggerReportEnergyStorageStatusV2 message: not a JSON array.\n");
-//         return;
-//     }
-
-//     json_object *msg_id_obj = json_object_array_get_idx(json, 1);
-//     if (!msg_id_obj || !json_object_is_type(msg_id_obj, json_type_string)) {
-//         printf("Missing or invalid message ID in TriggerReportEnergyStorageStatusV2.\n");
-//         return;
-//     }
-
-//     const char *message_id = json_object_get_string(msg_id_obj);
-
-//     json_object *response = json_object_new_array();
-//     json_object_array_add(response, json_object_new_int(3));  
-//     json_object_array_add(response, json_object_new_string(message_id));
-
-//     json_object *payload = json_object_new_object();
-//     json_object_object_add(payload, "EnergyStorageValue", json_object_new_double(bms_B.CANFDUnpack1_o30));
-
-//     json_object_array_add(response, payload);
-
-
-//     send_ocpp_message(response);  /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/
-// }
 void handle_trigger_report_energy_storage_status_v2(struct lws *wsi, json_object *json) {
     if (!json_object_is_type(json, json_type_array)) {
         printf("Invalid TriggerReportEnergyStorageStatusV2 message: not a JSON array.\n");

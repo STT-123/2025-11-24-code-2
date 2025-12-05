@@ -98,8 +98,8 @@ void *ocppCommunicationTask(void *arg)
         struct lws_client_connect_info ccinfo = {0};
         ccinfo.context = context;
 
-        // ccinfo.address = "ocpp.xcharger.net";// 服务器地址localhost
-        ccinfo.address = "localhost";// 服务器地址
+        ccinfo.address = "ocpp.xcharger.net";// 服务器地址localhost
+        // ccinfo.address = "localhost";// 服务器地址
 
         ccinfo.port = 7274;// 服务器端口
         ccinfo.path = "/ocpp/C8A215DPLEXHGRKLGU";// OCPP 端点路径
@@ -108,11 +108,16 @@ void *ocppCommunicationTask(void *arg)
         ccinfo.origin = ccinfo.address;
         ccinfo.protocol = protocols[0].name;// 使用 "ocpp1.6" 协议
 
+        //启用 SSL/TLS 加密连接
+        //允许接受自签名证书（self-signed certificate）
+        //跳过对服务器证书中 Common Name (CN) 或 Subject Alternative Name (SAN) 的主机名验证
+        //允许使用已过期的 SSL 证书
+        //完全跳过 SSL 安全校验
         ccinfo.ssl_connection = LCCSCF_USE_SSL |
                                 LCCSCF_ALLOW_SELFSIGNED |
                                 LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK |
                                 LCCSCF_ALLOW_EXPIRED |
-                                LCCSCF_ALLOW_INSECURE; // LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验
+                                LCCSCF_ALLOW_INSECURE; // LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验.正是环境看看要不要把这些宽松的连接取消
 
 
         struct lws *wsi = lws_client_connect_via_info(&ccinfo);//建立连接

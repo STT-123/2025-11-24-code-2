@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     xmodemCommTaskCreatee();//监听OTA 存储升级文件Xmodem协议
     SDCardDataSaveTaskCreate(); // SD卡写任务
     abnormalDetectionTaskCreate(); // 异常监测任务
-    // ocppCommunicationTaskCreate(); //ocpp通信任务
+    ocppCommunicationTaskCreate(); //ocpp通信任务
     // FtpServiceThreadCreate();
 
     int ret = 0;

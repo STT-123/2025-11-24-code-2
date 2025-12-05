@@ -10,7 +10,7 @@
 
 
 
-#define DB_PATH "batdata.db"
+#define DB_PATH "/mnt/sda/batdata.db"
 void create_limit_trigger(sqlite3 *db);
 // 数据库初始化
 void init_db(sqlite3 **db) {
