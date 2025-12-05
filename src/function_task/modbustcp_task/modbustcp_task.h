@@ -17,7 +17,7 @@
 #include <net/if.h>
 
 extern uint16_t *modbusBuff;
-
+extern uint16_t *modbusBuffTest;
 #define NB_CONNECTION 3
 extern const uint16_t REGISTERS_START_ADDRESS;
 extern unsigned char modbus_ip[16];

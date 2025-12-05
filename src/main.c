@@ -35,7 +35,7 @@ int main(int argc, char **argv)
     settings_Init();// 判断本机IP 如果不存在 默认使用110
     my_epoll_Init(); // 初始化epoll环境
    
-    // // /*=================任务初始化部分================*/
+    // /*=================任务初始化部分================*/
     bcu_DealTaskCreate();
     bmu_DealTaskCreate();
     modbusTcpServerTaskCreate();//moduTCP服务
@@ -58,8 +58,8 @@ int main(int argc, char **argv)
         // // printf("Mobud[1122] = %x\r\n",modbusBuff[0x462]);//ota上载寄存器判断
         // // printf("Mobud[0x463] = %x\r\n",modbusBuff[0x463]);//ota上载寄存器判断
         // // printf("Mobud[0x6063] = %x\r\n",modbusBuff[0x6063-0x3000]);//ota上载寄存器判断
-        // printf("Mobud[0x3464] = %x\r\n",modbusBuff[0x3464-0x3000]);//ota上载寄存器判断
-        // printf("Mobud[0x3465] = %x\r\n",modbusBuff[0x3465-0x3000]);//ota上载寄存器判断,这是浮点数
+        printf("Mobud[0x3462] = %x\r\n",modbusBuff[0x3462-0x3000]);//ota上载寄存器判断
+        printf("Mobud[0x3463] = %x\r\n",modbusBuff[0x3463-0x3000]);//ota上载寄存器判断,这是浮点数
     }
 }
 

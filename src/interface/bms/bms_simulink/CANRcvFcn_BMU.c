@@ -2357,6 +2357,8 @@ void CANRcvFcn_BMU_step(void)
   while (port_index < port_len) {
     modbusBuff[CANRcvFcn_BMU_ConstP.index_Value[port_index]] =
       rtb_TmpSignalConversionAtSFunct[data_index];
+    modbusBuffTest[CANRcvFcn_BMU_ConstP.index_Value[port_index]] =
+      rtb_TmpSignalConversionAtSFunct[data_index];
     qY = data_index + /*MW:OvSatOk*/ 1U;
     if (data_index + 1U < data_index) {
       qY = MAX_uint32_T;

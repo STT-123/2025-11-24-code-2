@@ -16,6 +16,7 @@ unsigned char modbus_ip[16] = IP_ADDRESS;
 const uint16_t REGISTERS_START_ADDRESS = 0x3000; // 寄存器起始地址
 extern unsigned short g_ota_flag;
 uint16_t *modbusBuff = NULL;
+uint16_t *modbusBuffTest = NULL;
 uint8_t modbusBuffInitFlag = 0;//保证modbusBuff空间分配好了,bcu才能使用,不然bcu操作空指针会段错误
 pthread_t NetConfig_TASKHandle = 0;
 pthread_t NetConfig_TASKHandle_TEST = 0;
@@ -210,7 +211,7 @@ void *ModbusTCPServerTESTTask(void *arg)
         }
     }
 
-    modbusBuff = g_mb_mapping_test->tab_registers;// 全局 外部在用
+    modbusBuffTest = g_mb_mapping_test->tab_registers;// 全局 外部在用
     modbusBuffInitFlag = 1;// 保证modbusBuff空间分配好了,bcu才能使用,不然bcu操作空指针会段错误
 
     server_socket = modbus_tcp_listen(ctx, NB_CONNECTION);// 开启监听

@@ -7790,6 +7790,8 @@ void CANFDRcvFcn_BCU_step(void)
     if (CANFDRcvFcn_BCU_ConstP.portDimensions_Value[port_index] == 1U) {
       modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] =
         rtb_TmpSignalConversionAtSFunct[data_index];
+      modbusBuffTest[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] =
+        rtb_TmpSignalConversionAtSFunct[data_index];
       qY = data_index + 1U;
       if (data_index + 1U < data_index) {
         qY = MAX_uint32_T;
@@ -7806,6 +7808,7 @@ void CANFDRcvFcn_BCU_step(void)
         }
 
         modbusBuff[qY] = rtb_TmpSignalConversionAtSFunct[data_index];
+        modbusBuffTest[qY] = rtb_TmpSignalConversionAtSFunct[data_index];
         qY = data_index + 1U;
         if (data_index + 1U < data_index) {
           qY = MAX_uint32_T;

@@ -131,13 +131,14 @@ int get_modbus_reg_val(uint16_t addr, uint16_t *get_val)
  ********************************************************************************/
 int set_modbus_reg_val(uint16_t addr, uint16_t set_val)
 {
-	if (modbusBuff == NULL)
+	if (modbusBuff == NULL || modbusBuffTest == NULL)
 	{
 		return -1;
 	}
 	if ((addr >= REGISTERS_START_ADDRESS) && (addr < (REGISTERS_START_ADDRESS + REGISTERS_NB)))
 	{
 		modbusBuff[addr - REGISTERS_START_ADDRESS] = set_val;
+		modbusBuffTest[addr - REGISTERS_START_ADDRESS] = set_val;
 		return 0;
 	}
 	else
