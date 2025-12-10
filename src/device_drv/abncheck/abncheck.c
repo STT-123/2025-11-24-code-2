@@ -526,6 +526,13 @@ int check_and_fix_ip(const char *if_name)
     
     // 如果需要修复
     if (need_fix) {
+
+		// 打印当前不正确的IP
+		if (strlen(current_ip) > 0) {
+			LOG("[IP自动修复] 当前IP不正确: %s, 期望IP: %s\n", current_ip, expected_ip);
+		} else {
+			LOG("[IP自动修复] 未检测到当前IP, 期望IP: %s\n", expected_ip);
+		}
         LOG("[IP自动修复] IP不正确,开始修改...\n");
 
         if (g_ipsetting.flag == 1 && g_ipsetting.ip != 0)// 创建modbus服务端

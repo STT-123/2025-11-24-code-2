@@ -36,7 +36,8 @@ uint32_t CAN_IDs[] = {
  CAN_MESSAGE can_msg_1B0110E4_cache[2] = {0};; // 单体温度，一包60个，一共120个，索引分2帧
  CAN_MESSAGE can_msg_180410E4_cache[1] = {0}; // bmu电压，AFE温度，一包15个，一共15个，索引分1帧
  CAN_MESSAGE can_msg_cache[CAN_ID_HISTORY_SIZE] = {0};
-
+static struct timeval first_tv = {0, 0};
+static int first_time_captured = 0;
 /**
  * 
  * 检查U盘是否可用   0正常 1不正常
@@ -716,22 +717,28 @@ static void Drv_init_can_id_history(void)
     }
 }
 // 获取从当天00:00:00开始的秒.毫秒
-double get_today_timestamp_seconds(void) {
-    struct timeval tv;
-    struct tm nowTimeInfo;
+// 获取UTC时间戳（秒.毫秒）
+// 获取Unix时间戳（从1970-01-01开始的秒数）
+// 方法1：生成ZXDOC兼容的时间戳（从1900年开始）
+double get_relative_timestamp_seconds(void) {
+    struct timeval current_tv;
     
-    gettimeofday(&tv, NULL);
-    localtime_r(&tv.tv_sec, &nowTimeInfo);
+    gettimeofday(&current_tv, NULL);
     
-    // 计算当天已过去的秒数
-    long seconds_today = nowTimeInfo.tm_hour * 3600 + 
-                         nowTimeInfo.tm_min * 60 + 
-                         nowTimeInfo.tm_sec;
+    if (!first_time_captured) {
+        // 第一次调用，设置基准时间
+        first_tv = current_tv;
+        first_time_captured = 1;
+        return 0.0;
+    }
     
-    // 转换为秒.毫秒格式
-    double timestamp = (double)seconds_today + (double)tv.tv_usec / 1000000.0;
-    return timestamp;
+    // 计算相对于基准时间的偏移量（秒）
+    double diff_sec = (double)(current_tv.tv_sec - first_tv.tv_sec);
+    double diff_usec = (double)(current_tv.tv_usec - first_tv.tv_usec);
+    
+    return diff_sec + diff_usec / 1000000.0;
 }
+
 static void Drv_init_double_ring_buffer(DoubleRingBuffer *drb)
 {
     for (int i = 0; i < 2; ++i)
@@ -811,7 +818,7 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 
     CAN_LOG_MESSAGE *logMsg = &activeBuffer->buffer[activeBuffer->writeIndex];
 
-    logMsg->Timestamp = get_today_timestamp_seconds();
+    logMsg->Timestamp = get_relative_timestamp_seconds(); // 如57093.038
 
     memcpy(&logMsg->msg, msg, sizeof(CANFD_MESSAGE));
     logMsg->channel = channel;
@@ -880,6 +887,12 @@ void Drv_write_buffer_to_file(void)
         CreateAscFilePathWithTime(nowTimeInfo, filePath);// 将时间转换为文件路径
 
         filePath[sizeof(filePath) - 1] = '\0';
+
+        // 重要：创建新文件时，重置基准时间
+        gettimeofday(&first_tv, NULL);  // 设置新的基准时间
+        first_time_captured = 1;
+        LOG("[SD Card] New file created, reset timestamp base to: %ld.%06ld\n", 
+            first_tv.tv_sec, first_tv.tv_usec);
     }
   
     FILE *file = NULL;// 打开目标文件
