@@ -102,7 +102,7 @@ void *ocppCommunicationTask(void *arg)
         // ccinfo.address = "localhost";// 服务器地址
 
         ccinfo.port = 7274;// 服务器端口
-        ccinfo.path = "/ocpp/C8A215DPLEXHGRKLGU";// OCPP 端点路径
+        ccinfo.path = "/ocpp/C8A215DPWUDYDTAWLL";// OCPP 端点路径
 
         ccinfo.host = ccinfo.address;
         ccinfo.origin = ccinfo.address;

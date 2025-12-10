@@ -29,21 +29,25 @@ typedef struct {
     uint8_t file_interrupt_flag;
 } FTPState;
 
-void send_response(int sock, const char *message);
-void handle_user_command(FTPState *state, char *args);
-void handle_pass_command(FTPState *state, char *args);
-void handle_pasv_command(FTPState *state);
-void handle_port_command(FTPState *state, char *args);
-void handle_list_command(FTPState *state, char *args);
+
+static void handle_user_command(FTPState *state, char *args);
+static void handle_pass_command(FTPState *state, char *args);
+static void handle_pasv_command(FTPState *state);
+static void handle_port_command(FTPState *state, char *args);
+static void handle_list_command(FTPState *state, char *args);
+static void handle_retr_command(FTPState *state, char *filename);
+static void handle_stor_command(FTPState *state, char *filename);
+static void handle_mget_command(FTPState *state, char *args);
+static void handle_pwd_command(FTPState *state);
+static void handle_syst_command(FTPState *state);
+static void handle_cdup_command(FTPState *state);
+static void handle_cwd_command(FTPState *state, const char *args);
+static void handle_size_command(FTPState *state, char *filename);
+static void handle_quit_command(FTPState *state);
+static void handle_type_command(FTPState *state, char *args);
+
 void set_ftp_read_file_flag(bool flag);
 bool get_ftp_read_file_flag();
-void handle_retr_command(FTPState *state, char *filename);
-void handle_stor_command(FTPState *state, char *filename);
-void handle_mget_command(FTPState *state, char *args);
-void handle_pwd_command(FTPState *state);
-void handle_syst_command(FTPState *state);
-void handle_cdup_command(FTPState *state);
-void handle_cwd_command(FTPState *state, const char *args);
-void handle_type_command(FTPState *state, char *args);
+void send_response(int sock, const char *message);
 int handle_ftp_commands(FTPState *state);
 #endif

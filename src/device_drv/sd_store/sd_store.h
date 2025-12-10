@@ -30,7 +30,7 @@
 #define UNMOUNT_POINT  "umount /mnt/sda"
 typedef struct
 {
-    uint32_t relativeTimestamp; // 相对时间戳
+    double Timestamp; // 相对时间戳
     CANFD_MESSAGE msg;
     unsigned char channel;
 } CAN_LOG_MESSAGE;

@@ -7,6 +7,7 @@
 
 
 pthread_t SDCardDataSave_TASKHandle = 0;
+extern pthread_mutex_t ftp_file_io_mutex;
 /*==========================================================**/
 void *SDCardDataSaveTask(void *arg)
 {
@@ -48,10 +49,11 @@ void *SDCardDataSaveTask(void *arg)
 
         if ((g_ota_flag == OTAIDLE || g_ota_flag == OTAFAILED) && SD_INIT_flag != 1)// 没有ota中 并且 sd卡初始化过
         {
-            if (get_ftp_read_file_flag() == 0)
-            {
-               Drv_write_buffer_to_file(); // 将缓冲区内容写入文件
-            }
+  
+            pthread_mutex_lock(&ftp_file_io_mutex);  // ← 加锁，ftp读文件的时候，不写文件
+            Drv_write_buffer_to_file(); // 将缓冲区内容写入文件
+            pthread_mutex_unlock(&ftp_file_io_mutex);  // ← 解锁
+
         }
         else
         {

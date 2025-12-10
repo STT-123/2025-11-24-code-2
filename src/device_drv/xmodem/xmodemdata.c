@@ -229,7 +229,7 @@ void *lwip_data_TASK(void *param)
 								}
 								setXmodemServerReceiveFileEnd(1);//考虑后移动
 								printf("otafilenamestr1111111 : %s\r\n",otafilenamestr1);
-								if((strstr(otafilenamestr, "bin") != NULL) || (strstr(otafilenamestr1, "bz2") != NULL) || (strstr(otafilenamestr1, "deb") != NULL))
+								if((strstr(otafilenamestr, "bin") != NULL) || (strstr(otafilenamestr1, "bz2") != NULL) || (strstr(otafilenamestr1, "deb") != NULL) || (strstr(otafilenamestr1, "tar") != NULL))
 								{
 									set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
 									g_otactrl.OTAFileType = 0;

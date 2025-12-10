@@ -715,7 +715,23 @@ static void Drv_init_can_id_history(void)
         can_msg_180410E4_cache[i].Data[0] = i + 1;
     }
 }
-
+// 获取从当天00:00:00开始的秒.毫秒
+double get_today_timestamp_seconds(void) {
+    struct timeval tv;
+    struct tm nowTimeInfo;
+    
+    gettimeofday(&tv, NULL);
+    localtime_r(&tv.tv_sec, &nowTimeInfo);
+    
+    // 计算当天已过去的秒数
+    long seconds_today = nowTimeInfo.tm_hour * 3600 + 
+                         nowTimeInfo.tm_min * 60 + 
+                         nowTimeInfo.tm_sec;
+    
+    // 转换为秒.毫秒格式
+    double timestamp = (double)seconds_today + (double)tv.tv_usec / 1000000.0;
+    return timestamp;
+}
 static void Drv_init_double_ring_buffer(DoubleRingBuffer *drb)
 {
     for (int i = 0; i < 2; ++i)
@@ -795,7 +811,7 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 
     CAN_LOG_MESSAGE *logMsg = &activeBuffer->buffer[activeBuffer->writeIndex];
 
-    logMsg->relativeTimestamp = GetTimeDifference_ms(start_tick);
+    logMsg->Timestamp = get_today_timestamp_seconds();
 
     memcpy(&logMsg->msg, msg, sizeof(CANFD_MESSAGE));
     logMsg->channel = channel;
@@ -819,29 +835,6 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
     // LOG("[CAN Storage] Successfully stored frame %d/12\n", frame_counter);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 将缓冲区数据写到sd卡
 void Drv_write_buffer_to_file(void)
 {
@@ -851,29 +844,17 @@ void Drv_write_buffer_to_file(void)
     struct tm nowTimeInfo = {0};
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
 
-    // 获取当前时间
-    GetNowTime(&nowTimeInfo);
+    
+    GetNowTime(&nowTimeInfo);// 获取当前时间
 
     // 交换当前使用的缓冲区
     pthread_mutex_lock(&drb->switchMutex);
-
-
-    // LOG("[SD Write] Before switch - Active buffer: %d, Buffer0 count: %d, Buffer1 count: %d\n",
-    //     drb->activeBuffer, 
-    //     drb->buffers[0].count, 
-    //     drb->buffers[1].count);
-
-
     drb->activeBuffer = 1 - drb->activeBuffer;
     pthread_mutex_unlock(&drb->switchMutex);
 
     // 获取需要写入的缓冲区
     int inactiveBufferIndex = 1 - drb->activeBuffer;
     RingBuffer *inactiveBuffer = &drb->buffers[inactiveBufferIndex];
-
-
-    // LOG("[SD Write] Writing from buffer %d, message count: %d\n", 
-    //     inactiveBufferIndex, inactiveBuffer->count);
 
     // 获取文件互斥锁
     ret = pthread_mutex_lock(&inactiveBuffer->mutex);
@@ -922,7 +903,7 @@ void Drv_write_buffer_to_file(void)
             //printf("9.1 Time header written\n");
         }
         
-        Drv_write_canmsg_cache_to_file(file, 0) ;// 缓冲区数据写入  
+        //Drv_write_canmsg_cache_to_file(file, 0) ;// 缓冲区数据写入 ,初始数据不写了
         newFileNeeded = false;// 标记不需要重新创建了      
     }
 
@@ -956,9 +937,8 @@ void Drv_write_buffer_to_file(void)
         char line[BUFFERED_WRITE_SIZE]; // 请把 BUFFERED_WRITE_SIZE 设为 >= 512
         int lineLen = snprintf(
             line, sizeof(line),
-            "%d.%03d CANFD 1 %08lXx %s 0 0 d %d %d %s\r\n",
-            logMsg->relativeTimestamp / 1000,
-            logMsg->relativeTimestamp % 1000,
+            "%.3f CANFD 1 %08lXx %s 0 0 d %d %d %s\r\n",
+            logMsg->Timestamp,
             (unsigned long)logMsg->msg.ID,
             dir,
             dlc,

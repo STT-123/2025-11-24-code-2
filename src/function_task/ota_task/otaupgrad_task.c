@@ -29,20 +29,20 @@ void *ota_Upgrade_Task(void *arg)
     char matched_filename[256] = {0};
 
 #if 0
-    sleep(20);
+    sleep(10);
     //BMU
     // set_ota_OTAFilename("XC_BMU_V302.bin");
     // set_ota_deviceType(BMU);
     // set_ota_deviceID(0x1821FF10) ;
 
-    //BCU
-    set_ota_OTAFilename("XC_BCU_V526.bin");
-    set_ota_deviceType(BCU);
-    set_ota_deviceID(BCUOTACANID) ;//BCU
+    // //BCU
+    // set_ota_OTAFilename("XC_BCU_V526.bin");
+    // set_ota_deviceType(BCU);
+    // set_ota_deviceID(BCUOTACANID) ;//BCU
     //ECU
-    // set_ota_OTAFilename("XC_ECU_V199.bin");
-    // set_ota_deviceType(ECU);
-    // set_ota_deviceID(0) ;//ECU
+    set_ota_OTAFilename("XC_ECU_V123.tar");
+    set_ota_deviceType(ECU);
+    set_ota_deviceID(0) ;//ECU
 
     set_ota_OTAStart(1) ;
     printf("get_ota_OTAFilename() : %s\r\n",get_ota_OTAFilename());
@@ -60,31 +60,22 @@ void *ota_Upgrade_Task(void *arg)
                 LOG("[OTA] get_ota_deviceType(): %u\r\n", get_ota_deviceType());
                 set_modbus_reg_val(OTAPPROGRESSREGADDR, 0); // 0124
 
-                ECU_OTA();
-
-                if (ecustatus.ErrorReg != 0 && get_ota_OTAStart() == 0)
+                while(ECUOtaFlag <3)
                 {
-
-                    ECUOtaFlag++;
-                    if (ECUOtaFlag < 3)
-                    {
-
-                        CurrentOTADeviceCanID = 0;
-                        set_ota_deviceID(0) ;
-                        set_ota_OTAStart(1) ;
-                        ecustatus.ErrorReg = 0;
-                        LOG("[OTA] ECU OTA failed, error ECUOtaFlag count:  %d\r\n", ECUOtaFlag);
-                        continue;
-                    }
-                    else
-                    {
-                        LOG("[OTA]  ECUOtaFlag > 3 \r\n");
-                    }
+                     ECU_OTA();
+                     if(ecustatus.ErrorReg == 0 && get_ota_OTAStart() == 0)
+                     {
+                        LOG("[OTA] CAN ID 0x%x BCU OTA success!\r\n", get_ota_deviceID());
+                        break;
+                     }
+                     else
+                     {
+                        ECUOtaFlag++;
+                        LOG("[OTA] CAN ID 0x%x BCU OTA failed, retry count: %d\r\n", get_ota_deviceID(), ECUOtaFlag);
+                        set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
+                     }
                 }
-                else if (ecustatus.DeviceProgramOkFlag)
-                {
-                    LOG("[OTA] errot\r\n");
-                }
+                FinshhECUOtaAndCleanup();
             }
             else if (get_ota_deviceType() == ACP ||get_ota_deviceType() == DCDC)
             {

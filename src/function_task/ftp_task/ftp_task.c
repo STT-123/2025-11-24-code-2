@@ -11,14 +11,10 @@ static void *ftp_service_thread_func(void *arg)
     int port = *(int *)arg;
     int server_sock;
     struct sockaddr_in server_addr;
-    FTPState state;
+    FTPState state = {0};
     int opt = 1;
     struct timeval timeout;
-    // if (chdir("/media/usb0") != 0) {
-    //     perror("Failed to change working directory to /media/usb0");
-    //     exit(EXIT_FAILURE);
-    // }
-    // Create server socket
+
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (server_sock < 0)
     {
@@ -55,12 +51,14 @@ static void *ftp_service_thread_func(void *arg)
 
     while (1)
     {
+        memset(&state, 0, sizeof(state));
         // Accept client connections
         state.client_addr_len = sizeof(state.client_addr);
         state.control_sock = accept(server_sock, (struct sockaddr *)&state.client_addr, &state.client_addr_len);
         if (state.control_sock < 0)
         {
             printf("Failed to accept connection\n");
+            sleep(1);
             continue;
         }
 
@@ -70,6 +68,7 @@ static void *ftp_service_thread_func(void *arg)
         if (setsockopt(state.control_sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
         {
             close(state.control_sock);
+            sleep(1);
             continue;
         }
 
@@ -83,12 +82,18 @@ static void *ftp_service_thread_func(void *arg)
         send_response(state.control_sock, response);
 
         // Handle FTP commands
+        // printf("succeeful to accept connection\n");
         int result = handle_ftp_commands(&state);
 
         if (result == 0 || result < 0)
         {
             close(state.control_sock);
             close(state.data_sock);
+            // 如果有打开的文件（比如 STOR 中断），也应关闭
+            if (state.file) {
+                fclose(state.file);
+                state.file = NULL;
+            }
         }
 
         close(state.control_sock);

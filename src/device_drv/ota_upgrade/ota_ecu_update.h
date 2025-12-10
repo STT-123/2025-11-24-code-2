@@ -16,7 +16,19 @@
 #include <time.h>
 #include <sys/time.h>
 #include "device_drv/ota_upgrade/ota_fun.h"
-#define ECU_DEB_FILENAME    "deb_work.deb"
+
+
+/*==========================*/
+#define BUF_SIZE 256
+
+typedef struct {
+    char section[64];
+    int index;               // 从 upgradeX 提取的数字 X
+    char old_version[32];
+    char new_version[32];
+    char upgrade_file[128];
+    char md5sum[64];
+} UpgradeInfo;
  typedef struct
  {
      unsigned int XCPCMDRpeatTimes;
@@ -37,5 +49,4 @@
 extern ECUStatus ecustatus;
 void ECU_OTA(void);
 void FinshhECUOtaAndCleanup(void);
-static int verify_bin_file(const char *filepath);
 #endif
