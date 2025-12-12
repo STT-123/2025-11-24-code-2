@@ -6,17 +6,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include "project.h"
+#include <sys/stat.h>
+#include <libgen.h>
 
 
 
+// 简单的目录创建函数
 
-#define DB_PATH "/mnt/sda/batdata.db"
+
+#define DB_PATH"/mnt/sda/batdata.db"
 void create_limit_trigger(sqlite3 *db);
+
+
 // 数据库初始化
-void init_db(sqlite3 **db) {
+int init_db(sqlite3 **db) 
+{
     if (sqlite3_open(DB_PATH, db) != SQLITE_OK) {
         fprintf(stderr, "Can't open DB: %s\n", sqlite3_errmsg(*db));
-        exit(1);
+        return -1;
     }
 
     const char *sql = "CREATE TABLE IF NOT EXISTS batdata ("
@@ -27,9 +34,11 @@ void init_db(sqlite3 **db) {
     if (sqlite3_exec(*db, sql, NULL, NULL, &errmsg) != SQLITE_OK) {
         fprintf(stderr, "Create table failed: %s\n", errmsg);
         sqlite3_free(errmsg);
-        exit(1);
+        return -1;
     }
     create_limit_trigger(*db);  // 确保表已经存在后调用
+
+    return 1;
 }
 
 // 插入数据

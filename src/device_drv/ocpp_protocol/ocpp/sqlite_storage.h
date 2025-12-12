@@ -3,7 +3,7 @@
 #include <sqlite3.h>
 #include "batdata.h"
 
-void init_db(sqlite3 **db); //数据库初始化
+int init_db(sqlite3 **db); //数据库初始化
 
 
 void insert_data(sqlite3 *db, tBatData *data) ;  // 插入数据

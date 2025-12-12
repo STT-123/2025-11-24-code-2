@@ -45,8 +45,6 @@ void *bcu_DealTask(void *arg)
                         CANFDRcvFcn_BCU_step();           
                         ConvertCANFDToBus(&canrev_frame, &can_msg_buf);
                         Drv_write_to_active_buffer(&can_msg_buf, 1);
-                    }else{
-                        LOG("MODBUS TCP Init is not finished\r\n");
                     }
                     
                 }

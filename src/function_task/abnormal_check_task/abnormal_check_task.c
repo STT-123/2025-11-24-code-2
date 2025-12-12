@@ -23,6 +23,15 @@ void *AbnormalDetection(void *arg)
         ECUfault_process(); // 各种故障检测
         //can_monitor_fun();//CAN 通道 通道检测
         log_eror_csv();  //存储
+        // 1. 简单测试是否能ping通百度
+        // int result = can_ping_host("ocpp.xcharger.net", 5);
+        // if (result == 1) {
+        //     printf("可以ping通百度\n");
+        // } else if (result == 0) {
+        //     printf("无法ping通百度\n");
+        // } else {
+        //     printf("ping测试执行错误\n");
+        // }
         check_and_fix_ip(MODBUS_ETH_NUM);//检测ip地址是否被修改并自动更正
         usleep(1000 * 1000);
     }

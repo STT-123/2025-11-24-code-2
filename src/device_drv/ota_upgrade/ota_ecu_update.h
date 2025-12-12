@@ -49,4 +49,6 @@ typedef struct {
 extern ECUStatus ecustatus;
 void ECU_OTA(void);
 void FinshhECUOtaAndCleanup(void);
+int find_ota_files_simple(const char *extract_dir, char *conf_path, size_t conf_len,char *deb_path, size_t deb_len);
+int compute_file_md5(const char *filepath, char *out_md5) ;
 #endif

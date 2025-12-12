@@ -315,3 +315,22 @@ real_T get_BCU_FaultInfoLv3LValue(void) { return BCU_FaultInfoLv3L; }
 real_T get_BCU_FaultInfoLv4LValue(void) { return BCU_FaultInfoLv4L; }
 real_T get_BCU_SOCValue(void) { return BCU_SOC; }
 real_T get_BCU_SystemWorkModeValue(void) { return BCU_SystemWorkMode; }
+
+
+unsigned short* get_BCU_usSingleBatVal(void) 
+{
+    static unsigned short usSingleBatVal[240];  /*单体电池电压单位*/
+    
+    memcpy(usSingleBatVal, CANFDRcvFcn_BCU_DW.tmp, sizeof(usSingleBatVal));
+
+    return usSingleBatVal;  /* 返回数组指针 */
+}
+
+unsigned short* get_BCU_usSingleBatTemp(void) 
+{
+    static unsigned short usSingleBatTemp[120];     /*单体电池温度单位*/
+
+    memcpy(usSingleBatTemp, CANFDRcvFcn_BCU_DW.tmp_a, sizeof(usSingleBatTemp));
+
+    return usSingleBatTemp;  /* 返回数组指针 */
+}

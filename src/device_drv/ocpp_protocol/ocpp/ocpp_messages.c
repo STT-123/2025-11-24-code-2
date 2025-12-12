@@ -17,7 +17,7 @@ void handle_update_firmware(struct lws *wsi, json_object *json);
 void handle_get_diagnostics(struct lws *wsi, json_object *json);
 void handle_firmware_status_notification(struct lws *wsi, json_object *json);
 void handle_diagnostics_status_notification(struct lws *wsi, json_object *json);
-
+extern int g_curl_running ;
 
 // 发送OCPP消息  /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/
 int send_ocpp_message(json_object *msg) {
@@ -53,6 +53,7 @@ int process_ocpp_message(struct lws *wsi, const char *message)
     
     switch (msg_type) {
         case 2:
+
             handle_call_message(wsi, json);//调用请求
             break;
         case 3:
@@ -219,11 +220,14 @@ void handle_update_firmware(struct lws *wsi, json_object *json) {
     if (filetype) {
         LOG("固件文件名为: %s\n", filetype);
     } else {
+        
         LOG("提取文件名失败。\n");
+        return;
     }
     // 3. 下载固件文件
+    g_curl_running = 1;
     int success = download_file(location,filetype);
-
+    g_curl_running = 0;
     // 4. 发送 FirmwareStatusNotification CALL 消息
     json_object *status_msg = json_object_new_array();
     json_object_array_add(status_msg, json_object_new_int(2)); // CALL
@@ -298,17 +302,17 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
     LOG("Uploading diagnostics to %s\n", upload_url);
 
     // Step 3: 调用上传函数
+
     int success = ocpp_upload_file(upload_url);
 
     // Step 4: 发送 DiagnosticsStatusNotification
     json_object *status_msg = json_object_new_array();
     json_object_array_add(status_msg, json_object_new_int(2));  // CALL
-    json_object_array_add(status_msg, json_object_new_string("diagnostics-status-001"));  // 唯一 ID
+    json_object_array_add(status_msg, json_object_new_string("1988888888888"));  // 唯一 ID
     json_object_array_add(status_msg, json_object_new_string("DiagnosticsStatusNotification"));
 
     json_object *status_payload = json_object_new_object();
-    json_object_object_add(status_payload, "status",
-    json_object_new_string((success==0) ? "Uploaded" : "UploadFailed"));
+    json_object_object_add(status_payload, "status",json_object_new_string((success==0) ? "Uploaded" : "UploadFailed"));
     json_object_array_add(status_msg, status_payload);
 
     send_ocpp_message(status_msg);
@@ -409,16 +413,6 @@ void handle_trigger_report_energy_storage_status_v2(struct lws *wsi, json_object
 
     printf("已回复 TriggerReportEnergyStorageStatusV2，status: %s\n", status);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 struct json_object *build_boot_notification() {
@@ -650,7 +644,7 @@ struct json_object *compress_detail_data(sqlite3 *db, int *out_ids, int *out_id_
     if (n <= 0) return NULL;
     if (n > 255) n = 255;
 
-    printf("get_recent_data n = %d...data =%lu,\n", n,sizeof(tBatData));
+    // printf("get_recent_data n = %d...data =%lu,\n", n,sizeof(tBatData));
     memcpy(out_ids, ids, sizeof(int) * n);
     *out_id_count = n;
 

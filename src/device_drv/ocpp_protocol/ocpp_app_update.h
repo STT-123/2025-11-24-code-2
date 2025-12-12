@@ -16,4 +16,5 @@
 
 int get_check_upgarde_file_type(const char *filename,const char *filetype,char *out_matched_filename, size_t max_len) ;
 int upgarde_file_type(const char *filename,const char *filetype);
+const char *get_filename_from_path_linux(const char *path);
 #endif

@@ -488,7 +488,35 @@ void get_BCU_FaultInfo(uint32_T faultValue_4H, uint32_T faultValue_3H,uint32_T f
         }
     }
 }
-
+/**
+ * @brief 检测是否能ping通指定主机
+ * @param hostname 主机名或IP地址
+ * @param timeout_sec 超时时间（秒）
+ * @return 1: 可ping通, 0: 不可ping通, -1: 执行错误
+ */
+int can_ping_host(const char *hostname, int timeout_sec) {
+    if (!hostname || strlen(hostname) == 0) {
+        fprintf(stderr, "Error: Invalid hostname\n");
+        return -1;
+    }
+    
+    char cmd[256];
+    // 使用-c参数指定ping次数，-W参数指定超时时间
+    snprintf(cmd, sizeof(cmd), "ping -c 1 -W %d %s > /dev/null 2>&1", 
+             timeout_sec, hostname);
+    
+    LOG("[Network] Testing connectivity to %s...\n", hostname);
+    
+    int ret = system(cmd);
+    
+    if (ret == 0) {
+        LOG("[Network] %s is reachable\n", hostname);
+        return 1;
+    } else {
+        LOG("[Network] %s is NOT reachable (exit code: %d)\n", hostname, WEXITSTATUS(ret));
+        return 0;
+    }
+}
 int check_and_fix_ip(const char *if_name)
 {
 	unsigned char expected_ip[16] = IP_ADDRESS;//

@@ -89,7 +89,71 @@ int compute_file_md5(const char *filepath, char *out_md5) {
     pclose(fp);
     return 0;
 }
-
+// 修改 find_ota_files_simple 函数
+int find_ota_files_simple(const char *extract_dir, char *conf_path, size_t conf_len, 
+                         char *deb_path, size_t deb_len) {
+    FILE *fp;
+    char cmd[1024];
+    
+    // 查找 .conf 文件
+    snprintf(cmd, sizeof(cmd), "find \"%s\" -type f \\( -name \"*.conf\" -o -name \"*.CONF\" \\) 2>/dev/null", 
+             extract_dir);
+    
+    LOG("[OTA] Running command: %s\n", cmd);
+    fp = popen(cmd, "r");
+    if (fp) {
+        int found = 0;
+        char line[1024];
+        while (fgets(line, sizeof(line), fp)) {
+            line[strcspn(line, "\n")] = '\0';
+            LOG("[OTA] Found conf candidate: %s\n", line);
+            if (!found) {
+                strncpy(conf_path, line, conf_len - 1);
+                conf_path[conf_len - 1] = '\0';
+                found = 1;
+            }
+        }
+        pclose(fp);
+        if (!found) {
+            LOG("[OTA] No conf file found\n");
+        }
+    } else {
+        LOG("[OTA] Failed to execute find command\n");
+    }
+    
+    // 查找 .deb 文件
+    snprintf(cmd, sizeof(cmd), "find \"%s\" -type f \\( -name \"*.deb\" -o -name \"*.DEB\" \\) 2>/dev/null", 
+             extract_dir);
+    
+    LOG("[OTA] Running command: %s\n", cmd);
+    fp = popen(cmd, "r");
+    if (fp) {
+        int found = 0;
+        char line[1024];
+        while (fgets(line, sizeof(line), fp)) {
+            line[strcspn(line, "\n")] = '\0';
+            LOG("[OTA] Found deb candidate: %s\n", line);
+            if (!found) {
+                strncpy(deb_path, line, deb_len - 1);
+                deb_path[deb_len - 1] = '\0';
+                found = 1;
+            }
+        }
+        pclose(fp);
+        if (!found) {
+            LOG("[OTA] No deb file found\n");
+        }
+    } else {
+        LOG("[OTA] Failed to execute find command\n");
+    }
+    
+    LOG("[OTA] Final conf_path: %s\n", conf_path);
+    LOG("[OTA] Final deb_path: %s\n", deb_path);
+    LOG("[OTA] conf_path valid: %d, deb_path valid: %d\n", 
+         (strlen(conf_path) > 0), (strlen(deb_path) > 0));
+    
+    return (strlen(conf_path) > 0 && strlen(deb_path) > 0);
+}
 void ECU_OTA(void)
 {
     LOG("[OTA] ECU_OTA start!, get_ota_OTAStart():%d\r\n", get_ota_OTAStart());
@@ -154,18 +218,27 @@ void ECU_OTA(void)
             strcpy(base_name, get_ota_OTAFilename()); // fallback
         }
 
-        char conf_path[512] = {0};//conf路径名
-        char deb_path[512] = {0};//deb路径名
-        snprintf(conf_path, sizeof(conf_path), "%s/%s.conf", extract_dir, base_name);
-        snprintf(deb_path,   sizeof(deb_path),   "%s/%s.deb",   extract_dir, base_name);
-
         // 步骤5: 检查conf和deb文件是否存在
-        if (access(conf_path, F_OK) != 0 || access(deb_path, F_OK) != 0) {
-            LOG("[OTA] Missing .conf or .deb in extracted tar! conf=%s, deb=%s\n", conf_path, deb_path);
-            ecustatus.ErrorReg |= 1 << 4; // 文件缺失错误
+        char conf_path[512] = {0};
+        char deb_path[512] = {0};
+
+        if (!find_ota_files_simple(extract_dir, conf_path, sizeof(conf_path), 
+                                deb_path, sizeof(deb_path))) {
+            LOG("[OTA] Could not find required files in extracted archive\n");
+            
+            // 列出所有文件用于调试
+            char ls_cmd[1024];
+            snprintf(ls_cmd, sizeof(ls_cmd), "find \"%s\" -type f | sort", extract_dir);
+            LOG("[OTA] All files in extract dir:\n");
+            system(ls_cmd);
+            
+            ecustatus.ErrorReg |= 1 << 4;
             goto celanup;
         }
-        LOG("[OTA] Extracted files: conf=%s, deb=%s\n", conf_path, deb_path);
+
+
+        LOG("[OTA] Found conf: %s\n", conf_path);
+        LOG("[OTA] Found deb: %s\n", deb_path);
 
         // 步骤6: 解析conf文件,赋值给max_upgrade
         int err = ini_parse(conf_path, handler, NULL);
@@ -189,16 +262,16 @@ void ECU_OTA(void)
         if(ecustatus.ErrorReg == 0)
         {
             // 1. 获取文件路径
-            char source_file[512] = {'\0'};
-            char target_file[512] = {'\0'};
-            
-            snprintf(source_file, sizeof(source_file), "%s/%s", extract_dir, max_upgrade.upgrade_file);
+            char target_file[512] = {'\0'};           
             snprintf(target_file, sizeof(target_file), "/var/%s", max_upgrade.upgrade_file); // 直接使用原文件名
-            
+
+            LOG("[OTA] Copying from: %s\n", deb_path);
+            LOG("[OTA] Copying to: %s\n", target_file);
+       
             // 2. 计算MD5值
             char computed_md5[33] = {0}; // 32 hex + '\0'
-            if (compute_file_md5(source_file, computed_md5) != 0) {
-                LOG("[OTA] Failed to compute MD5 for %s\n", source_file);
+            if (compute_file_md5(deb_path, computed_md5) != 0) {
+                LOG("[OTA] Failed to compute MD5 for %s\n", deb_path);
                 ecustatus.ErrorReg |= 1 << 7; // MD5 计算失败
                 goto celanup;
             }
@@ -223,12 +296,12 @@ void ECU_OTA(void)
             LOG("[OTA] MD5 verification passed.\n");
             char cp_cmd[512];
             memset(cp_cmd, 0, sizeof(cp_cmd));
-            snprintf(cp_cmd, sizeof(cp_cmd), "cp \"%s\" \"%s\"", source_file, target_file);
+            snprintf(cp_cmd, sizeof(cp_cmd), "cp \"%s\" \"%s\"", deb_path, target_file);
             LOG("[OTA] Copy command: %s\n", cp_cmd);
             
             int ret = system(cp_cmd);
             if (ret == 0) {
-                LOG("[OTA] File copy to /var successful: %s\n", source_file);
+                LOG("[OTA] File copy to /var successful: %s\n", deb_path);
             } else {
                 LOG("[OTA] File copy to /var failed\n");
                 ecustatus.ErrorReg |= 1 << 2;

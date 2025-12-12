@@ -4,6 +4,7 @@
 #include "interface/globalVariable.h"
 #include "device_drv/sd_store/sd_store.h"
 #include "interface/log/log.h"
+extern int g_curl_running ;
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     FILE *fp = (FILE *)userp;
@@ -40,8 +41,9 @@ int download_file(const char *url,const char *filetype) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 300L);
-
+    g_curl_running  = 1;
     res = curl_easy_perform(curl);
+    g_curl_running  = 0;
     if (res != CURLE_OK) {
         fprintf(stderr, "Download File Failed: %s\n", curl_easy_strerror(res));
         LOG("Download File Failed\r\n");
@@ -146,13 +148,18 @@ static int upload_progress_callback(void *clientp,
     }
     return 0;  // 返回非0表示中断上传
 }
+static size_t write_response(void *buffer, size_t size, size_t nmemb, void *userp) {
+    size_t total = size * nmemb;
+    printf("服务器响应: %.*s\n", (int)total, (char*)buffer);
+    return total;
+}
 
 int ocpp_upload_file(const char *url) {
     CURL *curl;
     CURLcode res;
     FILE *hd_src;
     struct stat file_info;
-
+    char error_buffer[CURL_ERROR_SIZE] = {0};  // 存储详细错误信息
     // === 新增：删除已存在的压缩文件 ===
     if (access(UPLOAD_FILE_PATH, F_OK) == 0) {
         printf("删除旧的压缩文件: %s\n", UPLOAD_FILE_PATH);
@@ -203,8 +210,11 @@ int ocpp_upload_file(const char *url) {
 
     // 设置读取函数（可省略，使用默认 fread 即可）
     // curl_easy_setopt(curl, CURLOPT_READFUNCTION, my_read_callback);
-    // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);// 不验证证书
-    // curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);// 不验证主机名
+    curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);  // 启用详细输出
+
+    // === 新增调试：设置HTTP响应回调 ===
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_response);
 
     // 设置 HTTP Header
     struct curl_slist *headers = NULL;
@@ -215,20 +225,34 @@ int ocpp_upload_file(const char *url) {
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
     curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, upload_progress_callback);
 
-    // 设置超时
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 60L);
+   
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 180); // 设置超时,60s不稳定
 
+    LOG("开始上传到: %s\n", url);
+    g_curl_running  = 1;
     res = curl_easy_perform(curl);  // 执行curl操作（这会阻塞直到完成或超时）
-    printf("\n");// 换行，因为进度显示用了\r
+
+    LOG("\n");// 换行，因为进度显示用了\r
+
+    // === 新增调试：获取HTTP状态码 ===
+    long http_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+    LOG("HTTP状态码: %ld\n", http_code);
 
     // 清理资源
     curl_slist_free_all(headers); // 释放HTTP头
     curl_easy_cleanup(curl);// 清理curl句柄
     curl_global_cleanup();//全局清理
     fclose(hd_src);// 关闭文件
-
+   g_curl_running  = 0;
     if (res != CURLE_OK) {
-        fprintf(stderr, "上传失败: %s\n", curl_easy_strerror(res));
+        LOG("上传失败！错误码: %d\n", res);
+        LOG("错误描述: %s\n", curl_easy_strerror(res));
+        if (strlen(error_buffer) > 0) {
+            LOG("详细错误: %s\n", error_buffer);
+        }
+        LOG("文件路径: %s\n", UPLOAD_FILE_PATH);
+        LOG("文件大小: %ld bytes\n", (long)file_info.st_size);
         LOG("上传失败: %s\n", UPLOAD_FILE_PATH);
         return -4;
     }
