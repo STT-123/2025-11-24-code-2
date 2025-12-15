@@ -53,7 +53,6 @@ int process_ocpp_message(struct lws *wsi, const char *message)
     
     switch (msg_type) {
         case 2:
-
             handle_call_message(wsi, json);//调用请求
             break;
         case 3:

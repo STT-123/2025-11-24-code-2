@@ -47,10 +47,8 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
         lws_callback_on_writable(wsi);
         break;
     case LWS_CALLBACK_CLIENT_WRITEABLE:
-    {
         handle_writeable(wsi);
         break;
-    }
     case LWS_CALLBACK_CLIENT_RECEIVE:
         printf("Received: %.*s\n", (int)len, (char *)in);
         process_ocpp_message(wsi, (char *)in);

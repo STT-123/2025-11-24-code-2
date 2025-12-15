@@ -31,18 +31,18 @@ void *ota_Upgrade_Task(void *arg)
 #if 0
     sleep(10);
     //BMU
-    // set_ota_OTAFilename("XC_BMU_V302.bin");
-    // set_ota_deviceType(BMU);
-    // set_ota_deviceID(0x1821FF10) ;
+    set_ota_OTAFilename("XC_BMU_V302.tar");
+    set_ota_deviceType(BMU);
+    set_ota_deviceID(0x1821FF10) ;
 
-    // //BCU
-    // set_ota_OTAFilename("XC_BCU_V526.bin");
+    //BCU
+    // set_ota_OTAFilename("XC_BCU_V526.tar");
     // set_ota_deviceType(BCU);
     // set_ota_deviceID(BCUOTACANID) ;//BCU
     //ECU
-    set_ota_OTAFilename("XC_ECU_V123.tar");
-    set_ota_deviceType(ECU);
-    set_ota_deviceID(0) ;//ECU
+    // set_ota_OTAFilename("XC_ECU_V123.tar");
+    // set_ota_deviceType(ECU);
+    // set_ota_deviceID(0) ;//ECU
 
     set_ota_OTAStart(1) ;
     printf("get_ota_OTAFilename() : %s\r\n",get_ota_OTAFilename());
@@ -201,12 +201,7 @@ void *ota_Upgrade_Task(void *arg)
                             wait_count++;
                         }
                     }
-                    // //在后台重启CAN2，不阻塞主程序
-                    // printf("Restarting CAN2 interface in background...\r\n");
-                    // int ret = system("sudo /bin/ip link set can2 down && sleep 0.1 && sudo /bin/ip link set can2 up &");
-                    
-                    // // 不需要等待，继续执行后续代码
-                    // usleep(300*1000); // 稍微等待一下
+
                     BCUOtaFlag = 0;
                     if (is_bcu_can_ready())
                     {
@@ -252,8 +247,7 @@ void *ota_Upgrade_Task(void *arg)
                     }
                     if (is_bmu_can_ready())
                     {
-                        // BMUMAXNUM
-                        for (int i = 0; i < 1; i++)
+                        for (int i = 0; i < BMUMAXNUM; i++)
                         {
                             LOG("[OTA] BMU OTA start! i : ,ReOtaFlag = %d %d\r\n", i,ReOtaFlag);
                             ReOtaFlag = 0;
@@ -279,23 +273,27 @@ void *ota_Upgrade_Task(void *arg)
                                     LOG("[OTA] CAN ID 0x%x BMU OTA failed, retry count: %d\r\n", get_ota_deviceID(), ReOtaFlag);
                                 }
                             }
-                            sleep(2);
-                            //这段代码是，一共15个BMU，每ota完一个增加7%的进度
-                            unsigned int percentage = start_percent + (end_percent - start_percent) * i / (total_steps - 1);
-                            set_modbus_reg_val(OTAPPROGRESSREGADDR, percentage); // 0124, upgrade progress,BCU直接写升级进度，BMU 由于有15个，不在这里写进度
-                            if(percentage == 100){
-                                set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
-                            }
-                            LOG("[OTA] STEP %2d: %3d%%\n", i, percentage);
+                            if((xcpstatus.ErrorReg == 0) && (get_ota_OTAStart() == 0))
+                            {
+                                sleep(2);
+                                //这段代码是，一共15个BMU，每ota完一个增加7%的进度
+                                unsigned int percentage = start_percent + (end_percent - start_percent) * i / (total_steps - 1);
+                                set_modbus_reg_val(OTAPPROGRESSREGADDR, percentage); // 0124, upgrade progress,BCU直接写升级进度，BMU 由于有15个，不在这里写进度
+                                if(percentage == 100){
+                                    set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
+                                }
+                                LOG("[OTA] STEP %2d: %3d%%\n", i, percentage);
+                            }else{
+                                LOG("[OTA] CAN ID 0x%x BMU OTA failed\r\n", get_ota_deviceID());
+                                set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
+                            }       
                         }
                     }else{
                         LOG("[OTA] CAN3 is not ready\r\n");
-                    }
-                    
+                    }                    
                 }
                 FinshhBCUBMUOtaAndCleanup();         
             }
-
         }
         usleep(10 * 1000);
     }

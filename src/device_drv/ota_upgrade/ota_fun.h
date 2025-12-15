@@ -21,6 +21,8 @@
 #define OTAFILENAMEMAXLENGTH 128
 #define MAX_FILE_COUNT 20
 
+
+
 typedef enum
 {
 	ECU = 1,
@@ -31,6 +33,13 @@ typedef enum
 	DCDC
 } OTADEVICETYPE;
 
+typedef enum {
+    FILE_TYPE_DEB,      // 查找 .deb 文件
+    FILE_TYPE_BIN,      // 查找 .bin 文件
+    FILE_TYPE_TAR,      // 查找 .tar 或 .tar.gz 等
+    FILE_TYPE_IMG,      // 查找 .img 文件
+    FILE_TYPE_CONF_ONLY // 仅查找配置文件（特殊用途）
+} file_type_t;
 
 typedef struct
 {
@@ -94,5 +103,9 @@ extern OTAObject g_otactrl;
 // OTAUdsFilename 操作
  const char* get_ota_OTAUdsFilename(int index);
  void set_ota_OTAUdsFilename(int index, const char* filename);
-
+int unzipfile(char * cp_filepath,unsigned int * error_status, file_type_t file_type);
+static int extract_index(const char* section) ;
+static int find_ota_files_simple(const char *extract_dir,file_type_t file_type, char *conf_path, size_t conf_len,char *deb_path, size_t deb_len);
+static int compute_file_md5(const char *filepath, char *out_md5) ;
+static int handler(void* user, const char* section, const char* name,const char* value);
 #endif

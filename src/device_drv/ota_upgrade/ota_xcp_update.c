@@ -973,37 +973,52 @@ signed char XcpProgramResetHandler(XCPStatus *xcpstatus)
 }
 void XCP_OTA(void)
 {
-    const char* filenametmp = get_ota_OTAFilename();
-
+    int ret = 0;
     if (!get_ota_OTAStart()) return;
-    if(get_ota_deviceID() != 0 && filenametmp[0] != 0 && get_ota_OTAFileType() != ECU && (get_ota_deviceType() == BCU || get_ota_deviceType() == BMU))
+    if(get_ota_deviceID() != 0 &&  get_ota_OTAFilename() != 0 && get_ota_OTAFileType() != ECU && (get_ota_deviceType() == BCU || get_ota_deviceType() == BMU))
     {
         memset(&xcpstatus, 0, sizeof(XCPStatus));
         FILE *rfile = NULL;
-        //set_modbus_reg_val(OTAPPROGRESSREGADDR, 0);//0124,升级进度
+        
         LOG("[OTA] OTAing.....................\r\n");
         OTA_RecvPacketCount = 0;//接收包计数为0
+
+        ret = unzipfile(USB_MOUNT_POINT,(unsigned int *)&xcpstatus.ErrorReg,FILE_TYPE_BIN);
+        if(ret < 0){
+            goto xcpcleanup;
+        }
+
         if(xcpstatus.ErrorReg == 0)
         {
             char otafilenamestr1[OTAFILENAMEMAXLENGTH + 64] = {'\0'};
-            snprintf(otafilenamestr1, sizeof(otafilenamestr1), "%s/%s", USB_MOUNT_POINT, get_ota_OTAFilename());
+            char filenametmp[256];
+
+            strncpy(filenametmp, get_ota_OTAFilename(), sizeof(filenametmp));
+            
+            char *dot = strrchr(filenametmp, '.');// 直接替换扩展名
+            if (dot) {
+                strcpy(dot, ".bin");
+            }
+            snprintf(otafilenamestr1, sizeof(otafilenamestr1), "%s/%s", USB_MOUNT_POINT, filenametmp);
+            
             LOG("[OTA] otafilenamestr1 %s\r\n", otafilenamestr1);
-            LOG("[OTA] OTAStart:%d,deviceID:%d,OTAFilename:%s,OTAFileType:%d,deviceType:%d\n", get_ota_OTAStart(), get_ota_deviceID(), get_ota_OTAFilename(), get_ota_OTAFileType(), get_ota_deviceType());
+            LOG("[OTA] OTAStart:%d,deviceID:%d,OTAFilename:%s,OTAFileType:%d,deviceType:%d\n", get_ota_OTAStart(), get_ota_deviceID(), filenametmp, get_ota_OTAFileType(), get_ota_deviceType());
             rfile = fopen(otafilenamestr1, "rb");  // "rb" = 只读，二进制
             if (rfile == NULL)
             {
                 LOG("[OTA] %s open error, error code %d %s\r\n",otafilenamestr1, errno, strerror(errno));
                 xcpstatus.ErrorReg |= 1 << 1;
                 xcpstatus.ErrorDeviceID = get_ota_deviceID();
+                goto xcpcleanup;
             }
             else
             {
-                LOG("[OTA] xcpota %s open success\n", get_ota_OTAFilename());
+                LOG("[OTA] xcpota %s open success\n", filenametmp);
             }
         }
 
         sleep(2);
-        int ret = XcpTryConnectDevice();
+        ret = XcpTryConnectDevice();
 
         if(ret == 0)
         {
@@ -1012,7 +1027,7 @@ void XCP_OTA(void)
         else
         {
             LOG("[OTA] ERROR_First_XcpTryConnectDevice, error code %d\r\n", ret);
-            return;
+            goto xcpcleanup;
         }
 
         sleep(2);
@@ -1025,12 +1040,12 @@ void XCP_OTA(void)
         else
         {
             LOG("[OTA] ERROR_Second_XcpTryQueryStatusOnce, error code %d\r\n", ret);
-            return;
+            goto xcpcleanup;
         }
 
 
         sleep(2);
-#if 1
+
         ret =  ReadFileAndSendData(rfile,&xcpstatus);
         if(ret == 0)
         {
@@ -1039,7 +1054,7 @@ void XCP_OTA(void)
         else
         {
             LOG("[OTA] ERROR_Third_ReadFileAndSendData, error code %d\r\n", ret);
-            return;
+            goto xcpcleanup;
         }
 
         sleep(2);  
@@ -1053,7 +1068,7 @@ void XCP_OTA(void)
         else
         {
             LOG("[OTA] ERROR_Fourth_HandleXcpCommunication, error code %d\r\n", ret);
-                return;
+            goto xcpcleanup;
         }
 
 
@@ -1065,9 +1080,9 @@ void XCP_OTA(void)
         else
         {
             LOG("[OTA] ERROR_Fifth_XcpProgramResetHandler, error code %d\r\n", ret);
-            return;
+             goto xcpcleanup;
         }
-#endif
+
         if(xcpstatus.ErrorReg == 0)
         {
             LOG("[OTA] can id 0x%x device ota success!\r\n", get_ota_deviceID());
@@ -1083,7 +1098,7 @@ void XCP_OTA(void)
             LOG("[OTA] can id 0x%x device ota failed, error register val 0x%x!\r\n", get_ota_deviceID(), xcpstatus.ErrorReg);
             set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
         }
-
+xcpcleanup:
         if(rfile != NULL)
         {
             fclose(rfile);
