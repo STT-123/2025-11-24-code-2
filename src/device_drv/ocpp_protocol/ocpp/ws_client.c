@@ -17,11 +17,14 @@
 
 static const char *ocpp_url = "wss://ocpp.xcharger.net:7274/ocpp";
 static const char *ocpp_id = "C8A215DPWUDYDTAWLL";
+
+extern int g_ocppupload_flag;
+extern int g_ocppdownload_flag;
 // 保存当前连接 wsi
 static struct lws *global_wsi = NULL;
 static pthread_mutex_t wsi_lock = PTHREAD_MUTEX_INITIALIZER;
 void handle_writeable(struct lws *wsi);
-int g_curl_running = 0;//数据上传可写入标志位，避免一直给消息队列写数据
+
 
 // 外部调用函数，请求触发写事件
 void websocket_request_write(void)
@@ -121,6 +124,7 @@ void update_bat_data(sqlite3 *db)
 void *websocket_send_thread(void *arg)
 {
     int counter = 60;
+    int heartcounter = 60;
     sqlite3 *db =NULL;
     int ret = init_db(&db);
     if (ret <= 0) {
@@ -134,33 +138,36 @@ void *websocket_send_thread(void *arg)
     while(1)
     {
         sleep(1);
-
-        if(g_curl_running == 0){
-            // 每1秒发送心跳
-            send_ocpp_message(build_heartbeat());
-
-            update_bat_data(db); // 更新电池数据
-            printf("counter =%d...\n", counter);
-            if (++counter >= 10) {
-                counter = 0;
-                int ids[REPORT_COUNT];
-                int count = 0;
-
-                send_ocpp_message(compress_detail_data(db, ids, &count));
-                //调试用的
-                struct json_object *json = compress_detail_data(db, ids, &count);
-                if (json) {
-                    if (send_ocpp_message(json)) {
-                        delete_data_by_ids(db, ids, count);
-                    }
-                }
-            
-            }
-        }
         
+   
+        if(1 == g_ocppupload_flag){
+            send_ocpp_message(DiagnosticsStatusNotification(Uploading));
+        }
+        if(1 == g_ocppdownload_flag){
+            send_ocpp_message(FirmwareStatusNotification(Downloading));
+        }
+        if(++heartcounter >=10){
+            send_ocpp_message(build_heartbeat());
+            update_bat_data(db); // 更新电池数据
+            heartcounter = 0;
+        }
+        // if (++counter >= 10) {
+        //     counter = 0;
+        //     int ids[REPORT_COUNT];
+        //     int count = 0;
+
+        //     send_ocpp_message(compress_detail_data(db, ids, &count));
+        //     //调试用的
+        //     struct json_object *json = compress_detail_data(db, ids, &count);
+        //     if (json) {
+        //         if (send_ocpp_message(json)) {
+        //             delete_data_by_ids(db, ids, count);
+        //         }
+        //     }
+        // }        
     }
-    // 清理（虽然这个代码可能永远不会执行）
-    if (db) {
+    
+    if (db) {// 清理（虽然这个代码可能永远不会执行）
         sqlite3_close(db);
     }
     return NULL;
@@ -245,7 +252,7 @@ void *ocppCommunicationTask(void *arg)
         }
 
         if (!connected) {
-            LOG("[Ocpp] Connection failed or timeout, cleaning up...\n");
+            //LOG("[Ocpp] Connection failed or timeout, cleaning up...\n");
             // 强制关闭连接
             if (wsi) {
                 lws_close_reason(wsi, LWS_CLOSE_STATUS_NOSTATUS, NULL, 0);
@@ -368,7 +375,7 @@ void handle_writeable(struct lws *wsi)
         return;
     }
 
-    printf("send: %s\n", send_state.text);
+    // printf("send: %s\n", send_state.text);
     // 完成发送
     json_object_put(send_state.msg);
     memset(&send_state, 0, sizeof(send_state));

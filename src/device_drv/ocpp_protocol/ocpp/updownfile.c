@@ -4,7 +4,6 @@
 #include "interface/globalVariable.h"
 #include "device_drv/sd_store/sd_store.h"
 #include "interface/log/log.h"
-extern int g_curl_running ;
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
     FILE *fp = (FILE *)userp;
@@ -23,6 +22,12 @@ int download_file(const char *url,const char *filetype) {
     FILE *fp;
     CURLcode res;
     char download_filename[MAX_PATH_LENGTH];
+
+    if (!url || !filetype) {
+        fprintf(stderr, "Error: url or filetype is NULL\n");
+        return -1;
+    }
+    
     curl = curl_easy_init();
     if (!curl) {
         fprintf(stderr, "curl init failed\n");
@@ -41,9 +46,9 @@ int download_file(const char *url,const char *filetype) {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 300L);
-    g_curl_running  = 1;
+
     res = curl_easy_perform(curl);
-    g_curl_running  = 0;
+
     if (res != CURLE_OK) {
         fprintf(stderr, "Download File Failed: %s\n", curl_easy_strerror(res));
         LOG("Download File Failed\r\n");
@@ -168,7 +173,7 @@ int ocpp_upload_file(const char *url) {
             // 可以继续尝试，不直接返回
         }
     }
-    // int result = system("bzip2 -k app_project.log");
+
     char cmd[256];
     snprintf(cmd, sizeof(cmd), "bzip2 -k %s", LOG_FILE_PATH);
     int result = system(cmd);
@@ -229,7 +234,7 @@ int ocpp_upload_file(const char *url) {
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 180); // 设置超时,60s不稳定
 
     LOG("开始上传到: %s\n", url);
-    g_curl_running  = 1;
+  
     res = curl_easy_perform(curl);  // 执行curl操作（这会阻塞直到完成或超时）
 
     LOG("\n");// 换行，因为进度显示用了\r
@@ -244,7 +249,7 @@ int ocpp_upload_file(const char *url) {
     curl_easy_cleanup(curl);// 清理curl句柄
     curl_global_cleanup();//全局清理
     fclose(hd_src);// 关闭文件
-   g_curl_running  = 0;
+
     if (res != CURLE_OK) {
         LOG("上传失败！错误码: %d\n", res);
         LOG("错误描述: %s\n", curl_easy_strerror(res));

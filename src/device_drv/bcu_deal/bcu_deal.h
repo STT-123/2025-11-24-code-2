@@ -27,7 +27,6 @@ extern queue_t Queue_BCURevData_FD;
 bool bcu_Init(void);
 int Drv_bcu_can_send(CAN_MESSAGE *pFrame);
 int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame);
-bool Drv_BMS_Analysis(unsigned char can_flag);
 int Drv_can_bind_interface(const char *can_name, int bitrate, int *can_fd_ptr,void (*callback)(void));
 int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr, void (*callback)(void));
 

@@ -17,8 +17,9 @@ void handle_update_firmware(struct lws *wsi, json_object *json);
 void handle_get_diagnostics(struct lws *wsi, json_object *json);
 void handle_firmware_status_notification(struct lws *wsi, json_object *json);
 void handle_diagnostics_status_notification(struct lws *wsi, json_object *json);
-extern int g_curl_running ;
 
+int g_ocppupload_flag = 0;
+int g_ocppdownload_flag = 0;
 // 发送OCPP消息  /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/
 int send_ocpp_message(json_object *msg) {
 
@@ -93,9 +94,10 @@ void handle_call_message(struct lws *wsi, json_object *json) {
         handle_diagnostics_status_notification(wsi, json);
     }
     else if (strcmp(action, "DataTransfer") == 0){
-        printf("DataTransfer---TriggerReportEnergyStorageStatusV2: %s\n", action);
-        //TriggerReportEnergyStorageStatusV2动作实现函数
         handle_trigger_report_energy_storage_status_v2(wsi, json);
+    }
+    else if (strcmp(action, "ChangeConfiguration") == 0){
+        handle_ChangeConfiguration(wsi, json);
     }
     else {
         printf("未实现的OCPP动作: %s\n", action);
@@ -172,6 +174,31 @@ const char* extract_after_xc(const char* url) {
 }
 
 
+void* firmware_download_worker(void* arg) {
+    char *url = (char*)arg;
+
+    char *filetype = extract_after_xc(url);
+    if (filetype) {
+        LOG("固件文件名为: %s\n", filetype);
+    } else {
+        
+        LOG("提取文件名失败。\n");
+        return;
+    }
+    g_ocppdownload_flag = 1;
+    int success = download_file(url,filetype); // 阻塞上传
+    g_ocppdownload_flag = 0;
+    sleep(1);
+    if(0 == success)
+    {
+        send_ocpp_message(FirmwareStatusNotification(Downloaded));
+    }
+    else{
+        send_ocpp_message(FirmwareStatusNotification(DownloadFailed));
+    }
+    free(url);
+    return NULL;
+}
 void handle_update_firmware(struct lws *wsi, json_object *json) {
     // json: [2, "messageId", "UpdateFirmware", { "location": "...", "retrieveDate": "..." }]
     if (!json_object_is_type(json, json_type_array)) {
@@ -215,56 +242,49 @@ void handle_update_firmware(struct lws *wsi, json_object *json) {
     const char *retrieve_date = json_object_get_string(retrieve_date_obj);
 
     LOG("UpdateFirmware: location=%s, retrieveDate=%s\n", location, retrieve_date);
-    char *filetype = extract_after_xc(location);
-    if (filetype) {
-        LOG("固件文件名为: %s\n", filetype);
+
+    // Step 2: 启动异步上传（不要阻塞！）
+    char *url_copy = strdup(location); // 避免悬空指针
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, firmware_download_worker, url_copy) == 0) {
+        pthread_detach(tid);
     } else {
-        
-        LOG("提取文件名失败。\n");
-        return;
+        perror("Failed to start upload thread");
+        send_ocpp_message(FirmwareStatusNotification(DownloadFailed));
+        free(url_copy);
     }
-    // 3. 下载固件文件
-    g_curl_running = 1;
-    int success = download_file(location,filetype);
-    g_curl_running = 0;
-    // 4. 发送 FirmwareStatusNotification CALL 消息
-    json_object *status_msg = json_object_new_array();
-    json_object_array_add(status_msg, json_object_new_int(2)); // CALL
-    json_object_array_add(status_msg, json_object_new_string("firmware-status-001")); // 随机唯一 ID
-    json_object_array_add(status_msg, json_object_new_string("FirmwareStatusNotification"));
-
-    json_object *status_payload = json_object_new_object();
-    json_object_object_add(status_payload, "status", json_object_new_string((success ==0) ? "Downloaded" : "DownloadFailed"));
-    json_object_array_add(status_msg, status_payload);
-
-    send_ocpp_message(status_msg);
 }
 
-
-// 发送固件状态通知
-void send_firmware_status_notification(struct lws *wsi, const char *status) {
-    json_object *notification = json_object_new_array();//
-    json_object_array_add(notification, json_object_new_int(2));
-    json_object_array_add(notification, json_object_new_string("firmware-status"));
-    json_object_array_add(notification, json_object_new_string("FirmwareStatusNotification"));
-    
-    json_object *payload = json_object_new_object();
-    json_object_object_add(payload, "status", json_object_new_string(status));
-    json_object_array_add(notification, payload);
-    
-    send_ocpp_message(notification); /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/
+void* diagnostics_upload_worker(void* arg) {
+    char *url = (char*)arg;
+    g_ocppupload_flag = 1;
+    int success = ocpp_upload_file(url); // 阻塞上传
+    g_ocppupload_flag = 0;
+    sleep(1);
+    if(0 == success)
+    {
+        if (remove(UPLOAD_FILE_PATH) == 0) {
+            LOG("文件 %s 删除成功。\n", UPLOAD_FILE_PATH);
+        } else {
+            perror("删除文件失败");
+        }
+        send_ocpp_message(DiagnosticsStatusNotification(Uploaded));
+    }
+    else{
+        send_ocpp_message(DiagnosticsStatusNotification(UploadFailed));
+    }
+    free(url);
+    return NULL;
 }
-
 // 处理获取诊断信息请求
 void handle_get_diagnostics(struct lws *wsi, json_object *json) {
+
     if (!json_object_is_type(json, json_type_array)) {
         printf("Invalid message: not a JSON array.\n");
         return;
     }
 
-    //json_object *msg_type = json_object_array_get_idx(json, 0);
     json_object *msg_id = json_object_array_get_idx(json, 1);
-    //json_object *action = json_object_array_get_idx(json, 2);
     json_object *payload = json_object_array_get_idx(json, 3);
 
     if (!msg_id || !json_object_is_type(msg_id, json_type_string) ||
@@ -282,7 +302,7 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
     
     // payload: 可返回 fileName（选填），我们这里返回固定 diagnostic-id
     json_object *ack_payload = json_object_new_object();
-    json_object_object_add(ack_payload, "fileName", json_object_new_string("log.bz2"));
+    json_object_object_add(ack_payload, "fileName", json_object_new_string("app_project.log.bz2"));
     json_object_array_add(ack, ack_payload);
 
     send_ocpp_message(ack);
@@ -298,47 +318,17 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
 
     const char *upload_url = json_object_get_string(location_obj);
 
-    LOG("Uploading diagnostics to %s\n", upload_url);
-
-    // Step 3: 调用上传函数
-
-    int success = ocpp_upload_file(upload_url);
-
-    // Step 4: 发送 DiagnosticsStatusNotification
-    json_object *status_msg = json_object_new_array();
-    json_object_array_add(status_msg, json_object_new_int(2));  // CALL
-    json_object_array_add(status_msg, json_object_new_string("1988888888888"));  // 唯一 ID
-    json_object_array_add(status_msg, json_object_new_string("DiagnosticsStatusNotification"));
-
-    json_object *status_payload = json_object_new_object();
-    json_object_object_add(status_payload, "status",json_object_new_string((success==0) ? "Uploaded" : "UploadFailed"));
-    json_object_array_add(status_msg, status_payload);
-
-    send_ocpp_message(status_msg);
-
-    if (success == 0) {
-    if (remove(UPLOAD_FILE_PATH) == 0) {
-        LOG("文件 %s 删除成功。\n", UPLOAD_FILE_PATH);
+    // Step 2: 启动异步上传（不要阻塞！）
+    char *url_copy = strdup(upload_url); // 避免悬空指针
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, diagnostics_upload_worker, url_copy) == 0) {
+        pthread_detach(tid);
     } else {
-        perror("删除文件失败");
+        perror("Failed to start upload thread");
+        send_ocpp_message(DiagnosticsStatusNotification(UploadFailed));
+        free(url_copy);
     }
-    } else {
-        fprintf(stderr, "文件上传失败，不删除压缩包。\n");
-    }
-}
 
-// 发送诊断状态通知
-void send_diagnostics_status_notification(struct lws *wsi, const char *status) {
-    json_object *notification = json_object_new_array();
-    json_object_array_add(notification, json_object_new_int(2));
-    json_object_array_add(notification, json_object_new_string("diagnostics-status"));
-    json_object_array_add(notification, json_object_new_string("DiagnosticsStatusNotification"));
-    
-    json_object *payload = json_object_new_object();
-    json_object_object_add(payload, "status", json_object_new_string(status));
-    json_object_array_add(notification, payload);
-    
-    send_ocpp_message(notification); /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/
 }
 
 // 处理固件状态通知
@@ -427,98 +417,124 @@ struct json_object *build_boot_notification() {
     // 外层数组
     struct json_object *msg = json_object_new_array();
     json_object_array_add(msg, json_object_new_int(2));  // [0] 消息类型 2 = CALL
-    json_object_array_add(msg, json_object_new_string("1915669379150258176")); // [1] 消息 ID
+    json_object_array_add(msg, json_object_new_string(BOOTNOTIFICATION_ID));   // [1] 消息 ID
     json_object_array_add(msg, json_object_new_string("BootNotification"));    // [2] 动作名
     json_object_array_add(msg, params);                                        // [3] 参数对象
 
     return msg;
 }
 
-struct json_object *build_status_notification() {
-    // 获取当前 UTC 时间，格式为 ISO 8601，例如 "2025-05-23T06:45:00Z"
-    char timestamp[32];
-    time_t now = time(NULL);
-    struct tm *utc_tm = gmtime(&now);
-    strftime(timestamp, sizeof(timestamp), "%Y-%m-%dT%H:%M:%SZ", utc_tm);
 
-    // 构建第四个参数对象（Payload）
-    struct json_object *params = json_object_new_object();
-    json_object_object_add(params, "connectorId", json_object_new_int(1)); // 通常 0 表示整机状态
-    json_object_object_add(params, "status", json_object_new_string("Available"));  // 示例状态
-    json_object_object_add(params, "errorCode", json_object_new_string("NoError"));
-    json_object_object_add(params, "timestamp", json_object_new_string(timestamp));
+void handle_ChangeConfiguration(struct lws *wsi, json_object *json){
+    // 构建最外层的数组消息
+    json_object *response = json_object_new_array();
+
+    // 步骤1：返回 [0] 3
+    json_object_array_add(response, json_object_new_int(3));  
+    // 步骤2：
+    json_object *msg_id_obj = json_object_array_get_idx(json, 1);
+    if (!msg_id_obj) {
+        printf("Missing or invalid message ID in TriggerReportEnergyStorageStatusV2.\n");
+        json_object_put(response);
+        return;
+    }
+
+    if (!json_object_is_type(msg_id_obj, json_type_string)) {
+        LOG("[OCPP] Error: Message ID is not a string (type=%d)\n", json_object_get_type(msg_id_obj));
+        json_object_put(response);
+        return;
+    }
+
+    const char *message_id = json_object_get_string(msg_id_obj);
+    json_object_array_add(response, json_object_new_string(message_id));
+    // 步骤3：返回 [2] status
+    json_object *status_obj = json_object_new_object();
+    json_object_object_add(status_obj, "status", json_object_new_string("Accepted"));
+    json_object_array_add(response, status_obj);
+    send_ocpp_message(response);
+}
+/**
+ * 诊断状态通知 
+*/
+struct json_object *DiagnosticsStatusNotification(OCPP_UPLOAD_STATUS Status){
+
+    // 
+    char DiagnosticsStatus[100];
+
+    switch (Status)
+    {
+        case UploadFailed:
+            strcpy(DiagnosticsStatus,"UploadFailed");
+            break;
+        case Uploaded:
+            strcpy(DiagnosticsStatus,"Uploaded");
+            break;
+        case Uploading:
+            strcpy(DiagnosticsStatus,"Uploading");
+            break;
+        default:
+            break;
+    }
+
+    struct json_object *payload = json_object_new_object();
+    json_object_object_add(payload, "status", json_object_new_string(DiagnosticsStatus)); // 通常 0 表示整机状态
 
     // 构建最外层的数组消息
     struct json_object *msg = json_object_new_array();
     json_object_array_add(msg, json_object_new_int(2));  // 消息类型 CALL = 2
-    json_object_array_add(msg, json_object_new_string("1915669379150258178")); // 消息 ID，应唯一
-    json_object_array_add(msg, json_object_new_string("StatusNotification"));  // 动作名
-    json_object_array_add(msg, params);  // 参数对象
+    json_object_array_add(msg, json_object_new_string(DIAGNOSTICSSTATUSNOTIFICATION_ID)); // 消息 ID，应唯一
+    json_object_array_add(msg, json_object_new_string("DiagnosticsStatusNotification"));
+    json_object_array_add(msg, payload);  // 参数对象
 
     return msg;
 }
+// 发送固件状态通知
+struct json_object *FirmwareStatusNotification(OCPP_Download_STATUS Status) {
 
+    char FirmwareStatus[100];
 
-// struct json_object *build_heartbeat() {
-//     // 获取当前时间戳
-//     struct timespec ts;
-//     clock_gettime(CLOCK_REALTIME, &ts);  // 秒 + 纳秒
-//     long sec = ts.tv_sec;
-//     long nsec = ts.tv_nsec;
+    switch (Status)
+    {
+        case Downloading:
+            strcpy(FirmwareStatus,"Downloading");
+            break;
+        case Uploaded:
+            strcpy(FirmwareStatus,"Downloaded");
+            break;
+        case DownloadFailed:
+            strcpy(FirmwareStatus,"DownloadFailed");
+            break;
+        case Installing:
+            strcpy(FirmwareStatus,"Installing");
+            break;
+        case Installed:
+            strcpy(FirmwareStatus,"Installed");
+            break;
+        case InstallFailed:
+            strcpy(FirmwareStatus,"InstallFailed");
+            break;
+        default:
+            break;
+    }
 
-//     // 加入随机数混合生成 messageId
-//     srand((unsigned int)(sec ^ nsec));  // 初始化随机种子
-//     int r = rand() % 1000000;
+    struct json_object *payload = json_object_new_object();
+    json_object_object_add(payload, "status", json_object_new_string(FirmwareStatus)); // 通常 0 表示整机状态
 
-//     // 生成长一点的唯一 ID
-//     char message_id[48];
-//     snprintf(message_id, sizeof(message_id), "%ld%06d", sec, r);
+    // 构建最外层的数组消息
+    struct json_object *msg = json_object_new_array();
+    json_object_array_add(msg, json_object_new_int(2));  // 消息类型 CALL = 2
+    json_object_array_add(msg, json_object_new_string(FIRMWARESTATUSNOTIFICATION_ID)); // 消息 ID，应唯一
+    json_object_array_add(msg, json_object_new_string("FirmwareStatusNotification"));
+    json_object_array_add(msg, payload);  // 参数对象
 
-//     // 构建 heartbeat 消息
-//     struct json_object *msg = json_object_new_array();
-//     json_object_array_add(msg, json_object_new_int(2));
-//     json_object_array_add(msg, json_object_new_string(message_id));  // 更长的唯一 ID
-//     json_object_array_add(msg, json_object_new_string("Heartbeat"));
-//     json_object_array_add(msg, json_object_new_object());
-
-//     return msg;
-// }
-
+    return msg;
+}
 struct json_object *build_heartbeat() {
     struct json_object *msg = json_object_new_array();
     json_object_array_add(msg, json_object_new_int(2));
-    json_object_array_add(msg, json_object_new_string("1915669379150258177"));
+    json_object_array_add(msg, json_object_new_string(HEARTBEAT_ID));
     json_object_array_add(msg, json_object_new_string("Heartbeat"));
     json_object_array_add(msg, json_object_new_object());  // 无参数
-    return msg;
-}
-
-struct json_object *build_update_firmware() {
-    struct json_object *msg = json_object_new_object();
-    json_object_object_add(msg, "action", json_object_new_string("UpdateFirmware"));
-    json_object_object_add(msg, "location", json_object_new_string("http://firmware-server/update.bin"));
-    json_object_object_add(msg, "retrieveDate", json_object_new_string("2025-05-08T12:00:00Z"));
-    return msg;
-}
-
-struct json_object *build_firmware_status_notification() {
-    struct json_object *msg = json_object_new_object();
-    json_object_object_add(msg, "action", json_object_new_string("FirmwareStatusNotification"));
-    json_object_object_add(msg, "status", json_object_new_string("Downloaded"));
-    return msg;
-}
-
-struct json_object *build_get_diagnostics() {
-    struct json_object *msg = json_object_new_object();
-    json_object_object_add(msg, "action", json_object_new_string("GetDiagnostics"));
-    json_object_object_add(msg, "location", json_object_new_string("http://diagnostics-server/get.zip"));
-    return msg;
-}
-
-struct json_object *build_diagnostics_status_notification() {
-    struct json_object *msg = json_object_new_object();
-    json_object_object_add(msg, "action", json_object_new_string("DiagnosticsStatusNotification"));
-    json_object_object_add(msg, "status", json_object_new_string("Uploaded"));
     return msg;
 }
 
@@ -625,15 +641,7 @@ char *base64_encode(const unsigned char *data, size_t input_length, size_t *outp
     return encoded_data;
 }
 
-#pragma pack(push, 1)
-typedef struct {
-    unsigned short usDataStyle;      /* 数据格式版本号（2字节），固定为1，用于指定后面数据的协议版本*/
-    unsigned short usPackCount;      /* Pack数量（2字节），目前为15个Pack*/
-    unsigned short usVoltCount;      /* 电池电压数量（2字节），目前为240个电池电压（15个Pack，每个16个）*/
-    unsigned short usTempCount;      /* 电池温度数量（2字节），目前为120个采集点（15个Pack，每个8个）*/
-    unsigned int   uiArrayLength;    /* 数组长度（4字节），最大255，无数据则为0*/
-} tDetailHead;
-#pragma pack(pop)
+
 // ✅ 构建并压缩 detail 字段数据，输出 JSON 对象（需要手动释放）
 struct json_object *compress_detail_data(sqlite3 *db, int *out_ids, int *out_id_count) {
     tBatData buffer[REPORT_COUNT];

@@ -199,15 +199,6 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
     return -1;
 }
 
-// 消息解析
-bool Drv_BMS_Analysis(unsigned char can_flag)
-{
-    bool state = false;
-    state = BMSAnalysis(can_flag);
-    return state;
-}
-
-
 
 int bcu_can_check_state(void)
 { 

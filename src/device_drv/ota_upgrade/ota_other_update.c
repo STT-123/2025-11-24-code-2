@@ -410,11 +410,9 @@ void FinishACPOtaAndCleanup(void)
 	delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
     independentStatus.CANStartOTA = 0;
     g_otactrl.UpDating = 0;               // 升级结束标志
-    // set_charger_cmd(BMS_POWER_DEFAULT); // 恢复默认充电状态
 	set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
     set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE); // 设置状态寄存器为 IDLE
-	Drv_BMS_Analysis(0);//BMS数据解析
-	Drv_BMS_Analysis(1);//BMS数据解析
+	CANFDSendFcn_BCU_step();//发送TCU 信息
 }
 
 void FinishDCDCOtaAndCleanup(void)
@@ -425,9 +423,7 @@ void FinishDCDCOtaAndCleanup(void)
 	delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
     independentStatus.CANStartOTA = 0;
     g_otactrl.UpDating = 0;               // 升级结束标志
-    // set_charger_cmd(BMS_POWER_DEFAULT); // 恢复默认充电状态
 	set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
     set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE); // 设置状态寄存器为 IDLE
-	Drv_BMS_Analysis(0);//BMS数据解析
-	Drv_BMS_Analysis(1);//BMS数据解析
+	CANFDSendFcn_BCU_step();
 }

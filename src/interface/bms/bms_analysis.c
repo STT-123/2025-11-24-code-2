@@ -11,22 +11,6 @@ int32_t Electric_Meter_BCU_RealtimePower = 0;
 float Electric_Meter_BCU_EngryAccumulateChrg = 0;
 float Electric_Meter_BCU_EngryAccumulateDisChrg =  0;
 
-bool BMSAnalysis(unsigned char can_flag)
-{
-    bool state = false;
-    static unsigned int call_count = 0;
-    CANFDRcvFcn_BCU_step();
-
-    // 每60次调用执行一次发送,6种数据，每一个都会+1
-    if ((call_count == 0) && (can_flag == 0)) {
-        CANFDSendFcn_BCU_step();
-        printf("call_count = %d\n", call_count);
-    }
-    call_count = (call_count + 1) % 60;
-
-    state = true; // 天才的返回值
-    return state;
-}
 
 
 void my_modbus_set_float_badc(float f, uint16_t *dest)

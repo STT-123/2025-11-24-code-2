@@ -30,8 +30,6 @@ extern int32_t Electric_Meter_BCU_RealtimePower;
 extern float Electric_Meter_BCU_EngryAccumulateChrg;
 extern float Electric_Meter_BCU_EngryAccumulateDisChrg;
 
-bool BMSAnalysis(unsigned char can_flag);
-
 void Set_BCU_Voltage(float voltage);
 
 void Set_BCU_Current(float current);

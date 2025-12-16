@@ -332,12 +332,9 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 
 static void set_ems_bms_reboot()
 {
-	// Drv_bmu_canfd_send(&bms_reboot_msg);
 	set_OTA_XCPConnect(170);
-	BMSAnalysis(0);
-	BMSAnalysis(1);
+	CANFDSendFcn_BCU_step();
 	usleep(250 * 1000);
-
 	LOG("\r\n\r\n  ******* ECU cmd Reset  *******  r\n\r\n");
 	sleep(2);
 	system("reboot"); // 复位并准备跳转

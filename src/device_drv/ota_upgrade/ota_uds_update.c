@@ -1674,6 +1674,5 @@ void FinishACOtaAndCleanup(void)
 	APP_index = 0;
 	set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
-	Drv_BMS_Analysis(0);//BMS数据解析
-	Drv_BMS_Analysis(1);//BMS数据解析
+	CANFDSendFcn_BCU_step();
 }

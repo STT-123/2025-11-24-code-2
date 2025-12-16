@@ -105,16 +105,14 @@ int upgarde_file_type(const char *filename,const char *filetype)
     {
 		set_ota_UpDating(1);
 		sleep(1);
+		
 		set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
-
-		//标志位
-		sleep(1);
 		set_ota_deviceType(ECU);
 		set_ota_deviceID(0);
-		LOG("[Ocpp]ECU_OTA_otadeviceType: %u\r\n",get_ota_deviceType());
-		LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);        
 		const char *pure_filename = get_filename_from_path(filename);// 使用通用函数提取文件名
-		set_ota_OTAFilename(pure_filename);			
+		set_ota_OTAFilename(pure_filename);	
+		LOG("[Ocpp]ECU_OTA_otadeviceType: %u\r\n",get_ota_deviceType());
+		LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);  		
 		LOG("[Ocpp]g_otactrl.OTAFilename : %s\r\n",get_ota_OTAFilename());
 		set_ota_OTAStart(1);
         return 0;
@@ -123,39 +121,33 @@ int upgarde_file_type(const char *filename,const char *filetype)
     {
 		set_ota_UpDating(1);
 		sleep(1);
+
 		set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
-        int ret =get_check_upgarde_file_type(filename, APP_BCU_UPGRADE_FILE,matched_filename,sizeof(matched_filename));
-        if(ret == 0)
-        {      
-			sleep(1);//标志位
-			set_ota_deviceType(BCU);
-			set_ota_deviceID(BCUOTACANID);
-			set_ota_OTAFilename(matched_filename);	
-            LOG("[Ocpp]g_otactrl.OTAFilename : %s\r\n",get_ota_OTAFilename());
-            LOG("[Ocpp]BCU_OTA_otadeviceType: %u\r\n",get_ota_deviceType());
-            LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);
-            set_ota_OTAStart(1);
-        }
-        return ret;
+		set_ota_deviceType(BCU);
+		set_ota_deviceID(BCUOTACANID);
+		const char *pure_filename = get_filename_from_path(filename);// 使用通用函数提取文件名
+		set_ota_OTAFilename(pure_filename);		
+		LOG("[Ocpp]g_otactrl.OTAFilename : %s\r\n",get_ota_OTAFilename());
+		LOG("[Ocpp]BCU_OTA_otadeviceType: %u\r\n",get_ota_deviceType());
+		LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);
+		set_ota_OTAStart(1);
+		
     }
     else if(strstr(filetype, APP_BMU_UPGRADE_FILE) != NULL) 
     {
 		set_ota_UpDating(1);
 		sleep(1);
+
 		set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
-        int ret =get_check_upgarde_file_type(filename, APP_BMU_UPGRADE_FILE,matched_filename,sizeof(matched_filename));
-        if(ret == 0)
-		{
-			sleep(1);//标志位
-			set_ota_deviceType(BMU);
-			set_ota_deviceID(0x1821FF10);
-			set_ota_OTAFilename(matched_filename);
-            LOG("[Ocpp]g_otactrl.OTAFilename : %s\r\n",get_ota_OTAFilename());
-            LOG("[Ocpp]BMU_OTA_otadeviceType: %u\r\n",get_ota_deviceType());
-            LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);
-			set_ota_OTAStart(1);			
-		}		
-		return ret;
+		set_ota_deviceType(BMU);
+		set_ota_deviceID(0x1821FF10);
+		const char *pure_filename = get_filename_from_path(filename);// 使用通用函数提取文件名
+		set_ota_OTAFilename(pure_filename);
+		LOG("[Ocpp]g_otactrl.OTAFilename : %s\r\n",get_ota_OTAFilename());
+		LOG("[Ocpp]BMU_OTA_otadeviceType: %u\r\n",get_ota_deviceType());
+		LOG("[Ocpp]otafilenamestr: %s\r\n",filetype);
+		set_ota_OTAStart(1);			
+		return 0;
     }
     else if(strstr(filetype, APP_ACP_UPGRADE_FILE) != NULL) 
     {
