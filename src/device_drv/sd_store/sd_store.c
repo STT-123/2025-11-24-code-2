@@ -55,7 +55,7 @@ static int mount_sdcard_fat32(void)
     // 1. 检查设备是否存在
     struct stat st;
     if (stat(device, &st) == -1) {
-        LOG("[SD Card] 错误: 设备 %s 不存在\n", device);
+        LOG("[SD Card] error: device %s not exits\n", device);
         return -1;
     }
     
@@ -76,7 +76,7 @@ static int mount_sdcard_fat32(void)
     // 3. 创建挂载点
     if (mkdir(mount_point, 0755) == -1) {
         if (errno != EEXIST) {
-            LOG("[SD Card] 创建挂载点失败: %s\n", strerror(errno));
+            LOG("[SD Card] Failed to create mount point: %s\n", strerror(errno));
             return -1;
         }
     }
@@ -84,19 +84,19 @@ static int mount_sdcard_fat32(void)
     ret = mount(device, mount_point, "vfat", 0, "iocharset=utf8");
     
     if (ret == 0) {
-        LOG("[SD Card] FAT32 SD卡挂载成功\n");
+        LOG("[SD Card] FAT32 SD card mounted successfully\n");
         return 0;
     } else {
-        LOG("[SD Card] FAT32挂载失败: %s\n", strerror(errno));
+        LOG("[SD Card] FAT32 mount failed: %s\n", strerror(errno));
         
         // 尝试不带字符集参数
-        LOG("[SD Card] 尝试不带字符集参数挂载...\n");
+        LOG("[SD Card] Attempt to mount without character set parameters...\n");
         ret = mount(device, mount_point, "vfat", 0, NULL);
         if (ret == 0) {
-            LOG("[SD Card] FAT32 SD卡挂载成功(无字符集)\n");
+            LOG("[SD Card] FAT32 SD card mounted successfully(No Character Set)\n");
             return 0;
         } else {
-            LOG("[SD Card] 最终挂载失败: %ensure_mount_points\n", strerror(errno));
+            LOG("[SD Card] Final mounting failed: %ensure_mount_points\n", strerror(errno));
             return -1;
         }
     }

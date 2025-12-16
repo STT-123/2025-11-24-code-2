@@ -146,7 +146,7 @@ static int upload_progress_callback(void *clientp,
     if (ultotal > 0) {
         int percent = (int)(ulnow * 100 / ultotal);
         if (percent != last_percent) {
-            printf("\r上传进度: %d%%", percent);
+            printf("Upload progress: %d%%\r\n", percent);
             fflush(stdout);
             last_percent = percent;
         }
@@ -155,7 +155,7 @@ static int upload_progress_callback(void *clientp,
 }
 static size_t write_response(void *buffer, size_t size, size_t nmemb, void *userp) {
     size_t total = size * nmemb;
-    printf("服务器响应: %.*s\n", (int)total, (char*)buffer);
+    printf("Server response : %.*s\n", (int)total, (char*)buffer);
     return total;
 }
 
@@ -167,10 +167,9 @@ int ocpp_upload_file(const char *url) {
     char error_buffer[CURL_ERROR_SIZE] = {0};  // 存储详细错误信息
     // === 新增：删除已存在的压缩文件 ===
     if (access(UPLOAD_FILE_PATH, F_OK) == 0) {
-        printf("删除旧的压缩文件: %s\n", UPLOAD_FILE_PATH);
+        LOG("Delete old compressed files: %s\n", UPLOAD_FILE_PATH);
         if (remove(UPLOAD_FILE_PATH) != 0) {
-            perror("删除旧文件失败");
-            // 可以继续尝试，不直接返回
+            LOG("Failed to delete old files\n");
         }
     }
 
@@ -180,9 +179,9 @@ int ocpp_upload_file(const char *url) {
 
 
     if (result == 0) {
-        printf("Compression succeeded.\n");
+        LOG("Compression succeeded.\n");
     } else {
-        printf("Compression failed.\n");
+        LOG("Compression failed.\n");
         // 这里可以检查具体错误
         if (WIFEXITED(result)) {
             printf("压缩命令退出码: %d\n", WEXITSTATUS(result));
@@ -233,7 +232,7 @@ int ocpp_upload_file(const char *url) {
    
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, 180); // 设置超时,60s不稳定
 
-    LOG("开始上传到: %s\n", url);
+    LOG("Start uploading to: %s\n", url);
   
     res = curl_easy_perform(curl);  // 执行curl操作（这会阻塞直到完成或超时）
 
@@ -242,7 +241,7 @@ int ocpp_upload_file(const char *url) {
     // === 新增调试：获取HTTP状态码 ===
     long http_code = 0;
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-    LOG("HTTP状态码: %ld\n", http_code);
+    LOG("HTTP status code: %ld\n", http_code);
 
     // 清理资源
     curl_slist_free_all(headers); // 释放HTTP头
@@ -251,17 +250,17 @@ int ocpp_upload_file(const char *url) {
     fclose(hd_src);// 关闭文件
 
     if (res != CURLE_OK) {
-        LOG("上传失败！错误码: %d\n", res);
-        LOG("错误描述: %s\n", curl_easy_strerror(res));
+        LOG("Upload failed! error code: %d\n", res);
+        LOG("Error description: %s\n", curl_easy_strerror(res));
         if (strlen(error_buffer) > 0) {
-            LOG("详细错误: %s\n", error_buffer);
+            LOG("Detailed Error: %s\n", error_buffer);
         }
-        LOG("文件路径: %s\n", UPLOAD_FILE_PATH);
-        LOG("文件大小: %ld bytes\n", (long)file_info.st_size);
-        LOG("上传失败: %s\n", UPLOAD_FILE_PATH);
+        LOG("file path: %s\n", UPLOAD_FILE_PATH);
+        LOG("file size: %ld bytes\n", (long)file_info.st_size);
+        LOG("Upload failed: %s\n", UPLOAD_FILE_PATH);
         return -4;
     }
 
-    LOG("上传成功: %s\n", UPLOAD_FILE_PATH);
+    LOG("Upload success: %s\n", UPLOAD_FILE_PATH);
     return 0;
 }

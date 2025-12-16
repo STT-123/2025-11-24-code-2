@@ -361,17 +361,17 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
     // 步骤6: 解析conf文件,赋值给max_upgrade
     int err = ini_parse(conf_path, handler, NULL);
     if (err < 0) {
-        LOG("无法读取配置文件 'upgrade.conf'\n");
+        LOG("Unable to read configuration file 'upgrade.conf'\n");
         *error_status |= 1 << 5; // 配置文件异常
         goto upcelanup;
     } else if (err > 0) {
-        LOG("配置文件第 %d 行有错误\n", err);
+        LOG("There is an error on line %d of the configuration file\n", err);
         *error_status |= 1 << 5; // 配置文件异常
         goto upcelanup;
     }
 
     if (global_max_index == -1) {
-        LOG("未找到任何 upgradeX 配置\n");
+        LOG("No upgradeX configuration found\n");
         *error_status |= 1 << 5; // 配置文件异常
         goto upcelanup;
     }

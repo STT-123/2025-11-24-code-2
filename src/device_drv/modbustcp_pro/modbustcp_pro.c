@@ -92,7 +92,7 @@ extern unsigned short g_ota_flag;
             }
             else if (address == 0x6721)//SD卡格式化
             {
-                printf("SDCardDataSaveTaskCreate\r\n");
+                LOG("SDCardDataSaveTaskCreate\r\n");
                 set_modbus_reg_val(address, data);
             }
         }
@@ -232,7 +232,7 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 		static uint8_t rtccount = 0;
 		TmData.seconds = (uint8_t)data;
 
-		printf("RTC Set Success!  \r\n");
+		LOG("RTC Set Success!  \r\n");
 		set_TCU_TimeYear((TmData.year % 100));
 		set_TCU_TimeMonth(TmData.month);
 		set_TCU_TimeDay(TmData.day);
@@ -254,7 +254,7 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 	}
 	else
 	{
-		printf("RTC Set Error!  \r\n");
+		LOG("RTC Set Error!  \r\n");
 		return -1; // 失败
 	}
 }

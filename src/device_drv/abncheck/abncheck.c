@@ -379,7 +379,7 @@ void check_bcu_rx_timeout(void)
 		{
 			set_emcu_fault(BMS_COM_FAULT, SET_ERROR);
 			can0_fault_reported = true;
-			printf("CAN0 TimeoutCheck warning\n");
+			LOG("CAN0 TimeoutCheck warning\n");
 		}
 	}
 	else
@@ -388,7 +388,7 @@ void check_bcu_rx_timeout(void)
 		{
 			set_emcu_fault(BMS_COM_FAULT, SET_RECOVER);
 			can0_fault_reported = false;
-			printf("CAN0 TimeoutCheckv normal\n");
+			LOG("CAN0 TimeoutCheckv normal\n");
 		}
 	}
 }
@@ -557,11 +557,11 @@ int check_and_fix_ip(const char *if_name)
 
 		// 打印当前不正确的IP
 		if (strlen(current_ip) > 0) {
-			LOG("[IP自动修复] 当前IP不正确: %s, 期望IP: %s\n", current_ip, expected_ip);
+			LOG("[IP] The current IP address is incorrect: %s, Expected IP: %s\n", current_ip, expected_ip);
 		} else {
-			LOG("[IP自动修复] 未检测到当前IP, 期望IP: %s\n", expected_ip);
+			LOG("[IP] Current IP not detected, expected IP: %s\n", expected_ip);
 		}
-        LOG("[IP自动修复] IP不正确,开始修改...\n");
+        LOG("[IP] IP incorrect, start modifying...\n");
 
         if (g_ipsetting.flag == 1 && g_ipsetting.ip != 0)// 创建modbus服务端
 		{
@@ -571,7 +571,7 @@ int check_and_fix_ip(const char *if_name)
         // 调用set_ip_address函数修改IP
         int ret = set_ip_address(if_name, expected_ip);
         if (ret == 0) {
-            LOG("[IP自动修复] IP修改成功\n");
+            LOG("[IP] IP modification successful\n");
             
             // 修改后验证
             sleep(2);
@@ -589,20 +589,20 @@ int check_and_fix_ip(const char *if_name)
                 if (strlen(trimmed) > 0) {
                     strncpy(current_ip, trimmed, sizeof(current_ip) - 1);
                     if (strcmp(current_ip, expected_ip) == 0) {
-                        LOG("[IP自动修复] 修改后验证成功\n");
+                        LOG("[IP] Verified successfully after modification\n");
                         return 0;
                     } else {
-                        LOG("[IP自动修复] 修改后验证失败 当前IP: %s\n", current_ip);
+                        LOG("[IP] Verification failed after modification. Current IP address: %s\n", current_ip);
                         return -1;
                     }
                 }
             }
             pclose(fp);
             
-            LOG("[IP自动修复] 修改成功但无法验证\n");
+            LOG("[IP] Modified successfully but unable to verify\n");
             return 0;
         } else {
-            LOG("[IP自动修复] IP修改失败\n");
+            LOG("[IP] IP modification failed\n");
             return -1;
         }
     }

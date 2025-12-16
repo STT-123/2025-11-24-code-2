@@ -39,12 +39,12 @@ int process_ocpp_message(struct lws *wsi, const char *message)
 {
     json_object *json = json_tokener_parse(message);
     if (!json) {
-        printf("解析JSON消息失败\n");
+        LOG("Failed to parse JSON message\n");
         return -1;
     }
     
     if (json_object_get_type(json) != json_type_array || json_object_array_length(json) < 3) {
-        printf("无效的OCPP消息格式\n");
+        LOG("invalid OCPP message format\n");
         json_object_put(json);
         return -1;
     }
@@ -63,7 +63,7 @@ int process_ocpp_message(struct lws *wsi, const char *message)
             handle_call_error_message(wsi, json);//调用错误
             break;
         default:
-            LOG("未知的OCPP消息类型: %d\n", msg_type);
+            LOG("Unknown OCPP message type: %d\n", msg_type);
             break;
     }
     
@@ -100,7 +100,7 @@ void handle_call_message(struct lws *wsi, json_object *json) {
         handle_ChangeConfiguration(wsi, json);
     }
     else {
-        printf("未实现的OCPP动作: %s\n", action);
+        LOG("Unrealized OCPP action: %s\n", action);
     }
 }
 
@@ -133,7 +133,7 @@ void handle_call_error_message(struct lws *wsi, json_object *json) {
     json_object *error_description_obj = json_object_array_get_idx(json, 3);
     const char *error_description = json_object_get_string(error_description_obj);
     
-    LOG("处理CALLERROR消息，ID: %s，错误码: %s，描述: %s\n", 
+    LOG("Processing CALLERROR messages, ID: %error code: %s, descriptor: %s\n", 
             msg_id, error_code, error_description);
 }
 
@@ -179,10 +179,10 @@ void* firmware_download_worker(void* arg) {
 
     char *filetype = extract_after_xc(url);
     if (filetype) {
-        LOG("固件文件名为: %s\n", filetype);
+        LOG("The firmware file name is: %s\n", filetype);
     } else {
         
-        LOG("提取文件名失败。\n");
+        LOG("Extracting file name failed\n");
         return;
     }
     g_ocppdownload_flag = 1;
@@ -264,9 +264,9 @@ void* diagnostics_upload_worker(void* arg) {
     if(0 == success)
     {
         if (remove(UPLOAD_FILE_PATH) == 0) {
-            LOG("文件 %s 删除成功。\n", UPLOAD_FILE_PATH);
+            LOG("file  %s delete success\n", UPLOAD_FILE_PATH);
         } else {
-            perror("删除文件失败");
+            perror("Failed to delete file");
         }
         send_ocpp_message(DiagnosticsStatusNotification(Uploaded));
     }
@@ -337,7 +337,7 @@ void handle_firmware_status_notification(struct lws *wsi, json_object *json) {
     json_object *status_obj = json_object_object_get(payload, "status");
     const char *status = json_object_get_string(status_obj);
     
-    LOG("收到固件状态通知: %s\n", status);
+    LOG("Received firmware status notification: %s\n", status);
     
     json_object *response = json_object_new_array();
     json_object_array_add(response, json_object_new_int(3));
@@ -357,7 +357,7 @@ void handle_diagnostics_status_notification(struct lws *wsi, json_object *json) 
     json_object *status_obj = json_object_object_get(payload, "status");
     const char *status = json_object_get_string(status_obj);
     
-    printf("收到诊断状态通知: %s\n", status);
+    LOG("Received diagnostic status notification: %s\n", status);
     
     json_object *response = json_object_new_array();
     json_object_array_add(response, json_object_new_int(3));

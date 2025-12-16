@@ -42,9 +42,9 @@ void *ModbusTCPServerTask(void *arg)
     // 使用新的组合函数，既设置临时IP又更新永久配置
     int ret = set_ip_address(MODBUS_ETH_NUM, modbus_ip);
     if (ret != 0) {
-        LOG("[ModbusTcp] IP设置失败,但继续尝试创建modbus上下文\n");
+        LOG("[ModbusTcp] IP setting failed, but continued to attempt to create Modbus context\n");
     } else {
-        LOG("[ModbusTcp] IP设置成功\n");
+        LOG("[ModbusTcp] IIP setting successed\n");
     }
     
     ctx = modbus_new_tcp(modbus_ip, 502);//新建一个tcp服务端

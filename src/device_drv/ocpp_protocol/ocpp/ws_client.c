@@ -111,7 +111,109 @@ void update_bat_data(sqlite3 *db)
         }
     }
 
-    data.uiTimeStamp = (unsigned int)time(NULL);
+    data.iDcPower = get_BCU_iDcPower();
+    data.ullPosEleQuantity = get_BCU_ullPosEleQuantity();
+    data.ullNegEleQuantity = get_BCU_ullNegEleQuantity();
+    data.usAirState = get_BCU_usAirState();
+    data.usAirPumpState = get_BCU_usAirPumpState();
+    data.usAirCompressorSta = get_BCU_usAirCompressorSta();
+
+    int faultCode = get_BCU_uiAirErrorfaultCode();
+    data.uiAirErrorLv1 = 0;
+    data.uiAirErrorLv2 = 0;
+    data.uiAirErrorLv3 = 0;
+
+    // Lv1 错误判断
+    if (faultCode == 1)
+    {
+        data.uiAirErrorLv1 |= (1U << 1);   
+    }
+    if (faultCode == 3)
+    {
+        data.uiAirErrorLv1 |= (1U << 3);    
+    }
+    if (faultCode == 28)
+    {
+        data.uiAirErrorLv1 |= (1U << 28);
+    }
+
+    // Lv2 错误判断
+    if (faultCode == 4 || faultCode == 5 ||
+        (faultCode >= 8 && faultCode <= 17) ||
+        (faultCode >= 20 && faultCode <= 22) ||
+        faultCode == 25 || faultCode == 29 ||
+        faultCode == 30 || faultCode == 31)
+    {
+        data.uiAirErrorLv2 |= (1U << faultCode);      
+    }
+
+    // Lv3 错误判断
+    if (faultCode == 18 || faultCode == 19 ||
+        faultCode == 23 || faultCode == 24 ||
+        faultCode == 26 || faultCode == 27)
+    {
+        data.uiAirErrorLv3 |= (1U << faultCode);
+    }
+
+    data.usTempInside = get_usTempInside();
+    data.usTempOutside = get_usTempOutside();
+    data.usHumidityInside = 0;
+
+    data.usBmuH2MaxConcentration = get_usBmuH2MaxConcentration();
+  
+    data.usBmuH2MinConcentration = 0;
+    data.usBmuCOMaxConcentration = get_usBmuCOMaxConcentration();
+
+    data.usBmuCOMinConcentration = 0;
+    data.usBmuPressureMax = get_usBmuPressureMax();
+
+    data.usBmuPressureMin = 0;
+    data.usBmuLightMax = get_usBmuLightMax();
+    data.usBmuLightMin = 0;
+    data.usBmuH2MaxIndex = get_usBmuH2MaxIndex();
+    data.usBmuCOMaxIndex = get_usBmuCOMaxIndex();
+    data.usBmuCOMinIndex = 0;
+    data.usBmuPressureMaxIndex = get_usBmuPressureMaxIndex();
+    data.usBmuPressureMinIndex = 0;
+    data.usBmuLightMaxIndex = get_usBmuLightMaxIndex();
+    data.usBmuLightMinIndex = 0;
+
+    data.usAirEnergyMode = get_usAirEnergyMode();
+
+    data.usAirInletPressure = get_usAirInletPressure();
+
+    data.usAirCoolSetTemp = get_usAirCoolSetTemp() * 10;
+    data.usAirHeatSetTemp = get_usAirHeatSetTemp() * 10;
+    data.usAirOutWaterTemp = get_usAirOutWaterTemp() * 10;
+
+    data.usAirReturnWaterTemp = get_usAirReturnWaterTemp() * 10;
+
+
+    data.usBatMaxVoltCellIndex = get_usBatMaxVoltCellIndex();
+    data.usBatMinVoltCellIndex = get_usBatMinVoltCellIndex();
+    data.usBatMaxTempCellIndex = get_usBatMaxTempCellIndex();
+    data.usBatMinTempCellIndex = get_usBatMinTempCellIndex();
+    data.usBatCellVoltMax = get_usBatCellVoltMax();
+    data.usBatCellVoltMin = get_usBatCellVoltMin();
+
+    data.usBatMaxTempCellVolt = 0;
+    data.usBatMinTempCellVolt = 0;
+    data.usBatCellTempMax = get_usBatCellTempMax();
+    data.usBatCellTempMin =get_usBatCellTempMin();
+    data.usBatMaxVoltCellTemp = get_usBatMaxVoltCellTempe();
+    data.usBatMinVoltCellTemp = get_usBatMinVoltCellTemp();
+
+    struct tm utc_timeinfo;
+    utc_timeinfo.tm_year = get_BCU_TimeYearValue() + 100; // BCU年是如24，tm_year从1900起
+    utc_timeinfo.tm_mon = get_BCU_TimeMonthValue() - 1;   // BCU月是1~12，tm_mon是0~11
+    utc_timeinfo.tm_mday = get_BCU_TimeDayValue();
+    utc_timeinfo.tm_hour = get_BCU_TimeHourValue() - 8;
+    utc_timeinfo.tm_min = get_BCU_TimeMinuteValue();
+    utc_timeinfo.tm_sec = get_BCU_TimeSencondValue();
+    utc_timeinfo.tm_isdst = -1;
+    time_t t = mktime(&utc_timeinfo);
+    data.uiTimeStamp = (unsigned int)t;
+
     convert_tBatData_to_big_endian(&data_be, &data);
     insert_data(db, &data_be);
 }

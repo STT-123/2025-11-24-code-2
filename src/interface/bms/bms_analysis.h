@@ -114,4 +114,39 @@ void ConvertBusToCANFD(const CAN_FD_MESSAGE_BUS *msg, struct canfd_frame *frame)
 void Convert_CAN_MESSAGE_to_can_frame(const CAN_MESSAGE *msg, struct can_frame *frame);
 void Convert_canfd_frame_to_CAN_MESSAGE(const struct canfd_frame *frame, CAN_MESSAGE *msg);
 void Convert_can_frame_to_CAN_MESSAGE(const struct can_frame *frame, CAN_MESSAGE *msg);
+
+real32_T get_BCU_iDcPower(void);
+real32_T get_BCU_ullPosEleQuantity(void);
+
+real32_T get_BCU_ullNegEleQuantity(void);
+uint16_T get_BCU_usAirState(void);
+uint16_T get_BCU_usAirPumpState(void);
+uint16_T get_BCU_usAirCompressorSt(void);
+real32_T get_BCU_uiAirErrorfaultCode();
+uint16_T get_usTempInside();
+uint16_T get_usTempOutside();
+uint16_T get_usBmuH2MaxConcentration();
+uint16_T get_usBmuCOMaxConcentration();
+uint16_T get_usBmuPressureMax();
+uint16_T get_usBmuLightMax();
+uint16_T get_usBmuH2MaxIndex();
+uint16_T get_usBmuCOMaxIndex();
+uint16_T get_usBmuPressureMaxIndex();
+uint16_T get_usBmuLightMaxIndex();
+uint8_T get_usAirEnergyMode();
+uint8_T get_usAirInletPressure();
+int32_T get_usAirCoolSetTemp();
+uint16_T get_usAirHeatSetTemp();
+uint16_T get_usAirOutWaterTemp();
+uint16_T get_usAirReturnWaterTemp();
+uint16_T get_usBatMaxVoltCellIndex();
+uint16_T get_usBatMinVoltCellIndex();
+uint8_T get_usBatMaxTempCellIndex();
+uint8_T get_usBatMinTempCellIndex();
+uint16_T get_usBatCellVoltMax();
+uint16_T get_usBatCellVoltMin();
+int16_T get_usBatCellTempMax();
+int16_T get_usBatCellTempMin();
+uint32_T get_usBatMaxVoltCellTempe();
+int16_T get_usBatMinVoltCellTemp();
 #endif

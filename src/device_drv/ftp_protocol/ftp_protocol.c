@@ -27,7 +27,7 @@ void check_timeouts(FTPState *state)
         close(state->data_sock);
         state->control_sock = -1;
         state->data_sock = -1;
-        printf("Connection timed out.\n");
+        LOG("Connection timed out.\n");
     }
 }
 
@@ -47,7 +47,7 @@ static void handle_pass_command(FTPState *state, char *args)
     // 切换到 U 盘挂载目录
     if (chdir(USB_MOUNT_POINT) != 0)
     {
-        printf("Failed to change to USB directory: %s\n", strerror(errno));
+        LOG("Failed to change to USB directory: %s\n", strerror(errno));
         send_response(state->control_sock, "550 Failed to access USB directory.\r\n");
         return;
     }
@@ -238,7 +238,7 @@ static void handle_list_command(FTPState *state, char *args)
         struct stat st;
         if (stat(fullpath, &st) == -1)
         {
-            printf("Failed to stat file %s\n", entry->d_name);
+            LOG("Failed to stat file %s\n", entry->d_name);
             continue;
         }
 
@@ -303,7 +303,7 @@ static void handle_retr_command(FTPState *state, char *filename)
                                   &state->client_addr_len);
     if (client_data_sock < 0)
     {
-        printf("Failed to accept data connection: %s\n", strerror(errno));
+        LOG("Failed to accept data connection: %s\n", strerror(errno));
         send_response(state->control_sock, "425 Can't open data connection.\r\n");
         return;
     }
@@ -324,7 +324,7 @@ static void handle_retr_command(FTPState *state, char *filename)
     state->file = fopen(filebuff, "rb");
     if (!state->file)
     {
-        printf("Failed to open file: %s\n", strerror(errno));
+        LOG("Failed to open file: %s\n", strerror(errno));
         send_response(state->control_sock, "550 File not found.\r\n");
         close(client_data_sock);
         close(state->data_sock);      // ← 添加这行
@@ -341,7 +341,7 @@ static void handle_retr_command(FTPState *state, char *filename)
 
         if (send(client_data_sock, buffer, bytes_read, 0) < 0)
         {
-            printf("Failed to send data: %s\n", strerror(errno));
+            LOG("Failed to send data: %s\n", strerror(errno));
             break;
         }
 
@@ -368,7 +368,7 @@ static void handle_stor_command(FTPState *state, char *filename)
     int client_data_sock = accept(state->data_sock, (struct sockaddr *)&state->client_addr, &state->client_addr_len);
     if (client_data_sock < 0)
     {
-        printf("Failed to accept data connection: %s\n", strerror(errno));
+        LOG("Failed to accept data connection: %s\n", strerror(errno));
         send_response(state->control_sock, "425 Can't open data connection.\r\n");
         close(state->data_sock);
         return;
@@ -380,7 +380,7 @@ static void handle_stor_command(FTPState *state, char *filename)
     FILE *file = fopen(filepath, "wb");
     if (!file)
     {
-        printf("Failed to create file: %s\n", strerror(errno));
+        LOG("Failed to create file: %s\n", strerror(errno));
         send_response(state->control_sock, "550 Failed to create file.\r\n");
         close(client_data_sock);
         close(state->data_sock);
@@ -397,7 +397,7 @@ static void handle_stor_command(FTPState *state, char *filename)
         size_t bytes_written = fwrite(buffer, 1, bytes_received, file);
         if (bytes_written != bytes_received)
         {
-            printf("Failed to write data to file: %s\n", strerror(errno));
+            LOG("Failed to write data to file: %s\n", strerror(errno));
             send_response(state->control_sock, "426 Connection closed; transfer aborted.\r\n");
             fclose(file);
             state->file = NULL; 
@@ -425,7 +425,7 @@ static void handle_mget_command(FTPState *state, char *args)
     int client_data_sock = accept(state->data_sock, (struct sockaddr *)&state->client_addr, &state->client_addr_len);
     if (client_data_sock < 0)
     {
-        printf("Failed to accept data connection: %s\n", strerror(errno));
+        LOG("Failed to accept data connection: %s\n", strerror(errno));
         send_response(state->control_sock, "425 Can't open data connection.\r\n");
         close(state->data_sock);
         return;
@@ -437,7 +437,7 @@ static void handle_mget_command(FTPState *state, char *args)
     FILE *file = fopen(filepath, "rb"); // Open the file for reading
     if (!file)
     {
-        printf("Failed to open file: %s\n", strerror(errno));
+        LOG("Failed to open file: %s\n", strerror(errno));
         send_response(state->control_sock, "550 File not found.\r\n");
         close(client_data_sock);
         close(state->data_sock);
@@ -452,7 +452,7 @@ static void handle_mget_command(FTPState *state, char *args)
         update_last_activity(state);
         if (send(client_data_sock, buffer, bytes_read, 0) < 0)
         {
-            printf("Failed to send data: %s\n", strerror(errno));
+            LOG("Failed to send data: %s\n", strerror(errno));
             send_response(state->control_sock, "426 Connection closed; transfer aborted.\r\n");
             fclose(file);
             state->file = NULL; 
@@ -503,7 +503,7 @@ static void handle_cdup_command(FTPState *state)
     char cwd[BUFFER_SIZE];
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
-        printf("Failed to get current directory\n");
+        LOG("Failed to get current directory\n");
         send_response(state->control_sock, "550 Failed to get current directory.\r\n");
         return;
     }
@@ -511,7 +511,7 @@ static void handle_cdup_command(FTPState *state)
     // 改变目录到父级目录
     if (chdir("..") != 0)
     {
-        printf("Failed to change to parent directory\n");
+        LOG("Failed to change to parent directory\n");
         send_response(state->control_sock, "550 Failed to change directory.\r\n");
     }
     else
@@ -542,10 +542,10 @@ static void handle_cwd_command(FTPState *state, const char *args)
         if (getcwd(cwd, sizeof(cwd)) != NULL) {//获取工作目录
             strncpy(state->path, cwd, sizeof(state->path) - 1);
             state->path[sizeof(state->path) - 1] = '\0';
-            printf("Changed to directory: %s\n", state->path);
+            LOG("Changed to directory: %s\n", state->path);
         }
     } else {
-        printf("Failed to change directory: %s\n", strerror(errno));
+        LOG("Failed to change directory: %s\n", strerror(errno));
         send_response(state->control_sock, "550 Failed to change directory.\r\n");
     }
 }
@@ -589,7 +589,7 @@ static void handle_size_command(FTPState *state, char *filename)
     struct stat st;
     if (stat(filepath, &st) != 0)
     {
-        printf("SIZE: File not found - %s (%s)\n", filepath, strerror(errno));
+        LOG("SIZE: File not found - %s (%s)\n", filepath, strerror(errno));
         send_response(state->control_sock, "550 File not found.\r\n");
         return;
     }
@@ -638,7 +638,7 @@ int handle_ftp_commands(FTPState *state)
         {
             check_timeouts(state);         // 检查超时
             buffer[bytes_received] = '\0'; // 确保字符串以 \0 结束
-            printf("Received command: %s\n", buffer);
+            LOG("Received command: %s\n", buffer);
 
             // 分割命令和参数
             char *command = strtok(buffer, " \r\n");

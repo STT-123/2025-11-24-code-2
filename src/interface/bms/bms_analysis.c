@@ -318,3 +318,157 @@ unsigned short* get_BCU_usSingleBatTemp(void)
 
     return usSingleBatTemp;  /* 返回数组指针 */
 }
+
+real32_T get_BCU_iDcPower(void) {
+    return CANFDRcvFcn_BCU_B.BCU_RealtimePower_H << 8 | CANFDRcvFcn_BCU_B.BCU_RealtimePower_L;  /* 返回 */
+}
+real32_T get_BCU_ullPosEleQuantity(void) {
+    real32_T u;
+    uint32_T data_index;
+    uint16_T CFunction_o1;
+    u = 1000.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o6;
+    if (u < 4.2949673E+9F) 
+    {
+        if (u >= 0.0F)
+        {
+            data_index = (uint32_T)u;
+        }
+        else
+        {
+            data_index = 0U;
+        }
+    } 
+    else 
+    {
+        data_index = MAX_uint32_T;
+    }   
+
+    CFunction_o1 = (uint16_T)(data_index >> 16);
+    return CFunction_o1;  /* 返回 */
+}
+real32_T get_BCU_ullNegEleQuantity(void) {
+    real32_T u;
+    uint32_T data_index;
+    uint16_T CFunction_o2;
+    u = 1000.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o6;
+    if (u < 4.2949673E+9F) 
+    {
+        if (u >= 0.0F)
+        {
+            data_index = (uint32_T)u;
+        }
+        else
+        {
+            data_index = 0U;
+        }
+    } 
+    else 
+    {
+        data_index = MAX_uint32_T;
+    }   
+
+    CFunction_o2 = (uint16_T)(data_index & 65535U);
+    return CFunction_o2;  /* 返回 */
+}
+uint16_T get_BCU_usAirState(void) {
+    return 1;  /* 返回 */
+}
+uint16_T get_BCU_usAirPumpState(void) {
+    return 1;  /* 返回 */
+}
+uint16_T get_BCU_usAirCompressorSta(void) {
+    return 1;  /* 返回 */
+}
+real32_T get_BCU_uiAirErrorfaultCode(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usTempInside(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usTempOutside(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuH2MaxConcentration(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuCOMaxConcentration(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuPressureMax(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuLightMax(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuH2MaxIndex(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuCOMaxIndex(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+uint16_T get_usBmuPressureMaxIndex(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+
+uint16_T get_usBmuLightMaxIndex(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+
+uint8_T get_usAirEnergyMode(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+
+uint8_T get_usAirInletPressure(){
+    return 1;  /* xxxxxxxxxxx 待定*/
+}
+
+int32_T get_usAirCoolSetTemp(){
+    return 1;
+}
+
+uint16_T get_usAirHeatSetTemp(){
+    return 1;
+}
+
+uint16_T get_usAirOutWaterTemp(){
+    return 1;
+}
+
+uint16_T get_usAirReturnWaterTemp(){
+    return 1;
+}
+
+uint16_T get_usBatMaxVoltCellIndex(){
+    return 1;
+}
+uint16_T get_usBatMinVoltCellIndex(){
+    return 1;
+}
+uint8_T get_usBatMaxTempCellIndex(){
+    return 1;
+}
+uint8_T get_usBatMinTempCellIndex(){
+    return 1;
+}
+
+uint16_T get_usBatCellVoltMax(){
+    return 1;
+}
+uint16_T get_usBatCellVoltMin(){
+    return 1;
+}
+
+int16_T get_usBatCellTempMax(){
+    return 1;
+}
+int16_T get_usBatCellTempMin(){
+    return 1;
+}
+
+uint32_T get_usBatMaxVoltCellTempe(){
+    return 1;
+}
+
+int16_T get_usBatMinVoltCellTemp(){
+    return 1;
+}
