@@ -1,7 +1,6 @@
 #include "message_queue.h"
 #include <pthread.h>
 #include <stdlib.h>
-#include "ws_client.h"
 /*
     功能描述： 此文件主要实现一个json对象指针的 环形缓冲消息队列，
         队列中只存json对象的指针。
@@ -26,9 +25,21 @@
 static struct json_object *queue[QUEUE_SIZE];
 static int head = 0;
 static int tail = 0;
-static int count = 0;
-
+static int queue_count = 0;
 static pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
+
+struct lws *global_wsi = NULL;
+pthread_mutex_t wsi_lock = PTHREAD_MUTEX_INITIALIZER;
+// 外部调用函数，请求触发写事件
+void websocket_request_write(void)
+{
+    pthread_mutex_lock(&wsi_lock);
+    if (global_wsi)
+    {   
+        lws_callback_on_writable(global_wsi);
+    }
+    pthread_mutex_unlock(&wsi_lock);
+}
 
 /**
  * 非阻塞入队
@@ -43,10 +54,10 @@ bool enqueue_message(struct json_object *msg) {
     }
     pthread_mutex_lock(&lock);
 
-    if (count < QUEUE_SIZE) {
+    if (queue_count < QUEUE_SIZE) {
         queue[tail] = msg;  //json_object_get(msg);  不需要再增加引用计数,不然会内存泄露
         tail = (tail + 1) % QUEUE_SIZE;
-        count++;
+        queue_count++;
         result = true;
     }
     pthread_mutex_unlock(&lock);
@@ -62,10 +73,10 @@ struct json_object *dequeue_message() {
     struct json_object *msg = NULL;
     pthread_mutex_lock(&lock);
 
-    if (count > 0) {
+    if (queue_count > 0) {
         msg = queue[head];
         head = (head + 1) % QUEUE_SIZE;
-        count--;
+        queue_count--;
     }
     pthread_mutex_unlock(&lock);
     return msg;

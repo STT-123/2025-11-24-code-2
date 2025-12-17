@@ -1,28 +1,16 @@
 #ifndef OCPP_MESSAGES_H
 #define OCPP_MESSAGES_H
+
 #include <json-c/json.h>
 #include <zstd.h>
+#include <sys/stat.h>
+#include <curl/curl.h>
 #include <libwebsockets.h>
 #include "batdata.h"
 #include "sqlite_storage.h"
 
-
-typedef enum
-{
-	Uploading,
-    Uploaded,
-    UploadFailed
-} OCPP_UPLOAD_STATUS;
-
-typedef enum
-{
-	Downloading,
-    Downloaded,
-    DownloadFailed,
-    Installing,
-    Installed,
-    InstallFailed
-} OCPP_Download_STATUS;
+#define BUILD_X86  1
+#define REPORT_COUNT 60
 
 #pragma pack(push, 1)
 typedef struct {
@@ -42,12 +30,16 @@ typedef struct {
 
 struct json_object *build_boot_notification();
 struct json_object *build_heartbeat();
-struct json_object *DiagnosticsStatusNotification(OCPP_UPLOAD_STATUS Status);
 struct json_object *compress_detail_data(sqlite3 *db, int *out_ids, int *out_id_count);
-struct json_object *FirmwareStatusNotification(OCPP_Download_STATUS Status) ;
 
+void handle_call_message(struct lws *wsi, json_object *json);
+void handle_call_result_message(struct lws *wsi, json_object *json);
+void handle_call_error_message(struct lws *wsi, json_object *json);
+void handle_heartbeat(struct lws *wsi, json_object *json);
 int process_ocpp_message(struct lws *wsi, const char *message);
-int send_ocpp_message(json_object *msg);
 void handle_ChangeConfiguration(struct lws *wsi, json_object *json);
+
+int send_ocpp_message(json_object *msg);
+
 
 #endif

@@ -1123,6 +1123,7 @@ void FinshhBCUBMUOtaAndCleanup(void)
     set_OTA_XCPConnect(0);//删除跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
+    CANFDSendFcn_BCU_step();
 }
 
 

@@ -9,7 +9,6 @@
 #include "interface/bms/bms_analysis.h"
 #include "device_drv/xmodem/xmodemstate.h"
 #include "interface/modbus/modbus_defines.h"
-#include "device_drv/ocpp_protocol/ocpp/ws_client.h"
 #include "device_drv/bcu_deal/bcu_deal.h"
 
 pthread_t OTAUpgrad_TASKHandle = 0;

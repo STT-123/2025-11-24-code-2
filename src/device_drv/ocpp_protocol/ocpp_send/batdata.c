@@ -1,14 +1,5 @@
-#include <stdio.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <sqlite3.h>
-#include <zstd.h>
-#include <json-c/json.h>
-#include <unistd.h>
 #include "batdata.h"
-#include <arpa/inet.h>
+
 
 void convert_tBatData_to_big_endian(tBatData *dst, const tBatData *src) {
     dst->uiTimeStamp = htonl(src->uiTimeStamp);

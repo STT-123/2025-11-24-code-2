@@ -81,6 +81,7 @@ void FinshhECUOtaAndCleanup(void)
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
     LOG("[OTA] OTA finished, cleaning up...\n");
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
+    CANFDSendFcn_BCU_step();
 }
 
 

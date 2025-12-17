@@ -1,8 +1,15 @@
-
-
 #ifndef __BATDATA_H__
 #define __BATDATA_H__
-
+#include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <sqlite3.h>
+#include <zstd.h>
+#include <json-c/json.h>
+#include <unistd.h>
+#include <arpa/inet.h>
 
 #pragma pack(push, 1)
 typedef struct 

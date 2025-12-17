@@ -4,31 +4,18 @@
 #include <stdio.h>
 #include <string.h>
 #include "message_queue.h"
-#include "project.h"
-#include "updownfile.h"
 #include "interface/log/log.h"
 #include <json-c/json_object.h>
+#include "get_diagnostics.h"
+#include "update_firmware.h"
 
-void handle_call_message(struct lws *wsi, json_object *json);
-void handle_call_result_message(struct lws *wsi, json_object *json);
-void handle_call_error_message(struct lws *wsi, json_object *json);
-void handle_heartbeat(struct lws *wsi, json_object *json);
-void handle_update_firmware(struct lws *wsi, json_object *json);
-void handle_get_diagnostics(struct lws *wsi, json_object *json);
-void handle_firmware_status_notification(struct lws *wsi, json_object *json);
-void handle_diagnostics_status_notification(struct lws *wsi, json_object *json);
 
-int g_ocppupload_flag = 0;
-int g_ocppdownload_flag = 0;
 // 发送OCPP消息  /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/
 int send_ocpp_message(json_object *msg) {
 
-    if(enqueue_message(msg))
-    {
+    if(enqueue_message(msg)){
         return 0;
-    }
-    else
-    {
+    }else{
         printf("enqueu_msg error\n");
         return -1;
     }    
@@ -116,10 +103,6 @@ char *generate_unique_id() {
 void handle_call_result_message(struct lws *wsi, json_object *json) {
     json_object *msg_id_obj = json_object_array_get_idx(json, 1);
     const char *msg_id = json_object_get_string(msg_id_obj);
-    // printf("处理CALLRESULT消息，ID: %s\n", msg_id);
-    
-    // 标记对应的消息为已发送
-    // 实际实现中需要根据消息ID查找对应的记录并更新状态
 }
 
 // 处理CALLERROR消息
@@ -168,208 +151,7 @@ void handle_heartbeat(struct lws *wsi, json_object *json) {
 }
 
 // 处理固件更新请求
-const char* extract_after_xc(const char* url) {
-    const char *xc_pos = strstr(url, "XC");
-    return xc_pos ? xc_pos : NULL;
-}
 
-
-void* firmware_download_worker(void* arg) {
-    char *url = (char*)arg;
-
-    char *filetype = extract_after_xc(url);
-    if (filetype) {
-        LOG("The firmware file name is: %s\n", filetype);
-    } else {
-        
-        LOG("Extracting file name failed\n");
-        return;
-    }
-    g_ocppdownload_flag = 1;
-    int success = download_file(url,filetype); // 阻塞上传
-    g_ocppdownload_flag = 0;
-    sleep(1);
-    if(0 == success)
-    {
-        send_ocpp_message(FirmwareStatusNotification(Downloaded));
-    }
-    else{
-        send_ocpp_message(FirmwareStatusNotification(DownloadFailed));
-    }
-    free(url);
-    return NULL;
-}
-void handle_update_firmware(struct lws *wsi, json_object *json) {
-    // json: [2, "messageId", "UpdateFirmware", { "location": "...", "retrieveDate": "..." }]
-    if (!json_object_is_type(json, json_type_array)) {
-        printf("Invalid message: not a JSON array.\n");
-        return;
-    }
-
-    json_object *msg_type = json_object_array_get_idx(json, 0);
-    json_object *msg_id = json_object_array_get_idx(json, 1);
-    //json_object *command = json_object_array_get_idx(json, 2);
-    json_object *payload = json_object_array_get_idx(json, 3);
-
-    if (!msg_type || !msg_id || !payload || !json_object_is_type(msg_id, json_type_string) || !json_object_is_type(payload, json_type_object)) {
-        printf("Invalid UpdateFirmware message structure.\n");
-        return;
-    }
-
-    const char *message_id = json_object_get_string(msg_id);
-
-    // 1. 回复 CALLRESULT 消息
-    json_object *ack = json_object_new_array();
-    json_object_array_add(ack, json_object_new_int(3));  // CALLRESULT
-    json_object_array_add(ack, json_object_new_string(message_id)); // Same ID as request
-    json_object_array_add(ack, json_object_new_object()); // Empty payload
-
-    send_ocpp_message(ack);
-
-    // 2. 提取参数
-    json_object *location_obj = NULL;
-    json_object *retrieve_date_obj = NULL;
-
-    json_object_object_get_ex(payload, "location", &location_obj);
-    json_object_object_get_ex(payload, "retrieveDate", &retrieve_date_obj);
-
-    if (!location_obj || !retrieve_date_obj || !json_object_is_type(location_obj, json_type_string) || !json_object_is_type(retrieve_date_obj, json_type_string)) {
-        LOG("Missing or invalid location/retrieveDate in payload.\n");
-        return;
-    }
-
-    const char *location = json_object_get_string(location_obj);
-    const char *retrieve_date = json_object_get_string(retrieve_date_obj);
-
-    LOG("UpdateFirmware: location=%s, retrieveDate=%s\n", location, retrieve_date);
-
-    // Step 2: 启动异步上传（不要阻塞！）
-    char *url_copy = strdup(location); // 避免悬空指针
-    pthread_t tid;
-    if (pthread_create(&tid, NULL, firmware_download_worker, url_copy) == 0) {
-        pthread_detach(tid);
-    } else {
-        perror("Failed to start upload thread");
-        send_ocpp_message(FirmwareStatusNotification(DownloadFailed));
-        free(url_copy);
-    }
-}
-
-void* diagnostics_upload_worker(void* arg) {
-    char *url = (char*)arg;
-    g_ocppupload_flag = 1;
-    int success = ocpp_upload_file(url); // 阻塞上传
-    g_ocppupload_flag = 0;
-    sleep(1);
-    if(0 == success)
-    {
-        if (remove(UPLOAD_FILE_PATH) == 0) {
-            LOG("file  %s delete success\n", UPLOAD_FILE_PATH);
-        } else {
-            perror("Failed to delete file");
-        }
-        send_ocpp_message(DiagnosticsStatusNotification(Uploaded));
-    }
-    else{
-        send_ocpp_message(DiagnosticsStatusNotification(UploadFailed));
-    }
-    free(url);
-    return NULL;
-}
-// 处理获取诊断信息请求
-void handle_get_diagnostics(struct lws *wsi, json_object *json) {
-
-    if (!json_object_is_type(json, json_type_array)) {
-        printf("Invalid message: not a JSON array.\n");
-        return;
-    }
-
-    json_object *msg_id = json_object_array_get_idx(json, 1);
-    json_object *payload = json_object_array_get_idx(json, 3);
-
-    if (!msg_id || !json_object_is_type(msg_id, json_type_string) ||
-        !payload || !json_object_is_type(payload, json_type_object)) {
-        printf("Invalid GetDiagnostics message structure.\n");
-        return;
-    }
-
-    const char *message_id = json_object_get_string(msg_id);
-
-    // Step 1: 立即发送 CALLRESULT 响应
-    json_object *ack = json_object_new_array();
-    json_object_array_add(ack, json_object_new_int(3));  // CALLRESULT
-    json_object_array_add(ack, json_object_new_string(message_id));
-    
-    // payload: 可返回 fileName（选填），我们这里返回固定 diagnostic-id
-    json_object *ack_payload = json_object_new_object();
-    json_object_object_add(ack_payload, "fileName", json_object_new_string("app_project.log.bz2"));
-    json_object_array_add(ack, ack_payload);
-
-    send_ocpp_message(ack);
-
-    // Step 2: 获取 location 字段
-    json_object *location_obj = NULL;
-    json_object_object_get_ex(payload, "location", &location_obj);
-
-    if (!location_obj || !json_object_is_type(location_obj, json_type_string)) {
-        printf("No valid location provided in GetDiagnostics.\n");
-        return;
-    }
-
-    const char *upload_url = json_object_get_string(location_obj);
-
-    // Step 2: 启动异步上传（不要阻塞！）
-    char *url_copy = strdup(upload_url); // 避免悬空指针
-    pthread_t tid;
-    if (pthread_create(&tid, NULL, diagnostics_upload_worker, url_copy) == 0) {
-        pthread_detach(tid);
-    } else {
-        perror("Failed to start upload thread");
-        send_ocpp_message(DiagnosticsStatusNotification(UploadFailed));
-        free(url_copy);
-    }
-
-}
-
-// 处理固件状态通知
-void handle_firmware_status_notification(struct lws *wsi, json_object *json) {
-    json_object *payload = json_object_array_get_idx(json, 3);
-    json_object *status_obj = json_object_object_get(payload, "status");
-    const char *status = json_object_get_string(status_obj);
-    
-    LOG("Received firmware status notification: %s\n", status);
-    
-    json_object *response = json_object_new_array();
-    json_object_array_add(response, json_object_new_int(3));
-    
-    json_object *msg_id_obj = json_object_array_get_idx(json, 1);
-    json_object_array_add(response, msg_id_obj);
-    
-    json_object *response_payload = json_object_new_object();
-    json_object_array_add(response, response_payload);
-    
-    send_ocpp_message(response); /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/;
-}
-
-// 处理诊断状态通知
-void handle_diagnostics_status_notification(struct lws *wsi, json_object *json) {
-    json_object *payload = json_object_array_get_idx(json, 3);
-    json_object *status_obj = json_object_object_get(payload, "status");
-    const char *status = json_object_get_string(status_obj);
-    
-    LOG("Received diagnostic status notification: %s\n", status);
-    
-    json_object *response = json_object_new_array();
-    json_object_array_add(response, json_object_new_int(3));
-    
-    json_object *msg_id_obj = json_object_array_get_idx(json, 1);
-    json_object_array_add(response, msg_id_obj);
-    
-    json_object *response_payload = json_object_new_object();
-    json_object_array_add(response, response_payload);
-    
-    send_ocpp_message(response); /*消息队列存放json对象指针，发送后统一调用 json_object_put释放*/;
-}
 
 void handle_trigger_report_energy_storage_status_v2(struct lws *wsi, json_object *json) {
     if (!json_object_is_type(json, json_type_array)) {
@@ -456,90 +238,6 @@ void handle_ChangeConfiguration(struct lws *wsi, json_object *json){
 /**
  * 诊断状态通知 
 */
-struct json_object *DiagnosticsStatusNotification(OCPP_UPLOAD_STATUS Status){
-
-    // 
-    char DiagnosticsStatus[100];
-
-    switch (Status)
-    {
-        case UploadFailed:
-            strcpy(DiagnosticsStatus,"UploadFailed");
-            break;
-        case Uploaded:
-            strcpy(DiagnosticsStatus,"Uploaded");
-            break;
-        case Uploading:
-            strcpy(DiagnosticsStatus,"Uploading");
-            break;
-        default:
-            break;
-    }
-
-    struct json_object *payload = json_object_new_object();
-    json_object_object_add(payload, "status", json_object_new_string(DiagnosticsStatus)); // 通常 0 表示整机状态
-
-    // 构建最外层的数组消息
-    struct json_object *msg = json_object_new_array();
-    json_object_array_add(msg, json_object_new_int(2));  // 消息类型 CALL = 2
-    json_object_array_add(msg, json_object_new_string(DIAGNOSTICSSTATUSNOTIFICATION_ID)); // 消息 ID，应唯一
-    json_object_array_add(msg, json_object_new_string("DiagnosticsStatusNotification"));
-    json_object_array_add(msg, payload);  // 参数对象
-
-    return msg;
-}
-// 发送固件状态通知
-struct json_object *FirmwareStatusNotification(OCPP_Download_STATUS Status) {
-
-    char FirmwareStatus[100];
-
-    switch (Status)
-    {
-        case Downloading:
-            strcpy(FirmwareStatus,"Downloading");
-            break;
-        case Uploaded:
-            strcpy(FirmwareStatus,"Downloaded");
-            break;
-        case DownloadFailed:
-            strcpy(FirmwareStatus,"DownloadFailed");
-            break;
-        case Installing:
-            strcpy(FirmwareStatus,"Installing");
-            break;
-        case Installed:
-            strcpy(FirmwareStatus,"Installed");
-            break;
-        case InstallFailed:
-            strcpy(FirmwareStatus,"InstallFailed");
-            break;
-        default:
-            break;
-    }
-
-    struct json_object *payload = json_object_new_object();
-    json_object_object_add(payload, "status", json_object_new_string(FirmwareStatus)); // 通常 0 表示整机状态
-
-    // 构建最外层的数组消息
-    struct json_object *msg = json_object_new_array();
-    json_object_array_add(msg, json_object_new_int(2));  // 消息类型 CALL = 2
-    json_object_array_add(msg, json_object_new_string(FIRMWARESTATUSNOTIFICATION_ID)); // 消息 ID，应唯一
-    json_object_array_add(msg, json_object_new_string("FirmwareStatusNotification"));
-    json_object_array_add(msg, payload);  // 参数对象
-
-    return msg;
-}
-struct json_object *build_heartbeat() {
-    struct json_object *msg = json_object_new_array();
-    json_object_array_add(msg, json_object_new_int(2));
-    json_object_array_add(msg, json_object_new_string(HEARTBEAT_ID));
-    json_object_array_add(msg, json_object_new_string("Heartbeat"));
-    json_object_array_add(msg, json_object_new_object());  // 无参数
-    return msg;
-}
-
-
-
 struct json_object *build_data_transfer(const char *base64_str, size_t size) {
     // 构建 status[0] 对象
     static int soc ;
@@ -606,6 +304,15 @@ struct json_object *build_data_transfer(const char *base64_str, size_t size) {
 
     return msg;
 }
+struct json_object *build_heartbeat() {
+    struct json_object *msg = json_object_new_array();
+    json_object_array_add(msg, json_object_new_int(2));
+    json_object_array_add(msg, json_object_new_string(HEARTBEAT_ID));
+    json_object_array_add(msg, json_object_new_string("Heartbeat"));
+    json_object_array_add(msg, json_object_new_object());  // 无参数
+    return msg;
+}
+
 
 static const char base64_encode_table[] = 
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

@@ -1,5 +1,4 @@
 #include "ocpp_app_update.h"
-#include "ocpp/updownfile.h"
 #include "interface/globalVariable.h"
 #include "device_drv/ota_upgrade/ota_xcp_update.h"
 #include "interface/modbus/modbus_defines.h"
@@ -157,9 +156,7 @@ int upgarde_file_type(const char *filename,const char *filetype)
         int ret =get_check_upgarde_file_type(filename, APP_ACP_UPGRADE_FILE,matched_filename,sizeof(matched_filename));
         if(ret ==0)
 		{
-
 			//标志位
-
 			sleep(1);
             g_otactrl.deviceType = ACP;
             memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
