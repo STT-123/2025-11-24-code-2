@@ -181,6 +181,8 @@ void update_bat_data1(sqlite3 *db) {
 *该线程专门用来给ocpp服务端发送数据
 *心跳、电池数据等
 */
+
+#if 0
 void *websocket_send_thread(void *arg)
 {
     int heartcounter = 0;
@@ -216,3 +218,129 @@ void *websocket_send_thread(void *arg)
 
     return 0;
 }
+#else
+void *websocket_send_thread(void *arg)
+{
+    LOG("[Ocpp] Send thread started\n");
+    
+    int dbcounter = 0;
+    int boot_sent = 0;
+    sqlite3 *db = NULL;
+    
+    // 主循环
+    while (send_thread_should_run) 
+    {
+        // 1. 检查连接状态
+        pthread_mutex_lock(&wsi_lock);
+        int can_send = (global_wsi != NULL);
+        pthread_mutex_unlock(&wsi_lock);
+        
+        if (!can_send) {
+            // 没有活跃连接
+            if (connection_is_active) {
+                LOG("[Ocpp] Send thread: connection lost\n");
+                connection_is_active = 0;
+            }
+            
+            // 等待连接恢复
+            int wait_time = 0;
+            while (send_thread_should_run && !connection_is_active && wait_time < 60) {
+                sleep(1);
+                wait_time++;
+                
+                // 定期检查
+                if (wait_time % 10 == 0) {
+                    LOG("[Ocpp] Send thread waiting for connection... (%d/60s)\n", wait_time);
+                }
+                
+                pthread_mutex_lock(&wsi_lock);
+                can_send = (global_wsi != NULL);
+                pthread_mutex_unlock(&wsi_lock);
+                
+                if (can_send) {
+                    connection_is_active = 1;
+                    LOG("[Ocpp] Send thread: connection restored\n");
+                    boot_sent = 0;  // 重置启动通知标志
+                    break;
+                }
+            }
+            
+            if (wait_time >= 60) {
+                LOG("[Ocpp] Send thread: timeout waiting for connection\n");
+                // 继续循环，等待主线程恢复
+            }
+            
+            continue;
+        }
+        
+        // 2. 连接有效，执行发送任务
+        sleep(1);  // 基础间隔
+        
+        // 发送启动通知（仅一次）
+        if (!boot_sent) {
+            if (db == NULL) {
+                // 初始化数据库
+                if (init_db(&db) > 0) {
+                    LOG("[Ocpp] Send thread: database initialized\n");
+                }
+            }
+            
+            if (db) {
+                send_ocpp_message(build_boot_notification());
+                boot_sent = 1;
+                LOG("[Ocpp] Boot notification sent\n");
+            }
+        }
+
+        send_ocpp_message(build_heartbeat());
+        // 更新电池数据
+        if (db) {
+            update_bat_data1(db);
+        }
+
+        // 心跳消息（每10秒）
+        dbcounter++;
+        if (dbcounter >= 60) {
+            
+            int ids[REPORT_COUNT];
+            int count = 0;
+
+            send_ocpp_message(compress_detail_data(db, ids, &count));
+            //调试用的
+            struct json_object *json = compress_detail_data(db, ids, &count);
+            if (json) {
+                if (send_ocpp_message(json)) {
+                    delete_data_by_ids(db, ids, count);
+                }
+            }
+
+            dbcounter = 0;
+        }
+        
+        // 处理诊断状态标志
+        if (g_ocppupload_flag == 1) {
+            send_ocpp_message(DiagnosticsStatusNotification(Uploading));;
+        }
+        
+        // 处理固件状态标志
+        if (g_ocppdownload_flag == 1) {
+            send_ocpp_message(FirmwareStatusNotification(Downloading));
+        }
+        
+    }
+    
+    // 清理
+    LOG("[Ocpp] Send thread exiting\n");
+    
+    // 清理数据库
+    if (db) {
+        sqlite3_close(db);
+        db = NULL;
+    }
+    
+    LOG("[Ocpp] Send thread cleanup complete\n");
+    
+    return NULL;
+}
+
+#endif
