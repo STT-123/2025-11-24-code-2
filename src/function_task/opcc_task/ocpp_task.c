@@ -80,7 +80,7 @@ static void handle_writeable(struct lws *wsi)
         return;
     }
 
-    printf("send: %s\n", send_state.text);
+    // printf("send: %s\n", send_state.text);
     // 完成发送
     json_object_put(send_state.msg);
     memset(&send_state, 0, sizeof(send_state));

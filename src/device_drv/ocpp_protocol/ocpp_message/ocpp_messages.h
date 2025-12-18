@@ -10,7 +10,7 @@
 #include "sqlite_storage.h"
 
 #define BUILD_X86  1
-#define REPORT_COUNT 60
+#define REPORT_COUNT 1
 
 #pragma pack(push, 1)
 typedef struct {

@@ -2,8 +2,8 @@
 
 
 void convert_tBatData_to_big_endian(tBatData *dst, const tBatData *src) {
-    dst->uiTimeStamp = htonl(src->uiTimeStamp);
-
+    // dst->uiTimeStamp = htonl(src->uiTimeStamp);
+    dst->uiTimeStamp = src->uiTimeStamp;
     for (int i = 0; i < 240; ++i)
         dst->usSingleBatVal[i] = htons(src->usSingleBatVal[i]);
 

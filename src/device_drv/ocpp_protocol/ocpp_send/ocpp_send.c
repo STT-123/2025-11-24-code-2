@@ -23,10 +23,10 @@ void update_bat_data(sqlite3 *db)
 
     memcpy(data.usSingleBatVal, get_BCU_usSingleBatVal(), sizeof(data.usSingleBatVal));
     memcpy(data.usSingleBatTemp, get_BCU_usSingleBatTemp(), sizeof(data.usSingleBatTemp));
-    for (int i = 0; i < 3; i++)
-    {
-        printf("data.usSingleBatTemp[%d] = %d\r\n",i,data.usSingleBatTemp[i]);
-    }
+    // for (int i = 0; i < 3; i++)
+    // {
+    //     printf("data.usSingleBatTemp[%d] = %d\r\n",i,data.usSingleBatTemp[i]);
+    // }
     
 
     // for(int i = 0; i < 15; i++)
@@ -150,10 +150,6 @@ void update_bat_data(sqlite3 *db)
     data.uiTimeStamp = (unsigned int)time(NULL);
     convert_tBatData_to_big_endian(&data_be, &data);
     insert_data(db, &data_be);
-
-    // printf("data.usSingleBatTemp[0] = %d\r\n",data.usSingleBatTemp[0]);
-    // printf("data.usSingleBatTemp[0] = %d\r\n",data.usSingleBatTemp[1]);
-    // printf("data.usSingleBatTemp[0] = %d\r\n",data.usSingleBatTemp[2]);
 }
 void update_bat_data1(sqlite3 *db) {
     tBatData data = {0};
@@ -171,9 +167,9 @@ void update_bat_data1(sqlite3 *db) {
 
     convert_tBatData_to_big_endian(&data_be,&data);
     insert_data(db, &data_be);
-    printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[0]);
-    printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[1]);
-    printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[2]);
+    // printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[0]);
+    // printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[1]);
+    // printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[2]);
     
 }
 /*
@@ -306,13 +302,6 @@ void *websocket_send_thread(void *arg)
             int count = 0;
 
             send_ocpp_message(compress_detail_data(db, ids, &count));
-            //调试用的
-            struct json_object *json = compress_detail_data(db, ids, &count);
-            if (json) {
-                if (send_ocpp_message(json)) {
-                    delete_data_by_ids(db, ids, count);
-                }
-            }
 
             dbcounter = 0;
         }
