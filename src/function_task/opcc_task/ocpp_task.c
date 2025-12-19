@@ -17,20 +17,10 @@ extern pthread_mutex_t wsi_lock;
 volatile int send_thread_should_run = 1;
 volatile int connection_is_active = 0;
 
-static void handle_writeable(struct lws *wsi)
-{
-
-    static unsigned char buf[LWS_PRE + 2048];
-
-    if (!send_state.msg)
-    {
+void handle_writeable(struct lws *wsi) {
+    if (!send_state.msg) {
         send_state.msg = dequeue_message();
-        if (!send_state.msg)
-        {            
-            return;
-        }
-        // 尝试访问对象类型（安全操作）
-        enum json_type type = json_object_get_type(send_state.msg);
+        if (!send_state.msg) return;
 
 #if (BUILD_X86)
         send_state.text = json_object_to_json_string(send_state.msg);
@@ -40,63 +30,40 @@ static void handle_writeable(struct lws *wsi)
         send_state.total_len = strlen(send_state.text);
         send_state.sent_pos = 0;
     }
-    size_t remaining = send_state.total_len - send_state.sent_pos;
-    size_t chunk_size = remaining > 2048 ? 2048 : remaining;
 
-    memcpy(&buf[LWS_PRE], send_state.text + send_state.sent_pos, chunk_size);
-
-    int flags = 0;
-    if (send_state.sent_pos == 0 && remaining > 2048)
-    {
-        flags = LWS_WRITE_TEXT | LWS_WRITE_NO_FIN; // 第一个帧，且不是最后
-    }
-    else if (remaining > 2048)
-    {
-        flags = LWS_WRITE_CONTINUATION | LWS_WRITE_NO_FIN; // 中间帧
-    }
-    else if (send_state.sent_pos == 0)
-    {
-        flags = LWS_WRITE_TEXT; // 一次发完（小消息）
-    }
-    else
-    {
-        flags = LWS_WRITE_CONTINUATION; // 最后一帧
-    }
-
-    int n = lws_write(wsi, &buf[LWS_PRE], chunk_size, flags);
-    if (n < 0)
-    {
-        fprintf(stderr, "[ERROR] lws_write failed on msg=%p\n", (void*)send_state.msg);
+    // 分配足够 buffer：LWS_PRE + 消息长度
+    unsigned char *buf = malloc(LWS_PRE + send_state.total_len);
+    if (!buf) {
+        fprintf(stderr, "malloc failed for send buffer\n");
         json_object_put(send_state.msg);
         memset(&send_state, 0, sizeof(send_state));
         return;
     }
 
-    send_state.sent_pos += n;
+    // 复制完整消息到缓冲区（跳过 LWS_PRE）
+    memcpy(buf + LWS_PRE, send_state.text, send_state.total_len);
 
-    if (send_state.sent_pos < send_state.total_len)
-    {
-        lws_callback_on_writable(wsi);
-        return;
+    // 一次性发送完整 OCPP 消息（不手动分片！）
+    int n = lws_write(wsi, buf + LWS_PRE, send_state.total_len, LWS_WRITE_TEXT);
+
+    free(buf); // 立即释放
+
+    if (n < 0) {
+        fprintf(stderr, "lws_write failed: %d\n", n);
+        // 注意：写失败通常意味着连接已断，可能需要重连
+    } else if ((size_t)n != send_state.total_len) {
+        // 虽然 rare，但文档说可能 partial write
+        fprintf(stderr, "Warning: only sent %d of %zu bytes\n", n, send_state.total_len);
     }
 
-    // printf("send: %s\n", send_state.text);
-    // 完成发送
+    // printf("Sent OCPP message (%zu bytes): %s\n", send_state.total_len, send_state.text);
+
+    // 清理当前消息
     json_object_put(send_state.msg);
     memset(&send_state, 0, sizeof(send_state));
 
-    // 准备下一条
-    // lws_callback_on_writable(wsi);
-    //立即尝试取下一条消息，避免依赖外部触发
-    struct json_object *next_msg = dequeue_message();
-    if (next_msg) {
-        send_state.msg = next_msg;
-        // 重新进入发送流程（下一次 writable 回调会处理）
-        lws_callback_on_writable(wsi);
-    } else {
-        // 队列空了，等待下次 enqueue 时由外部触发
-        // 或者什么都不做
-    }
+    // 触发下一次可写回调（处理队列中下一条）
+    lws_callback_on_writable(wsi);
 }
 
 
@@ -116,7 +83,7 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
         handle_writeable(wsi);
         break;
     case LWS_CALLBACK_CLIENT_RECEIVE:
-        printf("Received: %.*s\n", (int)len, (char *)in);
+        // printf("Received: %.*s\n", (int)len, (char *)in);
         process_ocpp_message(wsi, (char *)in);
         break;
     case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
@@ -149,58 +116,7 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
     }
     return 0;
 }
-#if 0
-void *ocppCommunicationTask(void *arg)
-{
-    LOG("[Ocpp] OCPP communication task started\n");
-    
-    int connection_timeout = 30;      // 连接超时30秒
-    int reconnect_delay = 5;          // 重连等待5秒
-    pthread_t ws_send_thread = 0;
-    int send_thread_running = 0;
-    struct lws_context *context = NULL;
-    struct lws_context_creation_info info = {0}; 
 
-    info.port = CONTEXT_PORT_NO_LISTEN;
-    info.protocols = protocols;
-    info.options |= LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT; 
-    context = lws_create_context(&info);
-
-    pthread_create(&ws_send_thread, NULL, websocket_send_thread, context);
-            
-    while (1) 
-    { 
-        struct lws_client_connect_info ccinfo = {0};
-        ccinfo.context = context;
-
-        ccinfo.address = "ocpp.xcharger.net";
-        ccinfo.port = 7274;
-        ccinfo.path = "/ocpp/C8A215DPWUDYDTAWLL";
-
-        ccinfo.host = ccinfo.address;
-        ccinfo.origin = ccinfo.address;
-        ccinfo.protocol = protocols[0].name;
-
-        ccinfo.ssl_connection = LCCSCF_USE_SSL |
-                        LCCSCF_ALLOW_SELFSIGNED |
-                        LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK |
-                        LCCSCF_ALLOW_EXPIRED|
-                        LCCSCF_ALLOW_INSECURE;    //LCCSCF_ALLOW_INSECURE 客户端跳过ssl校验
-
-        struct lws *wsi = lws_client_connect_via_info(&ccinfo);
-        if (!wsi) {
-            fprintf(stderr, "WebSocket connection failed, retrying...\n");
-        }
-
-        while (lws_service(context, 1000) >= 0);
-
-        sleep(5); // 自动重连等待
-    }
-
-    lws_context_destroy(context);
-    return NULL;
-}
-#else
 void *ocppCommunicationTask(void *arg)
 {
     LOG("[Ocpp] OCPP communication task started\n");
@@ -322,7 +238,6 @@ void *ocppCommunicationTask(void *arg)
             
             // 6. 连接成功，进入服务循环
             LOG("[Ocpp] Entering main service loop\n");
-            int loop_count = 0;
             
             while (1) 
             {
@@ -344,12 +259,7 @@ void *ocppCommunicationTask(void *arg)
                     connection_is_active = 0;
                     break;
                 }
-                
-                // 心跳日志
-                loop_count++;
-                if (loop_count % 30 == 0) {  // 每30秒
-                    LOG("[Ocpp] Service loop active (30s)\n");
-                }
+                usleep(1*1000);
             }
             
             // 7. 连接断开，准备重连
@@ -404,7 +314,7 @@ void *ocppCommunicationTask(void *arg)
     
     return NULL;
 }
-#endif
+
 void ocppCommunicationTaskCreate(void)
 {
     int ret;

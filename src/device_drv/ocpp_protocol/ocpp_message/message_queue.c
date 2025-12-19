@@ -1,6 +1,7 @@
 #include "message_queue.h"
 #include <pthread.h>
 #include <stdlib.h>
+#include "interface/log/log.h"
 /*
     功能描述： 此文件主要实现一个json对象指针的 环形缓冲消息队列，
         队列中只存json对象的指针。
@@ -51,6 +52,15 @@ bool enqueue_message(struct json_object *msg) {
     if(msg==NULL)
     {
         return result;
+    }
+
+    const char *json_str = json_object_to_json_string(msg);// 检查JSON数据大小
+    size_t json_size = strlen(json_str);
+    
+    if (json_size > MAX_JSON_SIZE) {
+        LOG("警告: JSON数据过大 (%zu bytes > %d bytes)\n",  json_size, MAX_JSON_SIZE);
+        // 可以选择：1.拒绝入队 2.截断 3.特殊处理
+        return false;
     }
     pthread_mutex_lock(&lock);
 

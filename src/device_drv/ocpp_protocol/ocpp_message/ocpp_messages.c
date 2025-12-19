@@ -367,22 +367,7 @@ struct json_object *compress_detail_data(sqlite3 *db, int *out_ids, int *out_id_
     for (int i = 0; i < n; i++) {
         memcpy(&network_buffer[i], &buffer[i], sizeof(tBatData)); 
         unsigned int original_ts = buffer[i].uiTimeStamp;// 保存原始值用于调试
-        
         network_buffer[i].uiTimeStamp = htonl(buffer[i].uiTimeStamp); // 转换为网络字节序
-        
-        // 打印转换前后的时间戳
-        if (i < 3) {  // 只打印前3条的转换详情
-            printf("数据[%d]: ID=%d, 时间戳转换: \r\n", i, ids[i]);
-            printf("0x%08x -> 0x%08x \r\n", original_ts, network_buffer[i].uiTimeStamp);
-            
-            // 验证转换是否可逆
-            unsigned int converted_back = ntohl(network_buffer[i].uiTimeStamp);
-            if (original_ts == converted_back) {
-                printf(" 可逆\r\n");
-            } else {
-                printf(" 不可逆 (转回: 0x%08x)\r\n", converted_back);
-            }
-        }
     }
     // printf("get_recent_data n = %d...data =%lu,\n", n,sizeof(tBatData));
     memcpy(out_ids, ids, sizeof(int) * n);

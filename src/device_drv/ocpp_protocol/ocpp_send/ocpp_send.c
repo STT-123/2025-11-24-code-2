@@ -16,33 +16,28 @@ void update_bat_data(sqlite3 *db)
 
     data.usAirState =1;
 
-    // for(int i = 0; i < 15; i++){
-    //     get_modbus_reg_val(0x5000 +i, &DAq_version[i]);
-    // }
-
+    for(int i = 0; i < 15; i++){
+        get_modbus_reg_val(0x5000 +i, &DAq_version[i]);
+    }
 
     memcpy(data.usSingleBatVal, get_BCU_usSingleBatVal(), sizeof(data.usSingleBatVal));
     memcpy(data.usSingleBatTemp, get_BCU_usSingleBatTemp(), sizeof(data.usSingleBatTemp));
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     printf("data.usSingleBatTemp[%d] = %d\r\n",i,data.usSingleBatTemp[i]);
-    // }
     
 
-    // for(int i = 0; i < 15; i++)
-    // {
-    //     if(DAq_version[i] != 0)
-    //     {
-    //         uint32_T* p_o1 = &CANRcvFcn_BMU_B.ux180110E16_o1 + (i * 2);      // 每次跳过2个uint32_T
-    //         uint32_T* p_o2 = &CANRcvFcn_BMU_B.ux180110E16_o2 + (i * 2);      // 每次跳过2个uint32_T
+    for(int i = 0; i < 15; i++)
+    {
+        if(DAq_version[i] != 0)
+        {
+            uint32_T* p_o1 = &CANRcvFcn_BMU_B.ux180110E16_o1 + (i * 2);      // 每次跳过2个uint32_T
+            uint32_T* p_o2 = &CANRcvFcn_BMU_B.ux180110E16_o2 + (i * 2);      // 每次跳过2个uint32_T
         
-    //         data.uiBmuErrorNum[i] = *p_o1;
-    //         data.uiBmuExErrorNum[i] = *p_o2;
-    //     }else{
-    //         data.uiBmuErrorNum[i] = 65535;
-    //         data.uiBmuExErrorNum[i] = 65535;
-    //     }
-    // }
+            data.uiBmuErrorNum[i] = *p_o1;
+            data.uiBmuExErrorNum[i] = *p_o2;
+        }else{
+            data.uiBmuErrorNum[i] = 65535;
+            data.uiBmuExErrorNum[i] = 65535;
+        }
+    }
 #if 0
     data.iDcPower = get_BCU_iDcPower();
     data.ullPosEleQuantity = get_BCU_ullPosEleQuantity();
@@ -136,6 +131,9 @@ void update_bat_data(sqlite3 *db)
     data.usBatMaxVoltCellTemp = get_usBatMaxVoltCellTempe();
     data.usBatMinVoltCellTemp = get_usBatMinVoltCellTemp();
 
+
+#endif
+
     struct tm utc_timeinfo;
     utc_timeinfo.tm_year = get_BCU_TimeYearValue() + 100; // BCU年是如24，tm_year从1900起
     utc_timeinfo.tm_mon = get_BCU_TimeMonthValue() - 1;   // BCU月是1~12，tm_mon是0~11
@@ -144,10 +142,12 @@ void update_bat_data(sqlite3 *db)
     utc_timeinfo.tm_min = get_BCU_TimeMinuteValue();
     utc_timeinfo.tm_sec = get_BCU_TimeSencondValue();
     utc_timeinfo.tm_isdst = -1;
+
     time_t t = mktime(&utc_timeinfo);
+
     data.uiTimeStamp = (unsigned int)t;
-#endif
-    data.uiTimeStamp = (unsigned int)time(NULL);
+    // printf("Unix时间戳: %u (十进制), 0x%08x (十六进制)\n", (unsigned int)t, (unsigned int)t);
+    // data.uiTimeStamp = (unsigned int)time(NULL); //如果时间比ocpp网页的小，则网页不更新数据，所以不要错误的给网页一个过大的时间戳
     convert_tBatData_to_big_endian(&data_be, &data);
     insert_data(db, &data_be);
 }
@@ -163,63 +163,20 @@ void update_bat_data1(sqlite3 *db) {
     }
 
     data.uiTimeStamp = (unsigned int)time(NULL);
-
-
     convert_tBatData_to_big_endian(&data_be,&data);
-    insert_data(db, &data_be);
-    // printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[0]);
-    // printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[1]);
-    // printf("data.usSingleBatVal[0] = %d\r\n",data.usSingleBatVal[2]);
-    
+    insert_data(db, &data_be); 
 }
 /*
 *websocket_send_thread 线程
 *该线程专门用来给ocpp服务端发送数据
 *心跳、电池数据等
 */
-
-#if 0
-void *websocket_send_thread(void *arg)
-{
-    int heartcounter = 0;
-    int dbcounter = 0;
-    int boot_sent = 0;
-    sqlite3 *db = NULL;
-    init_db(&db);
- 
-    while(1)
-    {
-        send_ocpp_message(build_heartbeat());
-
-        sleep(1);
-        update_bat_data1(db);   //更1S存一次新电池数据
-
-        printf("heartcounter =%d...\n", heartcounter);
-        if (++heartcounter >= 60) {//每60S发送60条数据
-            heartcounter = 0;
-            int ids[REPORT_COUNT];
-            int count = 0;
-
-            send_ocpp_message(compress_detail_data(db, ids, &count));
-            // 调试用的
-            struct json_object *json = compress_detail_data(db, ids, &count);
-            if (json) {
-                if (send_ocpp_message(json)) {
-                    delete_data_by_ids(db, ids, count);
-                }
-            }
-            
-        }
-    }
-
-    return 0;
-}
-#else
 void *websocket_send_thread(void *arg)
 {
     LOG("[Ocpp] Send thread started\n");
     
     int dbcounter = 0;
+    int heartcounter = 0;
     int boot_sent = 0;
     sqlite3 *db = NULL;
     
@@ -288,21 +245,24 @@ void *websocket_send_thread(void *arg)
             }
         }
 
-        send_ocpp_message(build_heartbeat());
+        if (heartcounter++ >= 10) {    
+            send_ocpp_message(build_heartbeat());
+            heartcounter = 0;
+        }
+        
+        
         // 更新电池数据
         if (db) {
             update_bat_data1(db);
         }
 
-        // 心跳消息（每10秒）
-        dbcounter++;
-        if (dbcounter >= 60) {
+        // db消息（每10秒）
+        printf("dbcounter =%d...\n", dbcounter);
+        if (dbcounter++ >= 60) {
             
             int ids[REPORT_COUNT];
             int count = 0;
-
             send_ocpp_message(compress_detail_data(db, ids, &count));
-
             dbcounter = 0;
         }
         
@@ -331,5 +291,3 @@ void *websocket_send_thread(void *arg)
     
     return NULL;
 }
-
-#endif
