@@ -68,8 +68,6 @@ static void bcu_can_epoll_msg_transmit(void *arg)
         //  else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING && can_send.ID == 0x18FFC13A && can_send.ID != 0x18FFC13B && can_send.ID != 0x18FFC13C && can_send.ID != 0x18FAE6E1 && can_send.ID != 0x18FD7BE1 && can_send.ID != 0X18FA78F1 && can_send.ID != 0x18FFC13D && can_send.ID != 0x18FA78F5 && can_send.ID != 0x18FAE6E2)
         else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING)
         {
-            // printf("can_send = %x\r\n",can_send.can_id);
-            // printf("can_send = %x\r\n",can_send.can_dlc);
             if (queue_post(&Queue_BCURevData, &can_send, sizeof(CAN_MESSAGE)) != 0)
             {             
                 queue_destroy(&Queue_BCURevData);

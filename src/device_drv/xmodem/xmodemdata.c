@@ -52,13 +52,6 @@ const unsigned int crc_table[256] = {
 };
 
 
-// unsigned int OsIf_GetMilliseconds(void) {
-//     struct timespec now;
-//     clock_gettime(CLOCK_MONOTONIC, &now);
-//     return (now.tv_sec * 1000 + now.tv_nsec / 1000000);
-// }
-
-
 void *lwip_data_TASK(void *param)
 {
 	printf("lwip_data_TASK %d\r\n", otasock1);
@@ -84,7 +77,7 @@ void *lwip_data_TASK(void *param)
 			memset(tcp_server_recvbuf, 0, 2048);
 			int length = read(otasock1, tcp_server_recvbuf, 2048);
 			curmsgtimer = OsIf_GetMilliseconds();
-			printf("length :%d\r\n",length);
+			// printf("length :%d\r\n",length);
 			//目前接收到的BCU\BMU\ECU都是133长度的数据
 			if(length == 133)
 			{
@@ -649,7 +642,7 @@ void *lwip_data_TASK(void *param)
 				usleep(100*1000);
 			}
 		}
-		usleep(100*1000);
+		usleep(5*1000);
 	}
 }
 

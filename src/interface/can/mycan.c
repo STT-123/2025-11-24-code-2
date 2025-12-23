@@ -400,9 +400,33 @@ bool HAL_canfd_write(int fd, struct canfd_frame *pFrame)
 
 	len = write(fd, pFrame, CANFD_MTU);
 
-	if (len == sizeof(struct canfd_frame))
+	if (len == sizeof(struct canfd_frame)){
 		return true;
-	else
+	}else
+	{
+		switch(errno) {
+			case ENETDOWN:
+				LOG("[CAN FD] Write failed: Network interface down\n");
+				break;
+			case EINVAL:
+				LOG("[CAN FD] Write failed: Invalid argument\n");
+				break;
+			case ENOBUFS:
+				{
+					//LOG("[CAN FD] Write failed: No buffer space available\n");//缓存满了
+					break;
+				}
+			case EIO:
+				LOG("[CAN FD] Write failed: I/O error\n");
+				break;
+			case ENODEV:
+				LOG("[CAN FD] Write failed: No such device\n");
+				break;
+			default:
+				LOG("[CAN FD] Write failed: errno=%d (%s)\n", errno, strerror(errno));
+				break;
+	}
+	}
 		return false;
 }
 bool HAL_can_write(int fd, struct can_frame *pFrame)
@@ -411,8 +435,9 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
 
 	len = write(fd, pFrame, CAN_MTU);
 
-	if (len == sizeof(struct can_frame))
+	if (len == sizeof(struct can_frame)){
 		return true;
+	}
 	else
 	{
 		switch(errno) {
@@ -435,8 +460,6 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
                 break;
             default:
                 LOG("[CAN] Write failed: errno=%d (%s)\n", errno, strerror(errno));
-
-				printf("[CAN] HAL_can_writefd = %d\r\n",fd);
                 break;
         }
 	}

@@ -544,37 +544,42 @@ static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms)
     }
     fflush(file);
 }
-static int judgeTimetoUpdate(void)
+static int judgeTimetoUpdate(struct tm *nowTime)
 {
     int ret = 0;
-    static int last_year = 0;
-    static int last_month = 0;
-    static int last_day = 0;
+    static int last_year = -1;
+    static int last_month = -1;
+    static int last_day = -1;
     
     //LOG("[SD Card] Current time: %d-%d-%d, Last time: %d-%d-%d\n", 
         // get_BCU_TimeYearValue(), get_BCU_TimeMonthValue(), get_BCU_TimeDayValue(),
         // last_year, last_month, last_day);
+    int current_year  = nowTime->tm_year + 1900; // tm_year 是从 1900 开始的偏移
+    int current_month = nowTime->tm_mon + 1;     // tm_mon 范围是 0~11
+    int current_day   = nowTime->tm_mday;        // tm_mday 范围是 1~31
 
-    // 检查时间数据是否有效
-    if (get_BCU_TimeYearValue() == 0 || get_BCU_TimeMonthValue() == 0 || get_BCU_TimeDayValue() == 0) {
-        //LOG("[SD Card] Time invalid, skip check\n");
+    // 如果是首次调用，仅初始化，不触发变更
+    if (last_year == -1) {
+        last_year  = current_year;
+        last_month = current_month;
+        last_day   = current_day;
         return 0;
     }
 
-    // 变化检查
-    if ((get_BCU_TimeYearValue() != last_year) || 
-        (get_BCU_TimeMonthValue() != last_month) || 
-        (get_BCU_TimeDayValue() != last_day)) 
-    {
-        
-        LOG("[SD Card] TIME CHANGE DETECTED: %d-%d-%d -> %d-%d-%d\n", 
-            last_year, last_month, last_day,
-            get_BCU_TimeYearValue(), get_BCU_TimeMonthValue(), get_BCU_TimeDayValue());
+    // 检查年、月、日是否发生变化
+    if (current_year != last_year || 
+        current_month != last_month || 
+        current_day != last_day) {
 
-        last_year = get_BCU_TimeYearValue();
-        last_month = get_BCU_TimeMonthValue();
-        last_day = get_BCU_TimeDayValue();
-        ret = 1;
+        LOG("[SD Card] TIME CHANGE DETECTED: %d-%02d-%02d -> %d-%02d-%02d\n",
+            last_year, last_month, last_day,
+            current_year, current_month, current_day);
+
+        // 更新记录
+        last_year  = current_year;
+        last_month = current_month;
+        last_day   = current_day;
+        return 1; // 日期已变更
     }
     
     return ret;
@@ -853,7 +858,12 @@ void Drv_write_buffer_to_file(void)
 
     
     GetNowTime(&nowTimeInfo);// 获取当前时间
-
+    // printf("nowTimeInfo 1= %d\r\n",nowTimeInfo.tm_year);
+    // printf("nowTimeInfo2 = %d\r\n",nowTimeInfo.tm_mon);
+    // printf("nowTimeInfo 3= %d\r\n",nowTimeInfo.tm_mday);
+    // printf("nowTimeInfo4 = %d\r\n",nowTimeInfo.tm_hour);
+    // printf("nowTimeInfo5 = %d\r\n",nowTimeInfo.tm_min);
+    // printf("nowTimeInfo 6= %d\r\n",nowTimeInfo.tm_sec);
     // 交换当前使用的缓冲区
     pthread_mutex_lock(&drb->switchMutex);
     drb->activeBuffer = 1 - drb->activeBuffer;
@@ -983,10 +993,10 @@ void Drv_write_buffer_to_file(void)
     // 创建新文件的两个条件
     // 1. 当前写的文件大小超过10M
     // 2. 系统中不存在当前日志命名的文件夹（日期变化了）
-    if ((fileSize > (10*1024*1024) )|| (judgeTimetoUpdate())) // 大于10M或者年月日发生变化
+    if ((fileSize > (10*1024*1024) )|| (judgeTimetoUpdate(&nowTimeInfo))) // 大于10M或者年月日发生变化
     {
         LOG("[SD Card] fileSize = %ld\r\n",fileSize);
-        LOG("[SD Card] judgeTimetoUpdate = %d\r\n",judgeTimetoUpdate());
+        LOG("[SD Card] judgeTimetoUpdate = %d\r\n",judgeTimetoUpdate(&nowTimeInfo));
         newFileNeeded = true; // 下一轮就要创建新文件
     }
     

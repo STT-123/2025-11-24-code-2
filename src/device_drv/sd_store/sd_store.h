@@ -55,7 +55,7 @@ static int  Drv_check_and_update_message(const CANFD_MESSAGE *msg);
 static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms);
 static void Drv_RTCGetTime(Rtc_Ip_TimedateType *rtcTime);
 static int  mount_sdcard_fat32(void);
-static int  judgeTimetoUpdate(void);
+static int judgeTimetoUpdate(struct tm *nowTime);
 static int should_store_frame(void);
 static uint8_t CalculateDLC(uint8_t data_length);
 int  SD_Initialize(void);
