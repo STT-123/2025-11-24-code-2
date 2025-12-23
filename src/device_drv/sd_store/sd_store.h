@@ -20,9 +20,9 @@
 #define BUFFER_SIZE 100 // 每个环形缓冲区的容量
 #define BUFFERED_WRITE_SIZE 1024
 #define CHECKSD_TRIGGERING_TIME 60000 * 1000
-
+#define SD_FILE_SIZE (10*1024*1024)
 #define  SDMAXCAPACITY 90
-#define CAN_ID_HISTORY_SIZE 6
+#define CAN_ID_HISTORY_SIZE (6 +15)   //BCU 和空调ID 的总数量
 
 /*-----*/
 #define USB_DEVICE "/dev/mmcblk1p1"

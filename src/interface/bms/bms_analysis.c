@@ -24,7 +24,8 @@ void my_modbus_set_float_badc(float f, uint16_t *dest)
 }
 
 /**
- * 将标准 canfd_frame 转换为 CAN_FD_MESSAGE_BUS
+ * 将标准 can_frame 转换为 CAN_FD_MESSAGE_BUS
+ * 由于Matlab的输入只有一个CAN_FD_MESSAGE_BUS类型的，所以只能这么转换
  */
 void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg)
 {
@@ -33,8 +34,6 @@ void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg)
         return;
 
     }
-       
-
     msg->Extended = 1;
     msg->Remote = 0;
     msg->Error = 0;

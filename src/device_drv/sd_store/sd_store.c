@@ -14,7 +14,7 @@
 static uint32_t frame_counter = 0;
 static struct timespec last_store_time = {0};
 static const uint32_t STORE_INTERVAL_MS = 3000;  // 3秒
-static const uint32_t FRAMES_PER_STORE = 12;     // 每次存储12帧
+static const uint32_t FRAMES_PER_STORE = 42;     // 每次存储12帧
 // 特定ID触发存储
 static uint8_t trigger_store_flag = 0;
 static struct timespec trigger_store_time = {0};
@@ -31,6 +31,21 @@ uint32_t CAN_IDs[] = {
     0x180410E4,
     0x1A0110E4,
     0x1B0110E4,
+    0x18FF0000,
+    0x18FF0001,
+    0x18FF0002,
+    0x18FF0003,
+    0x18FF0004,
+    0x18FF0005,
+    0x18FF0006,
+    0x18FF0007,
+    0x18FF0008,
+    0x18FF45F0,
+    0x18FFC13A,
+    0x18FFC13B,
+    0x18FFC13C,
+    0x18FFC13D,
+    0x235
 };
  CAN_MESSAGE can_msg_1A0110E4_cache[8] = {0}; // 单体电压，一包30个，一共240个，索引分8帧
  CAN_MESSAGE can_msg_1B0110E4_cache[2] = {0};; // 单体温度，一包60个，一共120个，索引分2帧
@@ -430,120 +445,6 @@ static int should_store_frame(void)
     return 0;
 }
 
-static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms)
-{
-    if (file == NULL)
-    {
-        LOG("[SD Card] Error: File pointer is NULL.\n");
-        return;
-    }
-
-    unsigned short index = 0;
-    for (int i = 0; i < CAN_ID_HISTORY_SIZE; i++)
-    {
-        CAN_MESSAGE *logMsg = &can_msg_cache[i];
-        if (CAN_IDs[i] == 0x1A0110E4)
-        {
-            logMsg = &can_msg_1A0110E4_cache[index++];
-            if (index < 8)
-            {
-                i--;
-            }
-            else
-            {
-                index = 0;
-            }
-        }
-        else if (CAN_IDs[i] == 0x1B0110E4)
-        {
-            logMsg = &can_msg_1B0110E4_cache[index++];
-            if (index < 2)
-            {
-                i--;
-            }
-            else
-            {
-                index = 0;
-            }
-        }
-        else if (CAN_IDs[i] == 0x180410E4)
-        {
-            logMsg = &can_msg_180410E4_cache[index++];
-            if (index < 1)
-            {
-                i--;
-            }
-            else
-            {
-                index = 0;
-            }
-        }
-        
-        // 准备ID字符串
-        char id_str[10];
-        uint32_t can_id = logMsg->ID;
-        
-        // 你的ID都是29位扩展ID，所以都加'x'
-        snprintf(id_str, sizeof(id_str), "%08Xx", can_id & 0x1FFFFFFF);
-        
-        // 计算DLC
-        uint8_t dlc = CalculateDLC(logMsg->Length);
-          
-        // 构建完整的日志行
-        char timeStampedMessage[BUFFERED_WRITE_SIZE];
-        int len = 0;
-
-        // 第一部分：时间戳和基础信息
-        len = snprintf(timeStampedMessage, sizeof(timeStampedMessage),
-                      "%d.%03d CANFD 1 %s Rx 0 0 d %d %d ",
-                      timestamp_ms / 1000,
-                      timestamp_ms % 1000,
-                      id_str,
-                      dlc,
-                      logMsg->Length);
-        
-        if (len <= 0 || len >= BUFFERED_WRITE_SIZE) {
-            LOG("[SD Card] Error: Failed to format header\n");
-            continue;
-        }
-
-        // 第二部分：数据
-        for (int j = 0; j < logMsg->Length; j++) {
-            // 检查剩余空间
-            if (len + 4 >= BUFFERED_WRITE_SIZE) {
-                LOG("[SD Card] Warning: Buffer overflow\n");
-                break;
-            }
-            
-            int written = snprintf(timeStampedMessage + len, 
-                                  BUFFERED_WRITE_SIZE - len,
-                                  "%02X ", logMsg->Data[j]);
-            if (written > 0) {
-                len += written;
-            }
-        }
-
-        // 第三部分：换行
-        if (len + 3 < BUFFERED_WRITE_SIZE) {
-            len += snprintf(timeStampedMessage + len, 
-                           BUFFERED_WRITE_SIZE - len,
-                           "\r\n");
-        }
-        // 写入文件
-        if (fseek(file, 0, SEEK_END) != 0) {
-            perror("fseek");
-            LOG("[SD Card] Failed to seek to end of file\n");
-            continue;
-        }
-        
-        size_t written = fwrite(timeStampedMessage, 1, len, file);
-        if (written != (size_t)len) {
-            LOG("[SD Card] Failed to write to file, expected %d, wrote %zu\n", 
-                len, written);
-        }       
-    }
-    fflush(file);
-}
 static int judgeTimetoUpdate(struct tm *nowTime)
 {
     int ret = 0;
@@ -700,7 +601,7 @@ static void Drv_init_can_id_history(void)
     for (i = 0; i < CAN_ID_HISTORY_SIZE; i++)
     {
         can_msg_cache[i].ID = CAN_IDs[i];
-        can_msg_cache[i].Length = 64;
+        can_msg_cache[i].Length = 64; //
     }
     for (i = 0; i < 8; i++)
     {
@@ -900,7 +801,7 @@ void Drv_write_buffer_to_file(void)
 
         // 重要：创建新文件时，重置基准时间
         gettimeofday(&first_tv, NULL);  // 设置新的基准时间
-        first_time_captured = 1;
+        first_time_captured = 0;
         LOG("[SD Card] New file created, reset timestamp base to: %ld.%06ld\n", 
             first_tv.tv_sec, first_tv.tv_usec);
     }
@@ -925,8 +826,6 @@ void Drv_write_buffer_to_file(void)
         } else {
             //printf("9.1 Time header written\n");
         }
-        
-        //Drv_write_canmsg_cache_to_file(file, 0) ;// 缓冲区数据写入 ,初始数据不写了
         newFileNeeded = false;// 标记不需要重新创建了      
     }
 
@@ -993,7 +892,7 @@ void Drv_write_buffer_to_file(void)
     // 创建新文件的两个条件
     // 1. 当前写的文件大小超过10M
     // 2. 系统中不存在当前日志命名的文件夹（日期变化了）
-    if ((fileSize > (10*1024*1024) )|| (judgeTimetoUpdate(&nowTimeInfo))) // 大于10M或者年月日发生变化
+    if ((fileSize > (SD_FILE_SIZE) )|| (judgeTimetoUpdate(&nowTimeInfo))) // 大于10M或者年月日发生变化
     {
         LOG("[SD Card] fileSize = %ld\r\n",fileSize);
         LOG("[SD Card] judgeTimetoUpdate = %d\r\n",judgeTimetoUpdate(&nowTimeInfo));

@@ -16,7 +16,8 @@ void *bcu_DealTask(void *arg)
 {
     struct canfd_frame canrev_frame = {0};
     struct can_frame canrev_frame2 = {0};
-    CANFD_MESSAGE can_msg_buf ={0};
+    CANFD_MESSAGE canfd_msg_buf ={0};
+    CANFD_MESSAGE   can_msg_buf ={0};
     LOG("Func_thread_can0_dealwith is running\n");
     unsigned int call_count = 0;
     int len = 0;
@@ -44,8 +45,8 @@ void *bcu_DealTask(void *arg)
                     if(1 == modbusBuffInitFlag){
                         ConvertCANFDToBus(&canrev_frame, &CANFDRcvMsg);
                         CANFDRcvFcn_BCU_step();           
-                        ConvertCANFDToBus(&canrev_frame, &can_msg_buf);
-                        Drv_write_to_active_buffer(&can_msg_buf, 1);
+                        ConvertCANFDToBus(&canrev_frame, &canfd_msg_buf);
+                        Drv_write_to_active_buffer(&canfd_msg_buf, 1);
                     }
                     
                 }
@@ -73,10 +74,8 @@ void *bcu_DealTask(void *arg)
                 {
                     canrev_frame2.can_id &= CAN_EFF_MASK;
                     if(1 == modbusBuffInitFlag)
-                    {
-                
+                    {  
                         ConvertCANToBus(&canrev_frame2, &CANFDRcvMsg);
-
                         CANFDRcvFcn_BCU_step();           
                         ConvertCANToBus(&canrev_frame2, &can_msg_buf);
                         Drv_write_to_active_buffer(&can_msg_buf, 1);
