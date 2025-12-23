@@ -39,10 +39,10 @@ static int Drv_bcu_resetcan_device(const char *can_name)
 static void bcu_can_epoll_msg_transmit(void *arg)
 {
     struct canfd_frame can_rev ;
-    CAN_MESSAGE can_send ;
+    struct can_frame can_send ;
 
     memset(&can_rev, 0, sizeof(struct canfd_frame));
-    memset(&can_send, 0, sizeof(CAN_MESSAGE));
+    memset(&can_send, 0, sizeof(struct can_frame));
 
     if(BCU_CAN_FD <0){
         return;
@@ -53,9 +53,9 @@ static void bcu_can_epoll_msg_transmit(void *arg)
     
     if (frame_type == 1)//1表示CAN 数据-8
     {
-        Convert_canfd_frame_to_CAN_MESSAGE(&can_rev, &can_send);
-
-        if (((get_TCU_PowerUpCmd()) == BMS_POWER_UPDATING) && (can_send.ID == 0x30C1600 || can_send.ID == 0x61B || can_send.ID == 0x1CB010E4))
+        Convert_canfd_frame_to_can_fram(&can_rev, &can_send);
+        
+        if (((get_TCU_PowerUpCmd()) == BMS_POWER_UPDATING) && (can_send.can_id == 0x30C1600 || can_send.can_id == 0x61B || can_send.can_id == 0x1CB010E4))
         {
             if (queue_post(&Queue_BCURevData, &can_send, sizeof(CAN_MESSAGE)) != 0)
             {   
@@ -65,8 +65,11 @@ static void bcu_can_epoll_msg_transmit(void *arg)
             else{
             }
         }
-        else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING && can_send.ID != 0x18FFC13A && can_send.ID != 0x18FFC13B && can_send.ID != 0x18FFC13C && can_send.ID != 0x18FAE6E1 && can_send.ID != 0x18FD7BE1 && can_send.ID != 0X18FA78F1 && can_send.ID != 0x18FFC13D && can_send.ID != 0x18FA78F5 && can_send.ID != 0x18FAE6E2)
+        //  else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING && can_send.ID == 0x18FFC13A && can_send.ID != 0x18FFC13B && can_send.ID != 0x18FFC13C && can_send.ID != 0x18FAE6E1 && can_send.ID != 0x18FD7BE1 && can_send.ID != 0X18FA78F1 && can_send.ID != 0x18FFC13D && can_send.ID != 0x18FA78F5 && can_send.ID != 0x18FAE6E2)
+        else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING)
         {
+            // printf("can_send = %x\r\n",can_send.can_id);
+            // printf("can_send = %x\r\n",can_send.can_dlc);
             if (queue_post(&Queue_BCURevData, &can_send, sizeof(CAN_MESSAGE)) != 0)
             {             
                 queue_destroy(&Queue_BCURevData);
@@ -74,6 +77,7 @@ static void bcu_can_epoll_msg_transmit(void *arg)
             }
             else{
             }
+
         }
     }
     else if (frame_type == 2)//2表示CAN FD数据-64

@@ -36,7 +36,7 @@ extern unsigned short g_ota_flag;
                     if(g_ota_flag != OTASTARTRUNNING)
                     {
                         set_TCU_PowerUpCmd(BMS_POWER_ON);
-                        printf("1get_TCU_PowerUpCmd(BMS_POWER_ON) = %d\r\n",(int)get_TCU_PowerUpCmd());
+                        // printf("1get_TCU_PowerUpCmd(BMS_POWER_ON) = %d\r\n",(int)get_TCU_PowerUpCmd());
                     }
                 }
                 else if (data == 1)

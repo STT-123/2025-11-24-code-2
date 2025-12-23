@@ -20,24 +20,21 @@ void update_bat_data(sqlite3 *db)
         get_modbus_reg_val(0x5000 +i, &DAq_version[i]);
     }
 
-    memcpy(data.usSingleBatVal, get_BCU_usSingleBatVal(), sizeof(data.usSingleBatVal));
-    memcpy(data.usSingleBatTemp, get_BCU_usSingleBatTemp(), sizeof(data.usSingleBatTemp));
+    memcpy(data.usSingleBatVal, usSingleBatVal[0], sizeof(data.usSingleBatVal));
+    memcpy(data.usSingleBatTemp, usSingleBatTemp[0], sizeof(data.usSingleBatTemp));
     
 
-    for(int i = 0; i < 15; i++)
-    {
-        if(DAq_version[i] != 0)
-        {
-            uint32_T* p_o1 = &CANRcvFcn_BMU_B.ux180110E16_o1 + (i * 2);      // 每次跳过2个uint32_T
-            uint32_T* p_o2 = &CANRcvFcn_BMU_B.ux180110E16_o2 + (i * 2);      // 每次跳过2个uint32_T
-        
-            data.uiBmuErrorNum[i] = *p_o1;
-            data.uiBmuExErrorNum[i] = *p_o2;
-        }else{
-            data.uiBmuErrorNum[i] = 65535;
-            data.uiBmuExErrorNum[i] = 65535;
-        }
-    }
+    // for(int i = 0; i < 15; i++)
+    // {
+    //     if(DAq_version[i] != 0)
+    //     {
+            // data.uiBmuErrorNum[i] = get_BMU_DAq1Fault1();
+    //         data.uiBmuExErrorNum[i] = get_BMU_DAq1_Fault2();
+    //     }else{
+    //         data.uiBmuErrorNum[i] = 65535;
+    //         data.uiBmuExErrorNum[i] = 65535;
+    //     }
+    // }
 #if 0
     data.iDcPower = get_BCU_iDcPower();
     data.ullPosEleQuantity = get_BCU_ullPosEleQuantity();

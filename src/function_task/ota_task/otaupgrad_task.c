@@ -30,14 +30,14 @@ void *ota_Upgrade_Task(void *arg)
 #if 0
     sleep(10);
     //BMU
-    set_ota_OTAFilename("XC_BMU_V302.tar");
-    set_ota_deviceType(BMU);
-    set_ota_deviceID(0x1821FF10) ;
+    // set_ota_OTAFilename("XC_BMU_V302.tar");
+    // set_ota_deviceType(BMU);
+    // set_ota_deviceID(0x1821FF10) ;
 
     //BCU
-    // set_ota_OTAFilename("XC_BCU_V526.tar");
-    // set_ota_deviceType(BCU);
-    // set_ota_deviceID(BCUOTACANID) ;//BCU
+    set_ota_OTAFilename("XC_BCU_V502.tar");
+    set_ota_deviceType(BCU);
+    set_ota_deviceID(BCUOTACANID) ;//BCU
     //ECU
     // set_ota_OTAFilename("XC_ECU_V123.tar");
     // set_ota_deviceType(ECU);

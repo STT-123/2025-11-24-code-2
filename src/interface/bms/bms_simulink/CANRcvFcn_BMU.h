@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANRcvFcn_BMU'.
  *
- * Model version                  : 5.8
+ * Model version                  : 5.11
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Nov 25 09:50:30 2025
+ * C/C++ source code generated on : Mon Dec 22 13:30:31 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4
@@ -33,8 +33,7 @@
 #endif
 
 /* user code (top of header file) */
-#include "function_task/modbustcp_task/modbustcp_task.h"
-
+#include "modbustcp_task.h"
 
 /* Block signals (default storage) */
 typedef struct {
@@ -204,6 +203,13 @@ extern void CANRcvFcn_BMU_terminate(void);
 /* Real-time Model object */
 extern RT_MODEL_CANRcvFcn_BMU_T *const CANRcvFcn_BMU_M;
 
+/* Exported data declaration */
+
+/* Declaration for custom storage class: Default */
+extern uint32_T DAqX_FaultCode1[15];   /* '<S2>/Data Type Conversion2' */
+extern uint32_T DAqX_FaultCode2[15];   /* '<S2>/Data Type Conversion' */
+extern uint16_T DAq_version[15];       /* '<S2>/Data Type Conversion1' */
+
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
@@ -227,6 +233,9 @@ extern RT_MODEL_CANRcvFcn_BMU_T *const CANRcvFcn_BMU_M;
  * '<Root>' : 'CANRcvFcn_BMU'
  * '<S1>'   : 'CANRcvFcn_BMU/Chart1'
  * '<S2>'   : 'CANRcvFcn_BMU/Daq_Info'
+ * '<S3>'   : 'CANRcvFcn_BMU/Daq_Info/Write Measurement1'
+ * '<S4>'   : 'CANRcvFcn_BMU/Daq_Info/Write Measurement76'
+ * '<S5>'   : 'CANRcvFcn_BMU/Daq_Info/Write Measurement80'
  */
 #endif                                 /* CANRcvFcn_BMU_h_ */
 

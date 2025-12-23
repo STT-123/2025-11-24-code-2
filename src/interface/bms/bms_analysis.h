@@ -98,18 +98,16 @@ real_T get_BCU_TimeHourValue(void) ;
 real_T get_BCU_TimeMinuteValue(void) ;
 real_T get_BCU_TimeSencondValue(void) ;
 
-real_T get_BCU_FaultInfoLv1HValue(void) ;
-real_T get_BCU_FaultInfoLv2HValue(void) ;
-real_T get_BCU_FaultInfoLv3HValue(void) ;
-real_T get_BCU_FaultInfoLv4HValue(void) ;
-real_T get_BCU_FaultInfoLv1LValue(void) ;
-real_T get_BCU_FaultInfoLv2LValue(void) ;
-real_T get_BCU_FaultInfoLv3LValue(void) ;
-real_T get_BCU_FaultInfoLv4LValue(void) ;
+real_T get_BCU_FaultInfoLv1Value(void) ;
+real_T get_BCU_FaultInfoLv2Value(void) ;
+real_T get_BCU_FaultInfoLv3Value(void) ;
+real_T get_BCU_FaultInfoLv4Value(void) ;
 real_T get_BCU_SOCValue(void) ;
 real_T get_BCU_SystemWorkModeValue(void) ;
 
 void ConvertCANFDToBus(const struct canfd_frame *frame, CAN_FD_MESSAGE_BUS *msg);
+void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg);
+
 void ConvertBusToCANFD(const CAN_FD_MESSAGE_BUS *msg, struct canfd_frame *frame);
 void Convert_CAN_MESSAGE_to_can_frame(const CAN_MESSAGE *msg, struct can_frame *frame);
 void Convert_canfd_frame_to_CAN_MESSAGE(const struct canfd_frame *frame, CAN_MESSAGE *msg);
@@ -117,6 +115,7 @@ void Convert_can_frame_to_CAN_MESSAGE(const struct can_frame *frame, CAN_MESSAGE
 
 real32_T get_BCU_iDcPower(void);
 real32_T get_BCU_ullPosEleQuantity(void);
+void Convert_canfd_frame_to_can_fram(const struct canfd_frame *frame, struct can_frame *msg);
 
 real32_T get_BCU_ullNegEleQuantity(void);
 uint16_T get_BCU_usAirState(void);

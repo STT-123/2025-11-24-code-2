@@ -15,6 +15,7 @@ extern struct timespec start_tick;
 void *bcu_DealTask(void *arg)
 {
     struct canfd_frame canrev_frame = {0};
+    struct can_frame canrev_frame2 = {0};
     CANFD_MESSAGE can_msg_buf ={0};
     LOG("Func_thread_can0_dealwith is running\n");
     unsigned int call_count = 0;
@@ -48,6 +49,7 @@ void *bcu_DealTask(void *arg)
                     }
                     
                 }
+                
                 memset(&canrev_frame, 0, sizeof(canrev_frame));
             }
             else
@@ -63,6 +65,24 @@ void *bcu_DealTask(void *arg)
                         LOG("Drv_BMS_Analysis executed after 10s delay\r\n");
                     }
                 }
+            }
+
+            if (queue_pend(&Queue_BCURevData, (unsigned char *)&canrev_frame2, &len) == 0)
+            {
+                if(canrev_frame2.can_dlc == 8 )
+                {
+                    canrev_frame2.can_id &= CAN_EFF_MASK;
+                    if(1 == modbusBuffInitFlag)
+                    {
+                
+                        ConvertCANToBus(&canrev_frame2, &CANFDRcvMsg);
+
+                        CANFDRcvFcn_BCU_step();           
+                        ConvertCANToBus(&canrev_frame2, &can_msg_buf);
+                        Drv_write_to_active_buffer(&can_msg_buf, 1);
+                    }
+                }
+                memset(&canrev_frame2, 0, sizeof(canrev_frame2));
             }
         }
 

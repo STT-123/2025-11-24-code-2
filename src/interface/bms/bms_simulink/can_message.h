@@ -1,4 +1,5 @@
 #include "rtwtypes.h"
+
 #ifndef DEFINED_TYPEDEF_FOR_CAN_MESSAGE_BUS_
 #define DEFINED_TYPEDEF_FOR_CAN_MESSAGE_BUS_
 

@@ -423,8 +423,10 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
                 LOG("[CAN] Write failed: Invalid argument\n");
                 break;
             case ENOBUFS:
-                LOG("[CAN] Write failed: No buffer space available\n");//缓存满了
-                break;
+				{
+					LOG("[CAN] Write failed: No buffer space available\n");//缓存满了
+					break;
+				}
             case EIO:
                 LOG("[CAN] Write failed: I/O error\n");
                 break;

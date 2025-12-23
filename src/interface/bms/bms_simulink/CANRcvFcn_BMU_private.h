@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANRcvFcn_BMU'.
  *
- * Model version                  : 5.8
+ * Model version                  : 5.11
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Nov 25 09:50:30 2025
+ * C/C++ source code generated on : Mon Dec 22 13:30:31 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4

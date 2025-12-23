@@ -51,14 +51,10 @@ static const fault_mapping_t fault_map_2H[] = {
 void log_eror_csv(void)
 {
 	unsigned char log_flag = 0;
-	static unsigned int BCU_FaultInfoLv1H_LAST = 0;
-	static unsigned int BCU_FaultInfoLv1L_LAST = 0;
-	static unsigned int BCU_FaultInfoLv2H_LAST = 0;
-	static unsigned int BCU_FaultInfoLv2L_LAST = 0;
-	static unsigned int BCU_FaultInfoLv3H_LAST = 0;
-	static unsigned int BCU_FaultInfoLv3L_LAST = 0;
-	static unsigned int BCU_FaultInfoLv4H_LAST = 0;
-	static unsigned int BCU_FaultInfoLv4L_LAST = 0;
+	static unsigned int BCU_FaultInfoLv1_LAST = 0;
+	static unsigned int BCU_FaultInfoLv2_LAST = 0;
+	static unsigned int BCU_FaultInfoLv3_LAST = 0;
+	static unsigned int BCU_FaultInfoLv4_LAST = 0;
 	static unsigned short BCU_SystemWorkMode_LAST = 0;
 
 	if (ecu_fault_last.emcu_fault0 != ecu_fault.emcu_fault0)
@@ -88,62 +84,41 @@ void log_eror_csv(void)
 		BCU_SystemWorkMode_LAST = get_BCU_SystemWorkModeValue();
 	}
 
-	if (BCU_FaultInfoLv1H_LAST != get_BCU_FaultInfoLv1HValue())
+	if (BCU_FaultInfoLv1_LAST != get_BCU_FaultInfoLv1Value())
 	{
 		log_flag = 1;
-		BCU_FaultInfoLv1H_LAST = get_BCU_FaultInfoLv1HValue();
+		BCU_FaultInfoLv1_LAST = get_BCU_FaultInfoLv1Value();
 	}
-	if (BCU_FaultInfoLv1L_LAST != get_BCU_FaultInfoLv1LValue())
+
+	if (BCU_FaultInfoLv2_LAST != get_BCU_FaultInfoLv2Value())
 	{
 		log_flag = 1;
-		BCU_FaultInfoLv1L_LAST = get_BCU_FaultInfoLv1LValue();
+		BCU_FaultInfoLv2_LAST = get_BCU_FaultInfoLv2Value();
 	}
-	if (BCU_FaultInfoLv2H_LAST != get_BCU_FaultInfoLv2HValue())
+
+	if (BCU_FaultInfoLv3_LAST != get_BCU_FaultInfoLv3Value())
 	{
 		log_flag = 1;
-		BCU_FaultInfoLv2H_LAST = get_BCU_FaultInfoLv2HValue();
+		BCU_FaultInfoLv3_LAST = get_BCU_FaultInfoLv3Value();
 	}
-	if (BCU_FaultInfoLv2L_LAST != get_BCU_FaultInfoLv2LValue())
+
+	if (BCU_FaultInfoLv4_LAST != get_BCU_FaultInfoLv4Value())
 	{
 		log_flag = 1;
-		BCU_FaultInfoLv2L_LAST = get_BCU_FaultInfoLv2LValue();
-	}
-	if (BCU_FaultInfoLv3H_LAST != get_BCU_FaultInfoLv3HValue())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv3H_LAST = get_BCU_FaultInfoLv3HValue();
-	}
-	if (BCU_FaultInfoLv3L_LAST != get_BCU_FaultInfoLv3LValue())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv3L_LAST = get_BCU_FaultInfoLv3LValue();
-	}
-	if (BCU_FaultInfoLv4H_LAST != get_BCU_FaultInfoLv4HValue())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv4H_LAST = get_BCU_FaultInfoLv4HValue();
-	}
-	if (BCU_FaultInfoLv4L_LAST != get_BCU_FaultInfoLv4LValue())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv4L_LAST = get_BCU_FaultInfoLv4LValue();
+		BCU_FaultInfoLv4_LAST = get_BCU_FaultInfoLv4Value();
 	}
 
 	if (log_flag == 1)
 	{
-		LOG_CSV("[LOG_CSV] = %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x",
+		LOG_CSV("[LOG_CSV] = %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x",
 			ecu_fault.emcu_fault0,
 			ecu_fault.emcu_fault1,
 			ecu_fault.emcu_fault2,
 			ecu_fault.emcu_fault3,
-			get_BCU_FaultInfoLv1HValue(),
-			get_BCU_FaultInfoLv1LValue(),
-			get_BCU_FaultInfoLv2HValue(),
-			get_BCU_FaultInfoLv2LValue(),
-			get_BCU_FaultInfoLv3HValue(),
-			get_BCU_FaultInfoLv3LValue(),
-			get_BCU_FaultInfoLv4HValue(),
-			get_BCU_FaultInfoLv4LValue(),
+			get_BCU_FaultInfoLv1Value(),
+			get_BCU_FaultInfoLv2Value(),
+			get_BCU_FaultInfoLv3Value(),
+			get_BCU_FaultInfoLv4Value(),
 			get_BCU_SOCValue(),
 			get_BCU_SystemWorkModeValue());
 	}
@@ -401,6 +376,7 @@ int can_monitor_fun(void) {
 	if (bcu_can_state == 0 && g_bcu_can_ready == 1) {
 		LOG("[Check] can2 abnormal, restarting...\n");
 		restart_can_interface(BCU_CAN_DEVICE_NAME);
+		
 	}
 	g_bcu_can_ready = bcu_can_state;
 
@@ -408,7 +384,7 @@ int can_monitor_fun(void) {
 	int bmu_can_state = check_can_state(BMU_CAN_DEVICE_NAME);
 	if (bmu_can_state == 0 && g_bmu_can_ready == 1) {
 		LOG("[Check] can3 abnormal, restarting...\n");
-		restart_can_interface("can3");
+		restart_can_interface(BMU_CAN_DEVICE_NAME);
 	}
 	g_bmu_can_ready = bmu_can_state;
 }
@@ -435,6 +411,62 @@ int check_can_state(const char* can_if) {
     return (system(command) == 0);
 }
 
+int is_can_healthy(const char* can_if) {
+    char cmd[256];
+    char result[512];
+    FILE *fp;
+    
+    // 检查接口是否存在且UP
+    snprintf(cmd, sizeof(cmd), 
+             "/bin/ip link show %s 2>/dev/null | grep 'state UP' > /dev/null && "
+             "/bin/ip link show %s 2>/dev/null | grep 'LOWER_UP' > /dev/null", 
+             can_if, can_if);
+    if (system(cmd) != 0) {
+        LOG("[CAN] %s: Interface not up\n", can_if);
+        // return 0;
+    }
+    
+    // 检查是否有严重错误状态
+    snprintf(cmd, sizeof(cmd),
+             "/bin/ip -details link show %s 2>/dev/null | "
+             "grep -q -E 'BUS-OFF|ERROR-PASSIVE'",
+             can_if);
+    if (system(cmd) == 0) {
+        LOG("[CAN] %s: BUS-OFF or ERROR-PASSIVE\n", can_if);
+        return 0;
+    }
+    
+    // 检查错误计数器
+    snprintf(cmd, sizeof(cmd),
+             "/bin/ip -details link show %s 2>/dev/null | "
+             "grep 'berr-counter' | awk '{print $4}'",
+             can_if);
+    
+    fp = popen(cmd, "r");
+    if (fp) {
+        if (fgets(result, sizeof(result), fp)) {
+            int tx_errors = atoi(result);
+            if (tx_errors > 95) {  // 接近错误被动阈值
+                LOG("[CAN] %s: TX errors too high (%d)\n", can_if, tx_errors);
+                pclose(fp);
+                return 0;
+            }
+        }
+        pclose(fp);
+    }
+    
+    // 检查是否启用了FD模式（可选）
+    snprintf(cmd, sizeof(cmd),
+             "/bin/ip -details link show %s 2>/dev/null | "
+             "grep -q ' fd '",
+             can_if);
+    if (system(cmd) != 0) {
+        LOG("[CAN] %s: FD mode not enabled\n", can_if);
+        // 根据你的需求决定是否返回0
+    }
+    
+    return 1;  // 健康
+}
 // 主业务判断函数
 int is_bcu_can_ready(void) {
     return g_bcu_can_ready;

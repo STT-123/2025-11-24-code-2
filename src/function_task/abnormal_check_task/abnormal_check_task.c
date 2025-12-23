@@ -19,9 +19,9 @@ void *AbnormalDetection(void *arg)
         /* code */
         check_bcu_rx_timeout();//CAN0 通道检测
         PHYlinktate(); //网口物理连接检测 
-        get_BCU_FaultInfo(get_BCU_FaultInfoLv4HValue(),get_BCU_FaultInfoLv3HValue(),get_BCU_FaultInfoLv2HValue());
+        get_BCU_FaultInfo(get_BCU_FaultInfoLv4Value(),get_BCU_FaultInfoLv3Value(),get_BCU_FaultInfoLv2Value());
         ECUfault_process(); // 各种故障检测
-        //can_monitor_fun();//CAN 通道 通道检测
+        // can_monitor_fun();//CAN 通道 通道检测
         log_eror_csv();  //存储
         // 1. 简单测试是否能ping通百度
         // int result = can_ping_host("ocpp.xcharger.net", 5);

@@ -67,6 +67,7 @@ void get_BCU_FaultInfo(uint32_T faultValue_4H,uint32_T faultValue_3H,uint32_T fa
 int check_can_state(const char* can_if) ;
 int is_bcu_can_ready(void);
 int is_bmu_can_ready(void);
+int is_can_healthy(const char* can_if) ;
 int check_and_fix_ip(const char *if_name);
 int can_ping_host(const char *hostname, int timeout_sec) ;
 #endif

@@ -26,6 +26,29 @@ void my_modbus_set_float_badc(float f, uint16_t *dest)
 /**
  * 将标准 canfd_frame 转换为 CAN_FD_MESSAGE_BUS
  */
+void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg)
+{
+    if (!frame || !msg){
+        printf("eeee Raw can_id      : 0x%08lX\n", frame->can_id);
+        return;
+
+    }
+       
+
+    msg->Extended = 1;
+    msg->Remote = 0;
+    msg->Error = 0;
+    msg->Length = frame->can_dlc;
+    // printf("Raw can_id      : 0x%08lX\n", frame->can_id);
+    // printf("Extended    : %d\n", (frame->can_id & CAN_EFF_FLAG) ? 1 : 0);
+    // printf(" frame->can_id : %08lX\r\n", frame->can_id);
+    msg->ID = frame->can_id; // 取 29 位
+    // printf(" msg->ID  : %08lX\r\n", msg->ID );
+    msg->Timestamp = 0;
+
+    memcpy(msg->Data, frame->data, frame->can_dlc);
+}
+
 void ConvertCANFDToBus(const struct canfd_frame *frame, CAN_FD_MESSAGE_BUS *msg)
 {
     if (!frame || !msg)
@@ -146,6 +169,32 @@ void Convert_canfd_frame_to_CAN_MESSAGE(const struct canfd_frame *frame, CAN_MES
 
     // 拷贝数据
     memcpy(msg->Data, frame->data, msg->Length);
+}
+
+void Convert_canfd_frame_to_can_fram(const struct canfd_frame *frame, struct can_frame *msg)
+{
+
+    struct can_frame {
+	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
+	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
+	__u8    __pad;   /* padding */
+	__u8    __res0;  /* reserved / padding */
+	__u8    __res1;  /* reserved / padding */
+	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
+};
+
+
+    memset(msg, 0, sizeof(struct can_frame));
+    msg->can_id = frame->can_id & CAN_EFF_MASK;// 提取 CAN ID
+
+    msg->__res0 = 0;
+    msg->__pad = 0;
+    msg->__res1 = 0;
+
+    msg->can_dlc = (frame->len > 8) ? 8 : frame->len;
+
+    // 拷贝数据
+    memcpy(msg->data, frame->data, msg->can_dlc);
 }
 
 void Convert_can_frame_to_CAN_MESSAGE(const struct can_frame *frame, CAN_MESSAGE *msg)
@@ -289,86 +338,20 @@ real_T get_BCU_TimeSencondValue(void) { return BCU_TimeSencond; }
 
 
 
-real_T get_BCU_FaultInfoLv1HValue(void) { return BCU_FaultInfoLv1H; }
-real_T get_BCU_FaultInfoLv2HValue(void) { return BCU_FaultInfoLv2H; }
-real_T get_BCU_FaultInfoLv3HValue(void) { return BCU_FaultInfoLv3H; }
-real_T get_BCU_FaultInfoLv4HValue(void) { return BCU_FaultInfoLv4H; }
-real_T get_BCU_FaultInfoLv1LValue(void) { return BCU_FaultInfoLv1L; }
-real_T get_BCU_FaultInfoLv2LValue(void) { return BCU_FaultInfoLv2L; }
-real_T get_BCU_FaultInfoLv3LValue(void) { return BCU_FaultInfoLv3L; }
-real_T get_BCU_FaultInfoLv4LValue(void) { return BCU_FaultInfoLv4L; }
+real_T get_BCU_FaultInfoLv1Value(void) { return BCU_FaultInfoLv1; }
+real_T get_BCU_FaultInfoLv2Value(void) { return BCU_FaultInfoLv2; }
+real_T get_BCU_FaultInfoLv3Value(void) { return BCU_FaultInfoLv3; }
+real_T get_BCU_FaultInfoLv4Value(void) { return BCU_FaultInfoLv4; }
 real_T get_BCU_SOCValue(void) { return BCU_SOC; }
 real_T get_BCU_SystemWorkModeValue(void) { return BCU_SystemWorkMode; }
 
 
-unsigned short* get_BCU_usSingleBatVal(void) 
-{
-    static unsigned short usSingleBatVal[240];  /*单体电池电压单位*/
-    
-    memcpy(usSingleBatVal, CANFDRcvFcn_BCU_DW.tmp, sizeof(usSingleBatVal));
-
-    return usSingleBatVal;  /* 返回数组指针 */
-}
-
-unsigned short* get_BCU_usSingleBatTemp(void) 
-{
-    static unsigned short usSingleBatTemp[120];     /*单体电池温度单位*/
-
-    memcpy(usSingleBatTemp, CANFDRcvFcn_BCU_DW.tmp_a, sizeof(usSingleBatTemp));
-
-    return usSingleBatTemp;  /* 返回数组指针 */
-}
-
-real32_T get_BCU_iDcPower(void) {
-    return CANFDRcvFcn_BCU_B.BCU_RealtimePower_H << 8 | CANFDRcvFcn_BCU_B.BCU_RealtimePower_L;  /* 返回 */
-}
 real32_T get_BCU_ullPosEleQuantity(void) {
-    real32_T u;
-    uint32_T data_index;
-    uint16_T CFunction_o1;
-    u = 1000.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o6;
-    if (u < 4.2949673E+9F) 
-    {
-        if (u >= 0.0F)
-        {
-            data_index = (uint32_T)u;
-        }
-        else
-        {
-            data_index = 0U;
-        }
-    } 
-    else 
-    {
-        data_index = MAX_uint32_T;
-    }   
 
-    CFunction_o1 = (uint16_T)(data_index >> 16);
-    return CFunction_o1;  /* 返回 */
+    return 1;  /* 返回 */
 }
 real32_T get_BCU_ullNegEleQuantity(void) {
-    real32_T u;
-    uint32_T data_index;
-    uint16_T CFunction_o2;
-    u = 1000.0F * CANFDRcvFcn_BCU_B.CANFDUnpack3_o6;
-    if (u < 4.2949673E+9F) 
-    {
-        if (u >= 0.0F)
-        {
-            data_index = (uint32_T)u;
-        }
-        else
-        {
-            data_index = 0U;
-        }
-    } 
-    else 
-    {
-        data_index = MAX_uint32_T;
-    }   
-
-    CFunction_o2 = (uint16_T)(data_index & 65535U);
-    return CFunction_o2;  /* 返回 */
+    return 1;  /* 返回 */
 }
 uint16_T get_BCU_usAirState(void) {
     return 1;  /* 返回 */

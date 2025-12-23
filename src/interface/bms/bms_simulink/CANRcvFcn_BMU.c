@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANRcvFcn_BMU'.
  *
- * Model version                  : 5.8
+ * Model version                  : 5.11
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Tue Nov 25 09:50:30 2025
+ * C/C++ source code generated on : Mon Dec 22 13:30:31 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4
@@ -31,6 +31,13 @@ DW_CANRcvFcn_BMU_T CANRcvFcn_BMU_DW;
 static RT_MODEL_CANRcvFcn_BMU_T CANRcvFcn_BMU_M_;
 RT_MODEL_CANRcvFcn_BMU_T *const CANRcvFcn_BMU_M = &CANRcvFcn_BMU_M_;
 
+/* Exported data definition */
+
+/* Definition for custom storage class: Default */
+uint32_T DAqX_FaultCode1[15];          /* '<S2>/Data Type Conversion2' */
+uint32_T DAqX_FaultCode2[15];          /* '<S2>/Data Type Conversion' */
+uint16_T DAq_version[15];              /* '<S2>/Data Type Conversion1' */
+
 /* Model step function */
 void CANRcvFcn_BMU_step(void)
 {
@@ -39,6 +46,21 @@ void CANRcvFcn_BMU_step(void)
   uint32_T port_len;
   uint32_T qY;
   uint16_T rtb_TmpSignalConversionAtSFunct[75];
+  uint16_T CFunction1;
+  uint16_T CFunction10;
+  uint16_T CFunction11;
+  uint16_T CFunction12;
+  uint16_T CFunction13;
+  uint16_T CFunction14;
+  uint16_T CFunction15;
+  uint16_T CFunction2;
+  uint16_T CFunction3;
+  uint16_T CFunction4;
+  uint16_T CFunction5;
+  uint16_T CFunction6;
+  uint16_T CFunction7;
+  uint16_T CFunction8;
+  uint16_T CFunction9;
 
   /* S-Function (scanunpack): '<S2>/0x180110E4' incorporates:
    *  Inport: '<Root>/CANMsg'
@@ -46,9 +68,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E4' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D1 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985169 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -59,7 +88,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -74,7 +103,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -85,7 +121,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -104,15 +140,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function1' */
+  CFunction1 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E4_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E4_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E2' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E2' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D2 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985170 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -123,7 +170,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -138,7 +185,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -149,7 +203,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -168,15 +222,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function2' */
+  CFunction2 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E2_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E2_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E1' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E1' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D3 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985171 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -187,7 +252,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -202,7 +267,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -213,7 +285,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -232,15 +304,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function3' */
+  CFunction3 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E1_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E1_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E5' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E5' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D4 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985172 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -251,7 +334,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -266,7 +349,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -277,7 +367,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -296,15 +386,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function4' */
+  CFunction4 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E5_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E5_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E3' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E3' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D5 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985173 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -315,7 +416,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -330,7 +431,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -341,7 +449,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -360,15 +468,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function5' */
+  CFunction5 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E3_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E3_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E7' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E7' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D6 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985174 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -379,7 +498,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -394,7 +513,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -405,7 +531,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -424,15 +550,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function6' */
+  CFunction6 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E7_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E7_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E6' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E6' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D7 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985175 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -443,7 +580,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -458,7 +595,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -469,7 +613,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -488,15 +632,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function7' */
+  CFunction7 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E6_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E6_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E9' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E9' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D8 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985176 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -507,7 +662,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -522,7 +677,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -533,7 +695,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -552,15 +714,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function8' */
+  CFunction8 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E9_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E9_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E8' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E8' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510D9 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985177 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -571,7 +744,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -586,7 +759,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -597,7 +777,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -616,15 +796,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function9' */
+  CFunction9 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E8_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E8_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E11' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E11' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510DA == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985178 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -635,7 +826,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -650,7 +841,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -661,7 +859,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -680,15 +878,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function10' */
+  CFunction10 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E11_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E11_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E10' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E10' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510DB == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985179 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -699,7 +908,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -714,7 +923,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -725,7 +941,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -744,15 +960,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function11' */
+  CFunction11 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E10_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E10_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E13' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E13' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510DC == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985180 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -763,7 +990,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -778,7 +1005,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -789,7 +1023,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -808,15 +1042,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function12' */
+  CFunction12 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E13_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E13_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E12' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E12' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510DD == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985181 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -827,7 +1072,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -842,7 +1087,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -853,7 +1105,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -872,15 +1124,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function13' */
+  CFunction13 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E12_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E12_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E15' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E15' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510DE == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985182 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -891,7 +1154,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
                 }
 
                 unpackedValue = tempValue;
@@ -906,7 +1169,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -917,7 +1187,7 @@ void CANRcvFcn_BMU_step(void)
                 uint8_T tempValue = (uint8_T) (0);
 
                 {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[0]);
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
                 }
 
                 unpackedValue = tempValue;
@@ -936,41 +1206,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function14' */
+  CFunction14 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E15_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E15_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E14' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E14' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180510DF == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402985183 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
-          {
-            uint8_T outValue = 0;
-
-            {
-              uint8_T unpackedValue = 0;
-
-              {
-                uint8_T tempValue = (uint8_T) (0);
-
-                {
-                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
-                }
-
-                unpackedValue = tempValue;
-              }
-
-              outValue = (uint8_T) (unpackedValue);
-            }
-
-            {
-              uint8_T result = (uint8_T) outValue;
-              CANRcvFcn_BMU_B.ux180110E14_o1 = result;
-            }
-          }
-
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 0
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint8_T outValue = 0;
 
@@ -992,6 +1247,39 @@ void CANRcvFcn_BMU_step(void)
 
             {
               uint8_T result = (uint8_T) outValue;
+              CANRcvFcn_BMU_B.ux180110E14_o1 = result;
+            }
+          }
+
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 8
+           *  length                  = 8
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
+          {
+            uint8_T outValue = 0;
+
+            {
+              uint8_T unpackedValue = 0;
+
+              {
+                uint8_T tempValue = (uint8_T) (0);
+
+                {
+                  tempValue = tempValue | (uint8_T)(CANMsg.Data[1]);
+                }
+
+                unpackedValue = tempValue;
+              }
+
+              outValue = (uint8_T) (unpackedValue);
+            }
+
+            {
+              uint8_T result = (uint8_T) outValue;
               CANRcvFcn_BMU_B.ux180110E14_o2 = result;
             }
           }
@@ -1000,15 +1288,26 @@ void CANRcvFcn_BMU_step(void)
     }
   }
 
+  /* CFunction: '<S2>/C Function15' */
+  CFunction15 = (uint16_T)((uint32_T)(CANRcvFcn_BMU_B.ux180110E14_o2 << 8) |
+    CANRcvFcn_BMU_B.ux180110E14_o1);
+
   /* S-Function (scanunpack): '<S2>/0x180110E16' incorporates:
    *  Inport: '<Root>/CANMsg'
    */
   {
     /* S-Function (scanunpack): '<S2>/0x180110E16' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D1 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919633 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1040,7 +1339,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1082,9 +1388,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E17' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D2 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919634 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1116,7 +1429,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1158,9 +1478,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E18' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D3 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919635 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1192,7 +1519,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1234,9 +1568,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E19' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D4 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919636 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1268,7 +1609,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1310,9 +1658,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E20' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D5 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919637 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1344,7 +1699,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1386,9 +1748,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E21' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D6 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919638 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1420,7 +1789,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1462,9 +1838,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E22' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D7 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919639 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1496,7 +1879,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1538,9 +1928,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E23' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D8 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919640 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1572,7 +1969,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1614,9 +2018,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E24' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410D9 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919641 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1648,7 +2059,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1690,9 +2108,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E25' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410DA == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919642 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1724,7 +2149,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1766,9 +2198,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E26' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410DB == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919643 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1800,7 +2239,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1842,9 +2288,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E27' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410DC == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919644 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1876,7 +2329,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1918,9 +2378,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E28' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410DD == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919645 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1952,7 +2419,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -1994,9 +2468,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E29' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410DE == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919646 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -2028,7 +2509,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -2070,9 +2558,16 @@ void CANRcvFcn_BMU_step(void)
   {
     /* S-Function (scanunpack): '<S2>/0x180110E30' */
     if ((8 == CANMsg.Length) && (CANMsg.ID != INVALID_CAN_ID) ) {
-      if ((0x180410DF == CANMsg.ID) && (1U == CANMsg.Extended) ) {
+      if ((402919647 == CANMsg.ID) && (1U == CANMsg.Extended) ) {
         {
-          /* --------------- START Unpacking signal 0 ------------------*/
+          /* --------------- START Unpacking signal 0 ------------------
+           *  startBit                = 24
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -2104,7 +2599,14 @@ void CANRcvFcn_BMU_step(void)
             }
           }
 
-          /* --------------- START Unpacking signal 1 ------------------*/
+          /* --------------- START Unpacking signal 1 ------------------
+           *  startBit                = 56
+           *  length                  = 32
+           *  desiredSignalByteLayout = BIGENDIAN
+           *  dataType                = UNSIGNED
+           *  factor                  = 1.0
+           *  offset                  = 0.0
+           * -----------------------------------------------------------------------*/
           {
             uint32_T outValue = 0;
 
@@ -2141,18 +2643,10 @@ void CANRcvFcn_BMU_step(void)
   }
 
   /* SignalConversion generated from: '<S1>/ SFunction ' incorporates:
-   *  CFunction: '<S2>/C Function1'
-   *  CFunction: '<S2>/C Function10'
-   *  CFunction: '<S2>/C Function11'
-   *  CFunction: '<S2>/C Function12'
-   *  CFunction: '<S2>/C Function13'
-   *  CFunction: '<S2>/C Function14'
-   *  CFunction: '<S2>/C Function15'
    *  CFunction: '<S2>/C Function16'
    *  CFunction: '<S2>/C Function17'
    *  CFunction: '<S2>/C Function18'
    *  CFunction: '<S2>/C Function19'
-   *  CFunction: '<S2>/C Function2'
    *  CFunction: '<S2>/C Function20'
    *  CFunction: '<S2>/C Function21'
    *  CFunction: '<S2>/C Function22'
@@ -2163,7 +2657,6 @@ void CANRcvFcn_BMU_step(void)
    *  CFunction: '<S2>/C Function27'
    *  CFunction: '<S2>/C Function28'
    *  CFunction: '<S2>/C Function29'
-   *  CFunction: '<S2>/C Function3'
    *  CFunction: '<S2>/C Function30'
    *  CFunction: '<S2>/C Function31'
    *  CFunction: '<S2>/C Function32'
@@ -2174,50 +2667,29 @@ void CANRcvFcn_BMU_step(void)
    *  CFunction: '<S2>/C Function37'
    *  CFunction: '<S2>/C Function38'
    *  CFunction: '<S2>/C Function39'
-   *  CFunction: '<S2>/C Function4'
    *  CFunction: '<S2>/C Function40'
    *  CFunction: '<S2>/C Function41'
    *  CFunction: '<S2>/C Function42'
    *  CFunction: '<S2>/C Function43'
    *  CFunction: '<S2>/C Function44'
    *  CFunction: '<S2>/C Function45'
-   *  CFunction: '<S2>/C Function5'
-   *  CFunction: '<S2>/C Function6'
-   *  CFunction: '<S2>/C Function7'
-   *  CFunction: '<S2>/C Function8'
-   *  CFunction: '<S2>/C Function9'
    *  Chart: '<Root>/Chart1'
    */
-  rtb_TmpSignalConversionAtSFunct[0] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E4_o2 << 8) | CANRcvFcn_BMU_B.ux180110E4_o1);
-  rtb_TmpSignalConversionAtSFunct[1] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E2_o2 << 8) | CANRcvFcn_BMU_B.ux180110E2_o1);
-  rtb_TmpSignalConversionAtSFunct[2] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E1_o2 << 8) | CANRcvFcn_BMU_B.ux180110E1_o1);
-  rtb_TmpSignalConversionAtSFunct[3] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E5_o2 << 8) | CANRcvFcn_BMU_B.ux180110E5_o1);
-  rtb_TmpSignalConversionAtSFunct[4] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E3_o2 << 8) | CANRcvFcn_BMU_B.ux180110E3_o1);
-  rtb_TmpSignalConversionAtSFunct[5] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E7_o2 << 8) | CANRcvFcn_BMU_B.ux180110E7_o1);
-  rtb_TmpSignalConversionAtSFunct[6] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E6_o2 << 8) | CANRcvFcn_BMU_B.ux180110E6_o1);
-  rtb_TmpSignalConversionAtSFunct[7] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E9_o2 << 8) | CANRcvFcn_BMU_B.ux180110E9_o1);
-  rtb_TmpSignalConversionAtSFunct[8] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E8_o2 << 8) | CANRcvFcn_BMU_B.ux180110E8_o1);
-  rtb_TmpSignalConversionAtSFunct[9] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E11_o2 << 8) | CANRcvFcn_BMU_B.ux180110E11_o1);
-  rtb_TmpSignalConversionAtSFunct[10] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E10_o2 << 8) | CANRcvFcn_BMU_B.ux180110E10_o1);
-  rtb_TmpSignalConversionAtSFunct[11] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E13_o2 << 8) | CANRcvFcn_BMU_B.ux180110E13_o1);
-  rtb_TmpSignalConversionAtSFunct[12] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E12_o2 << 8) | CANRcvFcn_BMU_B.ux180110E12_o1);
-  rtb_TmpSignalConversionAtSFunct[13] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E15_o2 << 8) | CANRcvFcn_BMU_B.ux180110E15_o1);
-  rtb_TmpSignalConversionAtSFunct[14] = (uint16_T)((uint32_T)
-    (CANRcvFcn_BMU_B.ux180110E14_o2 << 8) | CANRcvFcn_BMU_B.ux180110E14_o1);
+  rtb_TmpSignalConversionAtSFunct[0] = CFunction1;
+  rtb_TmpSignalConversionAtSFunct[1] = CFunction2;
+  rtb_TmpSignalConversionAtSFunct[2] = CFunction3;
+  rtb_TmpSignalConversionAtSFunct[3] = CFunction4;
+  rtb_TmpSignalConversionAtSFunct[4] = CFunction5;
+  rtb_TmpSignalConversionAtSFunct[5] = CFunction6;
+  rtb_TmpSignalConversionAtSFunct[6] = CFunction7;
+  rtb_TmpSignalConversionAtSFunct[7] = CFunction8;
+  rtb_TmpSignalConversionAtSFunct[8] = CFunction9;
+  rtb_TmpSignalConversionAtSFunct[9] = CFunction10;
+  rtb_TmpSignalConversionAtSFunct[10] = CFunction11;
+  rtb_TmpSignalConversionAtSFunct[11] = CFunction12;
+  rtb_TmpSignalConversionAtSFunct[12] = CFunction13;
+  rtb_TmpSignalConversionAtSFunct[13] = CFunction14;
+  rtb_TmpSignalConversionAtSFunct[14] = CFunction15;
   rtb_TmpSignalConversionAtSFunct[15] = (uint16_T)
     (CANRcvFcn_BMU_B.ux180110E16_o1 >> 16);
   rtb_TmpSignalConversionAtSFunct[16] = (uint16_T)
@@ -2365,6 +2837,57 @@ void CANRcvFcn_BMU_step(void)
     data_index = qY;
     port_index++;
   }
+
+  /* DataTypeConversion: '<S2>/Data Type Conversion' */
+  DAqX_FaultCode2[0] = CANRcvFcn_BMU_B.ux180110E16_o2;
+  DAqX_FaultCode2[1] = CANRcvFcn_BMU_B.ux180110E17_o2;
+  DAqX_FaultCode2[2] = CANRcvFcn_BMU_B.ux180110E18_o2;
+  DAqX_FaultCode2[3] = CANRcvFcn_BMU_B.ux180110E19_o2;
+  DAqX_FaultCode2[4] = CANRcvFcn_BMU_B.ux180110E20_o2;
+  DAqX_FaultCode2[5] = CANRcvFcn_BMU_B.ux180110E21_o2;
+  DAqX_FaultCode2[6] = CANRcvFcn_BMU_B.ux180110E22_o2;
+  DAqX_FaultCode2[7] = CANRcvFcn_BMU_B.ux180110E23_o2;
+  DAqX_FaultCode2[8] = CANRcvFcn_BMU_B.ux180110E24_o2;
+  DAqX_FaultCode2[9] = CANRcvFcn_BMU_B.ux180110E25_o2;
+  DAqX_FaultCode2[10] = CANRcvFcn_BMU_B.ux180110E26_o2;
+  DAqX_FaultCode2[11] = CANRcvFcn_BMU_B.ux180110E27_o2;
+  DAqX_FaultCode2[12] = CANRcvFcn_BMU_B.ux180110E28_o2;
+  DAqX_FaultCode2[13] = CANRcvFcn_BMU_B.ux180110E29_o2;
+  DAqX_FaultCode2[14] = CANRcvFcn_BMU_B.ux180110E30_o2;
+
+  /* DataTypeConversion: '<S2>/Data Type Conversion2' */
+  DAqX_FaultCode1[0] = CANRcvFcn_BMU_B.ux180110E16_o1;
+  DAqX_FaultCode1[1] = CANRcvFcn_BMU_B.ux180110E17_o1;
+  DAqX_FaultCode1[2] = CANRcvFcn_BMU_B.ux180110E18_o1;
+  DAqX_FaultCode1[3] = CANRcvFcn_BMU_B.ux180110E19_o1;
+  DAqX_FaultCode1[4] = CANRcvFcn_BMU_B.ux180110E20_o1;
+  DAqX_FaultCode1[5] = CANRcvFcn_BMU_B.ux180110E21_o1;
+  DAqX_FaultCode1[6] = CANRcvFcn_BMU_B.ux180110E22_o1;
+  DAqX_FaultCode1[7] = CANRcvFcn_BMU_B.ux180110E23_o1;
+  DAqX_FaultCode1[8] = CANRcvFcn_BMU_B.ux180110E24_o1;
+  DAqX_FaultCode1[9] = CANRcvFcn_BMU_B.ux180110E25_o1;
+  DAqX_FaultCode1[10] = CANRcvFcn_BMU_B.ux180110E26_o1;
+  DAqX_FaultCode1[11] = CANRcvFcn_BMU_B.ux180110E27_o1;
+  DAqX_FaultCode1[12] = CANRcvFcn_BMU_B.ux180110E28_o1;
+  DAqX_FaultCode1[13] = CANRcvFcn_BMU_B.ux180110E29_o1;
+  DAqX_FaultCode1[14] = CANRcvFcn_BMU_B.ux180110E30_o1;
+
+  /* DataTypeConversion: '<S2>/Data Type Conversion1' */
+  DAq_version[0] = CFunction1;
+  DAq_version[1] = CFunction2;
+  DAq_version[2] = CFunction3;
+  DAq_version[3] = CFunction4;
+  DAq_version[4] = CFunction5;
+  DAq_version[5] = CFunction6;
+  DAq_version[6] = CFunction7;
+  DAq_version[7] = CFunction8;
+  DAq_version[8] = CFunction9;
+  DAq_version[9] = CFunction10;
+  DAq_version[10] = CFunction11;
+  DAq_version[11] = CFunction12;
+  DAq_version[12] = CFunction13;
+  DAq_version[13] = CFunction14;
+  DAq_version[14] = CFunction15;
 }
 
 /* Model initialize function */

@@ -84,7 +84,7 @@ void *lwip_data_TASK(void *param)
 			memset(tcp_server_recvbuf, 0, 2048);
 			int length = read(otasock1, tcp_server_recvbuf, 2048);
 			curmsgtimer = OsIf_GetMilliseconds();
-			// printf("length :%d\r\n",length);
+			printf("length :%d\r\n",length);
 			//目前接收到的BCU\BMU\ECU都是133长度的数据
 			if(length == 133)
 			{
@@ -132,7 +132,7 @@ void *lwip_data_TASK(void *param)
 										g_otactrl.UpDating = 1;//1130
 										printf("otadeviceType  %d\r\n", otadeviceType);
 									}//tst，我也不知道为什么51、52、53必须是0x420x430x55同理BMU （暂追不到原因）
-									else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x43 && tcp_server_recvbuf[53]==0x55 && (strstr(otafilenamestr, "BCU") != NULL))
+									else if(strstr(otafilenamestr, "BCU") != NULL)
 									{
 
 										otadeviceType = BCU;
@@ -142,7 +142,7 @@ void *lwip_data_TASK(void *param)
 										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
 										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 									}
-									else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x4d && tcp_server_recvbuf[53]==0x55 && (strstr(otafilenamestr, "BMU") != NULL))
+									else if(strstr(otafilenamestr, "BMU") != NULL)
 									{
 
 										otadeviceType = BMU;
