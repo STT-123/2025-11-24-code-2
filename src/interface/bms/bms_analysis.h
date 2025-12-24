@@ -117,6 +117,12 @@ real32_T get_BCU_iDcPower(void);
 real32_T get_BCU_ullPosEleQuantity(void);
 void Convert_canfd_frame_to_can_fram(const struct canfd_frame *frame, struct can_frame *msg);
 
+uint16_T *get_BCU_usSingleBatVal(void) ;
+uint16_T *get_BCU_usSingleBatTemp(void) ;
+
+uint16_T *get_BMU_DAq_version(void);
+uint32_T get_BMU_DAqX_FaultCode1_at(int idx);
+uint32_T get_BMU_DAqX_FaultCode2_at(int idx);
 real32_T get_BCU_ullNegEleQuantity(void);
 uint16_T get_BCU_usAirState(void);
 uint16_T get_BCU_usAirPumpState(void);

@@ -12,29 +12,32 @@ void update_bat_data(sqlite3 *db)
 {
     tBatData data = {0};
     tBatData data_be = {0};
-    uint16_t DAq_version[15] = {0};
+    uint16_t batDAq_version[15] = {0};
 
     data.usAirState =1;
 
-    for(int i = 0; i < 15; i++){
-        get_modbus_reg_val(0x5000 +i, &DAq_version[i]);
-    }
+    memcpy(batDAq_version,get_BMU_DAq_version(),sizeof(batDAq_version));
 
-    memcpy(data.usSingleBatVal, usSingleBatVal[0], sizeof(data.usSingleBatVal));
-    memcpy(data.usSingleBatTemp, usSingleBatTemp[0], sizeof(data.usSingleBatTemp));
+    memcpy(data.usSingleBatVal, get_BCU_usSingleBatVal(), sizeof(data.usSingleBatVal));
+    memcpy(data.usSingleBatTemp, get_BCU_usSingleBatTemp(), sizeof(data.usSingleBatTemp));
     
-
-    // for(int i = 0; i < 15; i++)
+    // for (int i = 0; i < 60; i++)
     // {
-    //     if(DAq_version[i] != 0)
-    //     {
-            // data.uiBmuErrorNum[i] = get_BMU_DAq1Fault1();
-    //         data.uiBmuExErrorNum[i] = get_BMU_DAq1_Fault2();
-    //     }else{
-    //         data.uiBmuErrorNum[i] = 65535;
-    //         data.uiBmuExErrorNum[i] = 65535;
-    //     }
+    //     printf("data.usSingleBatVal[%d] = %d\n", i, data.usSingleBatVal[i]);
     // }
+
+
+    for(int i = 0; i < 15; i++)
+    {
+        if(batDAq_version[i] != 0)
+        {
+            data.uiBmuErrorNum[i] = get_BMU_DAqX_FaultCode1_at(i);
+            data.uiBmuExErrorNum[i] = get_BMU_DAqX_FaultCode2_at(i);
+        }else{
+            data.uiBmuErrorNum[i] = 65535;
+            data.uiBmuExErrorNum[i] = 65535;
+        }
+    }
 #if 0
     data.iDcPower = get_BCU_iDcPower();
     data.ullPosEleQuantity = get_BCU_ullPosEleQuantity();

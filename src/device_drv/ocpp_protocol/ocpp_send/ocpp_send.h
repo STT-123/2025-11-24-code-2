@@ -13,5 +13,6 @@
 #include "interface/log/log.h"
 
 void update_bat_data(sqlite3 *db);
+// void update_bat_data(void);
 void *websocket_send_thread(void *arg);
 #endif

@@ -345,6 +345,27 @@ real_T get_BCU_SOCValue(void) { return BCU_SOC; }
 real_T get_BCU_SystemWorkModeValue(void) { return BCU_SystemWorkMode; }
 
 
+uint16_T *get_BCU_usSingleBatVal(void) {
+    return (uint16_T *)&usSingleBatVal[0];
+}
+uint16_T *get_BCU_usSingleBatTemp(void) {
+    return (uint16_T *)&usSingleBatTemp[0];
+}
+
+uint16_T *get_BMU_DAq_version(void){
+    return (uint16_T *)&DAq_version[0];
+}
+
+uint32_T get_BMU_DAqX_FaultCode1_at(int idx) {
+    return DAqX_FaultCode1[idx];
+}
+uint32_T get_BMU_DAqX_FaultCode2_at(int idx) {
+    return DAqX_FaultCode2[idx];
+}
+
+
+
+
 real32_T get_BCU_ullPosEleQuantity(void) {
 
     return 1;  /* 返回 */

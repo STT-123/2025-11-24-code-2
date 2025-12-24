@@ -452,13 +452,14 @@ static int judgeTimetoUpdate(struct tm *nowTime)
     static int last_month = -1;
     static int last_day = -1;
     
-    //LOG("[SD Card] Current time: %d-%d-%d, Last time: %d-%d-%d\n", 
-        // get_BCU_TimeYearValue(), get_BCU_TimeMonthValue(), get_BCU_TimeDayValue(),
-        // last_year, last_month, last_day);
     int current_year  = nowTime->tm_year + 1900; // tm_year 是从 1900 开始的偏移
     int current_month = nowTime->tm_mon + 1;     // tm_mon 范围是 0~11
     int current_day   = nowTime->tm_mday;        // tm_mday 范围是 1~31
 
+    // LOG("[SD Card] BCU Current time: %d-%d-%d, nowTime: %d-%d-%d, Last time: %d-%d-%d\n", 
+    //     get_BCU_TimeYearValue(), get_BCU_TimeMonthValue(), get_BCU_TimeDayValue(),current_year,current_month,current_day,
+    //     last_year, last_month, last_day);
+        
     // 如果是首次调用，仅初始化，不触发变更
     if (last_year == -1) {
         last_year  = current_year;
@@ -485,9 +486,6 @@ static int judgeTimetoUpdate(struct tm *nowTime)
     
     return ret;
 }
-
-
-
 
 static char *Drv_my_strdup(const char *str)
 {

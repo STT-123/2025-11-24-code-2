@@ -29,7 +29,7 @@ void *bcu_DealTask(void *arg)
     {
         // usleep(200*1000);
 
-        if ((get_ota_OTAStart() == 0) || (g_otactrl.deviceType == AC))
+        if ((get_ota_OTAStart() == 0) || (get_ota_deviceType() == AC))
         {
             if (call_count == 0) {
                 CANFDSendFcn_BCU_step();

@@ -14,6 +14,7 @@
 #include "function_task/xmodem_task/xmodem_task.h"
 #include "function_task/abnormal_check_task/abnormal_check_task.h"
 #include "device_drv/abncheck/abncheck.h"
+#include "ocpp_send.h"
 extern ecu_fault_t ecu_fault ;
 static void printf_version(void)
 {
@@ -26,74 +27,6 @@ static void printf_version(void)
     LOG("========================================================= \n");
 }
 
-
-// void crash_handler(int sig) {
-//     void *array[20];
-//     size_t size;
-//     char **strings;
-//     // 区分信号类型
-//     if (sig == SIGINT || sig == SIGTERM) {
-//         // 正常退出信号
-//         LOG("The program is exiting... (signal: %d)\n", sig);
-        
-//         if (sig == SIGINT) {
-//             LOG("reason: Ctrl+C User interruption\n");
-//         } else {
-//             LOG("reason: Termination signal\n");
-//         }
-        
-//         // 清理资源
-//         // close_all_connections();
-        
-//         exit(0);  // 正常退出码
-//     }
-//     else {
-//         // 真正的崩溃信号
-//         LOG("\n!!! Program crash !!!\n");
-//         LOG("Collapse signal: %d\n", sig);
-//         LOG("Possible reasons: ");
-        
-//         switch(sig) {
-//             case SIGSEGV: LOG("Segmentation fault ((null pointer/memory out of bounds))\n"); break;
-//             case SIGABRT: LOG("program suspension (assert/abort调call\n"); break;
-//             case SIGBUS:  LOG("Bus error (Memory alignment issue)\n"); break;
-//             case SIGFPE:  LOG("Arithmetic exception (excluding zero, etc.)\n"); break;
-//             case SIGILL:  LOG("illegal instruction\n"); break;
-//             default:      LOG("Unknown error\n"); break;
-//         }
-        
-//         // 获取堆栈跟踪
-//         // 获取堆栈跟踪
-//         LOG("Collapse Stack Tracking:\n");
-//         size = backtrace(array, 20);
-//         strings = backtrace_symbols(array, size);
-        
-//         if (strings != NULL) {
-//             for (size_t i = 0; i < size; i++) {
-//                 LOG("%s\n", strings[i]);
-//             }
-//             free(strings);
-//         }
-        
-//         LOG("Debugging suggestions:\n");
-//         LOG("1.Use address information to locate questions\n");
-//         LOG("2.Check the code near 0x404198\n");
-        
-//         // 同时打印到 stderr（为了即时查看）
-//         fprintf(stderr, "\nThe detailed information of the program crash has been recorded in the log\n");
-//         exit(1);  // 异常退出码
-//     }
-// }
-
-// void setup_crash_handler() {
-//     signal(SIGSEGV, crash_handler);  // 段错误
-//     signal(SIGABRT, crash_handler);  // 中止
-//     signal(SIGBUS, crash_handler);   // 总线错误
-//     signal(SIGFPE, crash_handler);   // 浮点异常
-//     signal(SIGILL, crash_handler);   // 非法指令
-//     signal(SIGTERM, crash_handler);  // 终止信号
-//     signal(SIGINT, crash_handler);   // Ctrl+C中断信号 ← 添加这一行！
-// }
 
 void crash_handler(int sig) {
     void *array[20];
@@ -120,7 +53,7 @@ void crash_handler(int sig) {
         fprintf(stderr, "\n\n!!! 程序崩溃 !!!\n");
         fprintf(stderr, "崩溃信号: %d\n", sig);
         fprintf(stderr, "可能原因: ");
-        
+        LOG("!!! 崩溃 !!!\r\n");
         switch(sig) {
             case SIGSEGV: fprintf(stderr, "段错误 (空指针/内存越界)\n"); break;
             case SIGABRT: fprintf(stderr, "程序中止 (assert/abort调用)\n"); break;
@@ -176,7 +109,8 @@ int main(int argc, char **argv)
     
     while (1)
     {
-        sleep(1);
+        sleep(5);
+        // update_bat_data();
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");
         // printf("Mobud[1122] = %x\r\n",modbusBuff[0x462]);//ota上载寄存器判断

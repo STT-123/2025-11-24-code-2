@@ -523,33 +523,63 @@ static void handle_cdup_command(FTPState *state)
 static void handle_cwd_command(FTPState *state, const char *args)
 {
     update_last_activity(state);
-    if (args == NULL)
+    if (args == NULL || strlen(args) == 0)
     {
         send_response(state->control_sock, "501 Syntax error in parameters or arguments.\r\n");
         return;
     }
-    // 拦截 CWD / 并重定向到 /media/usb0
-    if (strcmp(args, "/") == 0)
-    {
-        args = USB_MOUNT_POINT;
+
+    char target_path[512] = {0};
+
+   
+    if (args[0] == '/') { // 处理绝对路径：CWD /xxx → 映射到 USB_MOUNT_POINT/xxx
+        
+        if (strcmp(args, "/") == 0) // 特殊情况：CWD / 应该进入根（即 USB_MOUNT_POINT）
+        {
+            strncpy(target_path, USB_MOUNT_POINT, sizeof(target_path) - 1);
+        } else 
+        {                           // 拼接：/mnt/sda + /19691231 → /mnt/sda/19691231
+            snprintf(target_path, sizeof(target_path), "%s%s", USB_MOUNT_POINT, args);
+        }
+    } 
+    else 
+    { // 相对路径：基于当前工作目录
+       
+        snprintf(target_path, sizeof(target_path), "%s/%s", state->path, args);
     }
 
-    if (chdir(args) == 0) {//改变工作目录
-        send_response(state->control_sock, "250 Directory changed.\r\n");
-        
-        // 获取实际的工作目录
-        char cwd[256];
-        if (getcwd(cwd, sizeof(cwd)) != NULL) {//获取工作目录
-            strncpy(state->path, cwd, sizeof(state->path) - 1);
+    // 【可选但推荐】安全检查：防止路径穿越（如 /../etc/passwd）
+    // 简单方法：确保最终路径以 USB_MOUNT_POINT 开头
+    if (strncmp(target_path, USB_MOUNT_POINT, strlen(USB_MOUNT_POINT)) != 0) {
+        LOG("CWD rejected: path traversal attempt? (%s)\n", target_path);
+        send_response(state->control_sock, "550 Access denied.\r\n");
+        return;
+    }
+
+    // 尝试切换目录
+    if (chdir(target_path) == 0) 
+    {
+        // 成功：更新 state->path
+        if (getcwd(state->path, sizeof(state->path)) != NULL) 
+        {
             state->path[sizeof(state->path) - 1] = '\0';
             LOG("Changed to directory: %s\n", state->path);
+            send_response(state->control_sock, "250 Directory changed.\r\n");
+        } 
+        else 
+        {
+            // getcwd 失败（极少见），回退到安全目录
+            chdir(USB_MOUNT_POINT);
+            strcpy(state->path, USB_MOUNT_POINT);
+            send_response(state->control_sock, "550 Internal error.\r\n");
         }
-    } else {
-        LOG("Failed to change directory: %s\n", strerror(errno));
+    }
+    else 
+    {
+        LOG("Failed to change directory: %s (target_path=%s)\n", strerror(errno), target_path);
         send_response(state->control_sock, "550 Failed to change directory.\r\n");
     }
 }
-
 static void handle_type_command(FTPState *state, char *args)
 {
     if (args && strcmp(args, "A") == 0)
