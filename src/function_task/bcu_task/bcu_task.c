@@ -73,11 +73,13 @@ void *bcu_DealTask(void *arg)
                 if(canrev_frame2.can_dlc == 8 )
                 {
                     canrev_frame2.can_id &= CAN_EFF_MASK;
+                    
                     if(1 == modbusBuffInitFlag)
                     {  
                         ConvertCANToBus(&canrev_frame2, &CANFDRcvMsg);
                         CANFDRcvFcn_BCU_step();           
                         ConvertCANToBus(&canrev_frame2, &can_msg_buf);
+                        // printf("can_msg_buf.can_id = %x\r\n",can_msg_buf.ID);
                         Drv_write_to_active_buffer(&can_msg_buf, 1);
                     }
                 }

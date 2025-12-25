@@ -11,10 +11,7 @@
 
 
 /*===*/
-static uint32_t frame_counter = 0;
 static struct timespec last_store_time = {0};
-static const uint32_t STORE_INTERVAL_MS = 3000;  // 3秒
-static const uint32_t FRAMES_PER_STORE = 42;     // 每次存储12帧
 // 特定ID触发存储
 static uint8_t trigger_store_flag = 0;
 static struct timespec trigger_store_time = {0};
@@ -24,33 +21,19 @@ static bool newFileNeeded = true;
 Rtc_Ip_TimedateType initialTime = {0};
 Rtc_Ip_TimedateType currentTime = {0};
 struct timespec start_tick = {0};
-uint32_t CAN_IDs[] = {
-    0x180110E4,
-    0x180210E4,
-    0x180310E4,
-    0x180410E4,
-    0x1A0110E4,
-    0x1B0110E4,
-    0x18FF0000,
-    0x18FF0001,
-    0x18FF0002,
-    0x18FF0003,
-    0x18FF0004,
-    0x18FF0005,
-    0x18FF0006,
-    0x18FF0007,
-    0x18FF0008,
-    0x18FF45F0,
-    0x18FFC13A,
-    0x18FFC13B,
-    0x18FFC13C,
-    0x18FFC13D,
-    0x235
+static uint32_t CAN_IDs[] = {
+    //BCU电池ID 
+    0x180110E4,0x180210E4,0x180310E4,0x180410E4,0x1A0110E4,0x1B0110E4,
+    //空调ID 
+    0x18FF0000,0x18FF0001,0x18FF0002,0x18FF0003,0x18FF0004,
+    0x18FF0005,0x18FF0006,0x18FF0007,0x18FF0008,
+    0x18FF45F0,0x235,
+    0x18FFC13A,0x18FFC13B,0x18FFC13C,0x18FFC13D 
 };
- CAN_MESSAGE can_msg_1A0110E4_cache[8] = {0}; // 单体电压，一包30个，一共240个，索引分8帧
- CAN_MESSAGE can_msg_1B0110E4_cache[2] = {0};; // 单体温度，一包60个，一共120个，索引分2帧
- CAN_MESSAGE can_msg_180410E4_cache[1] = {0}; // bmu电压，AFE温度，一包15个，一共15个，索引分1帧
+#define CAN_ID_HISTORY_SIZE (sizeof(CAN_IDs) / sizeof(CAN_IDs[0]))
  CAN_MESSAGE can_msg_cache[CAN_ID_HISTORY_SIZE] = {0};
+ static int frame_count_per_id[CAN_ID_HISTORY_SIZE] = {0};
+
 static struct timeval first_tv = {0, 0};
 static int first_time_captured = 0;
 /**
@@ -362,16 +345,14 @@ static int Drv_check_and_update_message(const CANFD_MESSAGE *msg)
             {
                 if ( get_BCU_SystemWorkModeValue() != old_BMSWorkMode_value)
                 {
-                    LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n",
-                        old_BMSWorkMode_value, msg->Data[6]);
-                    old_BMSWorkMode_value = get_BCU_SystemWorkModeValue();
+                    LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n", old_BMSWorkMode_value, msg->Data[6]);                 
+                    memset(frame_count_per_id, 0, sizeof(frame_count_per_id));
                     
-                    // 触发存储，重置计数器
-                    trigger_store_flag = 1;
-                    frame_counter = 0;
                     clock_gettime(CLOCK_MONOTONIC, &trigger_store_time);
                     clock_gettime(CLOCK_MONOTONIC, &last_store_time);  // ← 关键：同时重置常规存储时间
                     LOG("[CAN Trigger] Both trigger and normal storage timers reset\n");
+                    trigger_store_flag = 1;// 触发存储，重置计数器
+                    old_BMSWorkMode_value = get_BCU_SystemWorkModeValue();
                 }  
             }
 
@@ -385,39 +366,33 @@ static int Drv_check_and_update_message(const CANFD_MESSAGE *msg)
 
 
 // 判断当前帧是否应该存储
-static int should_store_frame(void)
+static int should_store_frame(uint32_t msg_id)
 {
+    int idx = find_id_index(msg_id);
+    if (idx < 0) return 0;
+
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
     
     // 检查触发存储条件（优先级更高）
-    if (trigger_store_flag) 
-    {
+    if (trigger_store_flag) {
         long elapsed_ms = (now.tv_sec - trigger_store_time.tv_sec) * 1000 +
                          (now.tv_nsec - trigger_store_time.tv_nsec) / 1000000;
         
-        if (elapsed_ms < STORE_INTERVAL_MS && frame_counter < FRAMES_PER_STORE) {
-            // LOG("[CAN Trigger] In trigger window: %ld/%d ms, frame %d/12\n",
-                // elapsed_ms, STORE_INTERVAL_MS, frame_counter + 1);
-            return 1;
-        } else if (frame_counter >= FRAMES_PER_STORE) {
-            LOG("[CAN Trigger] Trigger storage completed: %d frames stored\n", frame_counter);
-            trigger_store_flag = 0;
-            return 0;
-        } else if (elapsed_ms >= STORE_INTERVAL_MS) {
-            LOG("[CAN Trigger] Trigger window timeout: stored %d frames in %ld ms\n", 
-                frame_counter, elapsed_ms);
+        if (elapsed_ms >= STORE_INTERVAL_MS) {
             trigger_store_flag = 0;
             return 0;
         }
+        return (frame_count_per_id[idx] < MAX_FRAMES_PER_ID);// 触发期间也遵守 "每 ID 最多 2 帧"
     }
     
     // 常规3秒存储逻辑
     // 如果是第一次，初始化时间
-    if (last_store_time.tv_sec == 0 && last_store_time.tv_nsec == 0) {
+    if (last_store_time.tv_sec == 0) 
+    {
         clock_gettime(CLOCK_MONOTONIC, &last_store_time);
-        frame_counter = 0;
-        LOG("[CAN Normal] Starting first 3s storage window\n");
+        memset(frame_count_per_id, 0, sizeof(frame_count_per_id));
+        // LOG("[CAN Normal] Starting first 3s storage window\n");
         return 1;
     }
     
@@ -428,20 +403,12 @@ static int should_store_frame(void)
     // 如果超过3秒，开始新的存储周期
     if (elapsed_ms >= STORE_INTERVAL_MS) {
         // LOG("[CAN Normal] 3s elapsed, starting new window. Previous: %d frames\n", frame_counter);
-        frame_counter = 0;
+        memset(frame_count_per_id, 0, sizeof(frame_count_per_id));
         clock_gettime(CLOCK_MONOTONIC, &last_store_time);
         return 1;
     }
     
-    // 在3秒窗口内且未达到12帧，允许存储
-    if (frame_counter < FRAMES_PER_STORE) {
-        // LOG("[CAN Normal] Storing frame %d/12 (elapsed: %ldms)\n", 
-            // frame_counter + 1, elapsed_ms);
-        return 1;
-    }
-    
-    // 窗口已满
-    // LOG("[CAN Normal] Window full: %d/12 frames\n", frame_counter);
+    return (frame_count_per_id[idx] < MAX_FRAMES_PER_ID);
     return 0;
 }
 
@@ -601,24 +568,6 @@ static void Drv_init_can_id_history(void)
         can_msg_cache[i].ID = CAN_IDs[i];
         can_msg_cache[i].Length = 64; //
     }
-    for (i = 0; i < 8; i++)
-    {
-        can_msg_1A0110E4_cache[i].ID = 0x1A0110E4;
-        can_msg_1A0110E4_cache[i].Length = 64;
-        can_msg_1A0110E4_cache[i].Data[0] = i + 1;
-    }
-    for (i = 0; i < 2; i++)
-    {
-        can_msg_1B0110E4_cache[i].ID = 0x1B0110E4;
-        can_msg_1B0110E4_cache[i].Length = 64;
-        can_msg_1B0110E4_cache[i].Data[0] = i + 1;
-    }
-    for (i = 0; i < 1; i++)
-    {
-        can_msg_180410E4_cache[i].ID = 0x180410E4;
-        can_msg_180410E4_cache[i].Length = 64;
-        can_msg_180410E4_cache[i].Data[0] = i + 1;
-    }
 }
 // 获取从当天00:00:00开始的秒.毫秒
 // 获取UTC时间戳（秒.毫秒）
@@ -696,22 +645,21 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 {
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
     uint8_t ret = 0;
+
     if (((msg->ID == 0x1cb0e410) && (msg->Data[0] == 0xC9)) ||
         (msg->ID == 0x1cb010e4) || (msg->ID == 0x1823E410) || (msg->ID == 0))
     {
         return;
     }
 
-    ret = Drv_check_and_update_message(msg);
-    
-    // 如果是异常ID（不在缓存中），直接返回，不存储
+    ret = Drv_check_and_update_message(msg); // 如果是异常ID（不在缓存中），直接返回，不存储
     if (ret == 0) {
         //LOG("[CAN Filter] Abnormal ID=0x%08lX filtered out\n", (unsigned long)msg->ID);
         return;
     }
-    
+
     // 检查是否应该存储（包括常规3秒和触发存储）
-    if (!should_store_frame()) {
+    if (!should_store_frame(msg->ID)) {
         return;
     }
 
@@ -741,9 +689,13 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
     pthread_mutex_unlock(&activeBuffer->mutex);
     pthread_mutex_unlock(&drb->switchMutex);
 
-        // 更新计数器
-    frame_counter++;
-    // LOG("[CAN Storage] Successfully stored frame %d/12\n", frame_counter);
+    //更新计数器
+    // ✅ 关键：更新该 ID 的计数器
+    int idx = find_id_index(msg->ID);
+    if (idx >= 0) {
+        frame_count_per_id[idx]++;
+    }
+
 }
 
 // 将缓冲区数据写到sd卡
@@ -1020,4 +972,14 @@ static uint8_t CalculateDLC(uint8_t data_length) {
     } else { // 64字节
         return 15;
     }
+}
+
+static int find_id_index(uint32_t id)
+{
+    for (int i = 0; i < CAN_ID_HISTORY_SIZE; i++) {
+        if (CAN_IDs[i] == id) {
+            return i;
+        }
+    }
+    return -1; // 非法 ID（应已被 Drv_check_and_update_message 过滤）
 }

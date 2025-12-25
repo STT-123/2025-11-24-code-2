@@ -21,9 +21,9 @@
 #define BUFFERED_WRITE_SIZE 1024
 #define CHECKSD_TRIGGERING_TIME 60000 * 1000
 #define SD_FILE_SIZE (10*1024*1024)
-#define  SDMAXCAPACITY 90
-#define CAN_ID_HISTORY_SIZE (6 +15)   //BCU 和空调ID 的总数量
-
+#define SDMAXCAPACITY 90
+#define MAX_FRAMES_PER_ID 2
+#define STORE_INTERVAL_MS           3000  // 3秒
 /*-----*/
 #define USB_DEVICE "/dev/mmcblk1p1"
 #define USB_MOUNT_POINT "/mnt/sda"
@@ -56,7 +56,7 @@ static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms);
 static void Drv_RTCGetTime(Rtc_Ip_TimedateType *rtcTime);
 static int  mount_sdcard_fat32(void);
 static int judgeTimetoUpdate(struct tm *nowTime);
-static int should_store_frame(void);
+static int should_store_frame(uint32_t msg_id);
 static uint8_t CalculateDLC(uint8_t data_length);
 int  SD_Initialize(void);
 int  ensure_mount_point(const char *path);
@@ -64,4 +64,5 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel);
 void Drv_write_buffer_to_file(void);
 void checkSDCardCapacity(void);
 void sd_storeInit(void);
+static int find_id_index(uint32_t id);
 #endif
