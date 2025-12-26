@@ -109,7 +109,13 @@ int main(int argc, char **argv)
     
     while (1)
     {
-        sleep(5);
+
+        printf("data. get_usAirInletPressure( = %d\n",  get_usAirInletPressure());
+
+        printf("data.get_usAirOutWaterTemp = %ld\n", get_usAirOutWaterTemp());
+
+        printf("data.get_usAirReturnWaterTemp = %ld\n", get_usAirReturnWaterTemp());
+        sleep(1);
         // update_bat_data();
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");

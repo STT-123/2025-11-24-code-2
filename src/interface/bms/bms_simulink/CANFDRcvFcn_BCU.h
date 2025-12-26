@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANFDRcvFcn_BCU'.
  *
- * Model version                  : 5.243
+ * Model version                  : 5.245
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Fri Dec 26 13:31:41 2025
+ * C/C++ source code generated on : Fri Dec 26 16:42:38 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4
@@ -117,11 +117,11 @@ typedef struct {
   uint16_T CANFDUnpack5_o28;           /* '<S1>/CAN FD Unpack5' */
   uint16_T CANFDUnpack5_o29;           /* '<S1>/CAN FD Unpack5' */
   uint16_T CANFDUnpack5_o30;           /* '<S1>/CAN FD Unpack5' */
+  uint16_T CFunction11;                /* '<S5>/C Function11' */
   uint16_T BCU_RealtimePower_H;        /* '<S1>/U32_to_F32_Power' */
   uint16_T BCU_RealtimePower_L;        /* '<S1>/U32_to_F32_Power' */
   uint16_T BCU_V4_L;                   /* '<S1>/U32_to_F32_V3' */
   uint16_T BCU_V4_H;                   /* '<S1>/U32_to_F32_V3' */
-  uint16_T DTC_Code;                   /* '<S1>/CAN FD Unpack3' */
   uint16_T Sclience_Mode;              /* '<S1>/CAN FD Unpack3' */
   uint16_T FanPWM_Rx;                  /* '<S1>/CAN FD Unpack6' */
   uint16_T HighPress;                  /* '<S1>/CAN FD Unpack6' */
@@ -377,13 +377,13 @@ extern uint16_T BCU_VoltMaxIdx;        /* '<S11>/Data Type Conversion41' */
 extern uint16_T BCU_VoltMinCellValue;  /* '<S1>/CAN FD Unpack2' */
 extern uint16_T BCU_VoltMinIdx;        /* '<S12>/Data Type Conversion42' */
 extern uint16_T Chiller_CompressorStatus;/* '<S1>/Data Type Conversion42' */
+extern uint16_T Chiller_Fault;         /* '<S1>/CAN FD Unpack3' */
 extern uint16_T Chiller_InletPressure; /* '<S1>/Data Type Conversion34' */
 extern uint16_T Chiller_ModeFb;        /* '<S1>/CAN FD Unpack3' */
 extern uint16_T Chiller_PumpStatus;    /* '<S1>/CAN FD Unpack7' */
 extern uint16_T Chiller_TempInlet;     /* '<S1>/Data Type Conversion45' */
 extern uint16_T Chiller_TempOutlet;    /* '<S1>/Data Type Conversion60' */
 extern uint16_T ThermCtrl_ACWarmGoal;  /* '<S1>/Data Type Conversion11' */
-extern uint16_T ThermCtrl_Fault;       /* '<S5>/C Function11' */
 extern uint16_T usSingleBatTemp[120];  /* '<S3>/MATLAB Function' */
 extern uint16_T usSingleBatVal[240];   /* '<S4>/MATLAB Function2' */
 

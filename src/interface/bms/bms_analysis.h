@@ -113,37 +113,37 @@ void Convert_CAN_MESSAGE_to_can_frame(const CAN_MESSAGE *msg, struct can_frame *
 void Convert_canfd_frame_to_CAN_MESSAGE(const struct canfd_frame *frame, CAN_MESSAGE *msg);
 void Convert_can_frame_to_CAN_MESSAGE(const struct can_frame *frame, CAN_MESSAGE *msg);
 
-real32_T get_BCU_iDcPower(void);
-real32_T get_BCU_ullPosEleQuantity(void);
 void Convert_canfd_frame_to_can_fram(const struct canfd_frame *frame, struct can_frame *msg);
 
 uint16_T *get_BCU_usSingleBatVal(void) ;
 uint16_T *get_BCU_usSingleBatTemp(void) ;
-
 uint16_T *get_BMU_DAq_version(void);
 uint32_T get_BMU_DAqX_FaultCode1_at(int idx);
 uint32_T get_BMU_DAqX_FaultCode2_at(int idx);
-real32_T get_BCU_ullNegEleQuantity(void);
+int32_T get_BCU_iDcPower(void);
+unsigned long long get_BCU_ullPosEleQuantity(void) ;
+unsigned long long get_BCU_ullNegEleQuantity(void) ;
+
 uint16_T get_BCU_usAirState(void);
 uint16_T get_BCU_usAirPumpState(void);
 uint16_T get_BCU_usAirCompressorSt(void);
-real32_T get_BCU_uiAirErrorfaultCode();
-uint16_T get_usTempInside();
-uint16_T get_usTempOutside();
-uint16_T get_usBmuH2MaxConcentration();
-uint16_T get_usBmuCOMaxConcentration();
-uint16_T get_usBmuPressureMax();
-uint16_T get_usBmuLightMax();
-uint16_T get_usBmuH2MaxIndex();
-uint16_T get_usBmuCOMaxIndex();
-uint16_T get_usBmuPressureMaxIndex();
-uint16_T get_usBmuLightMaxIndex();
-uint8_T get_usAirEnergyMode();
-uint8_T get_usAirInletPressure();
-int32_T get_usAirCoolSetTemp();
-uint16_T get_usAirHeatSetTemp();
+uint16_T get_BCU_uiAirErrorfaultCode(void);
+
+uint16_T get_usBmuH2MaxConcentration(void);
+uint16_T get_usBmuCOMaxConcentration(void);
+uint16_T get_usBmuPressureMax(void);
+uint16_T get_usBmuLightMax(void);
+uint16_T get_usBmuH2MaxIndex(void);
+uint16_T get_usBmuCOMaxIndex(void);
+uint16_T get_usBmuPressureMaxIndex(void);
+uint16_T get_usBmuLightMaxIndex(void);
+uint16_T get_usAirEnergyMode(void);
+
+uint16_T get_usAirInletPressure();
+uint16_T get_usAirCoolSetTemp();
 uint16_T get_usAirOutWaterTemp();
 uint16_T get_usAirReturnWaterTemp();
+
 uint16_T get_usBatMaxVoltCellIndex();
 uint16_T get_usBatMinVoltCellIndex();
 uint8_T get_usBatMaxTempCellIndex();

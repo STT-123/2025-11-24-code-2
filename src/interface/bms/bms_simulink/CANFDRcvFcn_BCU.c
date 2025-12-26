@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'CANFDRcvFcn_BCU'.
  *
- * Model version                  : 5.243
+ * Model version                  : 5.245
  * Simulink Coder version         : 25.2 (R2025b) 28-Jul-2025
- * C/C++ source code generated on : Fri Dec 26 13:31:41 2025
+ * C/C++ source code generated on : Fri Dec 26 16:42:38 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: NXP->Cortex-M4
@@ -70,13 +70,13 @@ uint16_T BCU_VoltMaxIdx;               /* '<S11>/Data Type Conversion41' */
 uint16_T BCU_VoltMinCellValue;         /* '<S1>/CAN FD Unpack2' */
 uint16_T BCU_VoltMinIdx;               /* '<S12>/Data Type Conversion42' */
 uint16_T Chiller_CompressorStatus;     /* '<S1>/Data Type Conversion42' */
+uint16_T Chiller_Fault;                /* '<S1>/CAN FD Unpack3' */
 uint16_T Chiller_InletPressure;        /* '<S1>/Data Type Conversion34' */
 uint16_T Chiller_ModeFb;               /* '<S1>/CAN FD Unpack3' */
 uint16_T Chiller_PumpStatus;           /* '<S1>/CAN FD Unpack7' */
 uint16_T Chiller_TempInlet;            /* '<S1>/Data Type Conversion45' */
 uint16_T Chiller_TempOutlet;           /* '<S1>/Data Type Conversion60' */
 uint16_T ThermCtrl_ACWarmGoal;         /* '<S1>/Data Type Conversion11' */
-uint16_T ThermCtrl_Fault;              /* '<S5>/C Function11' */
 uint16_T usSingleBatTemp[120];         /* '<S3>/MATLAB Function' */
 uint16_T usSingleBatVal[240];          /* '<S4>/MATLAB Function2' */
 
@@ -1150,30 +1150,30 @@ void CANFDRcvFcn_BCU_step(void)
   BCU_Curr = (uint16_T)(u < 0.0F ? (int32_T)(uint16_T)-(int16_T)(uint16_T)-u :
                         (int32_T)(uint16_T)u);
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value =
-    CANFDRcvFcn_BCU_B.CANFDUnpack1_o3; // ����ת����
+    CANFDRcvFcn_BCU_B.CANFDUnpack1_o3; // 锟斤拷锟斤拷转锟斤拷锟斤拷
 
-  // ����1��ʹ�� memcpy������ָ��������⣬�Ƽ���
+  // 锟斤拷锟斤拷1锟斤拷使锟斤拷 memcpy锟斤拷锟斤拷锟斤拷指锟斤拷锟斤拷锟斤拷锟斤拷猓拷萍锟斤拷锟�
   memcpy(&CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits,
          &CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_value, sizeof(float));
 
-  // ����2��ֱ��ָ��ת�����������ϸ�������⣬���Ƽ���
+  // 锟斤拷锟斤拷2锟斤拷直锟斤拷指锟斤拷转锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟较革拷锟斤拷锟斤拷锟斤拷猓拷锟斤拷萍锟斤拷锟�
   // float_bits = *(uint32_t *)&float_value;
 
-  // ��ȡ�ֽڣ������ DCBA��
+  // 锟斤拷取锟街节ｏ拷锟斤拷锟斤拷锟� DCBA锟斤拷
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 24) & 0xFF;// �����Ч�ֽ�
+    (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 24) & 0xFF;// 锟斤拷锟斤拷锟叫э拷纸锟�
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC =
     (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 16) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB =
     (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits >> 8) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA =
-    CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits & 0xFF;// �����Ч�ֽ�
+    CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_float_bits & 0xFF;// 锟斤拷锟斤拷锟叫э拷纸锟�
 
-  // ��ϳ����� 16 λ�Ĵ���
+  // 锟斤拷铣锟斤拷锟斤拷锟� 16 位锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_B.BCU_Curr2_H = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteD <<
-    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC;// DC �Ĵ���
+    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteC;// DC 锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_B.BCU_Curr2_L = (CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteB <<
-    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA;// BA �Ĵ���
+    8) | CANFDRcvFcn_BCU_DW.U32_to_Folat_Curr_byteA;// BA 锟侥达拷锟斤拷
 
   {
     /* S-Function (scanfdunpack): '<S1>/CAN FD Unpack2' */
@@ -7139,70 +7139,70 @@ void CANFDRcvFcn_BCU_step(void)
     (CANFDRcvFcn_BCU_B.CANFDUnpack2_o39 - 1) << 7) + ((uint32_T)
     CANFDRcvFcn_BCU_B.CANFDUnpack2_o40 << 3)) >> 3);
   ThermCtrl_ACWarmGoal = (uint16_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o29;
-  ThermCtrl_Fault = (uint16_T)((ThermCtrl_Fault & 4294967294U) |
-    CANFDRcvFcn_BCU_ConstB.DataTypeConversion27);
-  ThermCtrl_Fault = (uint16_T)((ThermCtrl_Fault & 4294967293U) | (uint32_T)
-    (CANFDRcvFcn_BCU_ConstB.DataTypeConversion28 << 1));
-  ThermCtrl_Fault = (uint16_T)((ThermCtrl_Fault & 4294967291U) | (uint32_T)
-    (CANFDRcvFcn_BCU_ConstB.DataTypeConversion29 << 2));
-  ThermCtrl_Fault = (uint16_T)((ThermCtrl_Fault & 4294967287U) | (uint32_T)
-    (CANFDRcvFcn_BCU_ConstB.DataTypeConversion30 << 3));
-  ThermCtrl_Fault = (uint16_T)((ThermCtrl_Fault & 4294967279U) | (uint32_T)
-    ((CANFDRcvFcn_BCU_B.CANFDUnpack1_o28 != 0) << 4));
-  ThermCtrl_Fault = (uint16_T)((ThermCtrl_Fault & 4294967263U) | (uint32_T)
-    (CANFDRcvFcn_BCU_ConstB.DataTypeConversion38 << 5));
+  CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
+    4294967294U) | CANFDRcvFcn_BCU_ConstB.DataTypeConversion27);
+  CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
+    4294967293U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion28 << 1));
+  CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
+    4294967291U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion29 << 2));
+  CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
+    4294967287U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion30 << 3));
+  CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
+    4294967279U) | (uint32_T)((CANFDRcvFcn_BCU_B.CANFDUnpack1_o28 != 0) << 4));
+  CANFDRcvFcn_BCU_B.CFunction11 = (uint16_T)((CANFDRcvFcn_BCU_B.CFunction11 &
+    4294967263U) | (uint32_T)(CANFDRcvFcn_BCU_ConstB.DataTypeConversion38 << 5));
   CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_value =
-    CANFDRcvFcn_BCU_B.CANFDUnpack1_o16;// ����ת����
+    CANFDRcvFcn_BCU_B.CANFDUnpack1_o16;// 锟斤拷锟斤拷转锟斤拷锟斤拷
 
-  // ����1��ʹ�� memcpy������ָ��������⣬�Ƽ���
+  // 锟斤拷锟斤拷1锟斤拷使锟斤拷 memcpy锟斤拷锟斤拷锟斤拷指锟斤拷锟斤拷锟斤拷锟斤拷猓拷萍锟斤拷锟�
   memcpy(&CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits,
          &CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_value, sizeof(float));
 
-  // ����2��ֱ��ָ��ת�����������ϸ�������⣬���Ƽ���
+  // 锟斤拷锟斤拷2锟斤拷直锟斤拷指锟斤拷转锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟较革拷锟斤拷锟斤拷锟斤拷猓拷锟斤拷萍锟斤拷锟�
   // float_bits = *(uint32_t *)&float_value;
 
-  // ��ȡ�ֽڣ������ DCBA��
+  // 锟斤拷取锟街节ｏ拷锟斤拷锟斤拷锟� DCBA锟斤拷
   CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 24) & 0xFF;// �����Ч�ֽ�
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 24) & 0xFF;// 锟斤拷锟斤拷锟叫э拷纸锟�
   CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteC =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 16) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteB =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits >> 8) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteA =
-    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits & 0xFF;// �����Ч�ֽ�
+    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_float_bits & 0xFF;// 锟斤拷锟斤拷锟叫э拷纸锟�
 
-  // ��ϳ����� 16 λ�Ĵ���
+  // 锟斤拷铣锟斤拷锟斤拷锟� 16 位锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_B.BCU_RealtimePower_H =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteD << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteC;// DC �Ĵ���
+    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteC;// DC 锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_B.BCU_RealtimePower_L =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteB << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteA;// BA �Ĵ���
+    CANFDRcvFcn_BCU_DW.U32_to_F32_Power_byteA;// BA 锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_value = (uint32_T)
-    rtb_DataTypeConversion29 /10.0f;   // ����ת����
+    rtb_DataTypeConversion29 /10.0f;   // 锟斤拷锟斤拷转锟斤拷锟斤拷
 
-  // ����1��ʹ�� memcpy������ָ��������⣬�Ƽ���
+  // 锟斤拷锟斤拷1锟斤拷使锟斤拷 memcpy锟斤拷锟斤拷锟斤拷指锟斤拷锟斤拷锟斤拷锟斤拷猓拷萍锟斤拷锟�
   memcpy(&CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits,
          &CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_value, sizeof(float));
 
-  // ����2��ֱ��ָ��ת�����������ϸ�������⣬���Ƽ���
+  // 锟斤拷锟斤拷2锟斤拷直锟斤拷指锟斤拷转锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟较革拷锟斤拷锟斤拷锟斤拷猓拷锟斤拷萍锟斤拷锟�
   // float_bits = *(uint32_t *)&float_value;
 
-  // ��ȡ�ֽڣ������ DCBA��
+  // 锟斤拷取锟街节ｏ拷锟斤拷锟斤拷锟� DCBA锟斤拷
   CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteD =
-    (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 24) & 0xFF;// �����Ч�ֽ�
+    (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 24) & 0xFF;// 锟斤拷锟斤拷锟叫э拷纸锟�
   CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteC =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 16) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteB =
     (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits >> 8) & 0xFF;
   CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteA =
-    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits & 0xFF;// �����Ч�ֽ�
+    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_float_bits & 0xFF;// 锟斤拷锟斤拷锟叫э拷纸锟�
 
-  // ��ϳ����� 16 λ�Ĵ���
+  // 锟斤拷铣锟斤拷锟斤拷锟� 16 位锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_B.BCU_V4_L = (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteD << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteC;// DC �Ĵ���
+    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteC;// DC 锟侥达拷锟斤拷
   CANFDRcvFcn_BCU_B.BCU_V4_H = (CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteB << 8) |
-    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteA;// BA �Ĵ���
+    CANFDRcvFcn_BCU_DW.U32_to_F32_V3_byteA;// BA 锟侥达拷锟斤拷
   u = fmodf(floorf(CANFDRcvFcn_BCU_B.CANFDUnpack1_o21), 65536.0F);
   v = fmodf(floorf(CANFDRcvFcn_BCU_B.CANFDUnpack1_o22), 65536.0F);
 
@@ -7324,7 +7324,7 @@ void CANFDRcvFcn_BCU_step(void)
 
             {
               uint16_T result = (uint16_T) outValue;
-              CANFDRcvFcn_BCU_B.DTC_Code = result;
+              Chiller_Fault = result;
             }
           }
 
@@ -7677,6 +7677,7 @@ void CANFDRcvFcn_BCU_step(void)
     (uint16_T)-u : (int32_T)(uint16_T)u);
   Chiller_TempInlet = (uint16_T)(10 * CANFDRcvFcn_BCU_B.InWaterTemp);
   Chiller_TempOutlet = (uint16_T)(10 * CANFDRcvFcn_BCU_B.OutWaterTemp);
+
   {
     /* S-Function (scanfdunpack): '<S1>/CAN FD Unpack6' */
     if ((8 == CANFDRcvMsg.Length) && (CANFDRcvMsg.ID != INVALID_CAN_ID) ) {
@@ -8193,7 +8194,7 @@ void CANFDRcvFcn_BCU_step(void)
   rtb_TmpSignalConversionAtSFunct[424] = ThermCtrl_ACWarmGoal;
   rtb_TmpSignalConversionAtSFunct[425] = (uint16_T)
     CANFDRcvFcn_BCU_B.CANFDUnpack1_o27;
-  rtb_TmpSignalConversionAtSFunct[426] = ThermCtrl_Fault;
+  rtb_TmpSignalConversionAtSFunct[426] = CANFDRcvFcn_BCU_B.CFunction11;
   u = 0.00999999F * (real32_T)CANFDRcvFcn_BCU_B.CANFDUnpack1_o17;
   if (u >= 0.5F) {
     i_1 = (int32_T)floorf(u + 0.5F);
@@ -8253,7 +8254,7 @@ void CANFDRcvFcn_BCU_step(void)
   rtb_TmpSignalConversionAtSFunct[456] = CANFDRcvFcn_BCU_B.CANFDUnpack2_o5;
   rtb_TmpSignalConversionAtSFunct[457] = CANFDRcvFcn_BCU_B.CANFDUnpack2_o8;
   rtb_TmpSignalConversionAtSFunct[458] = (uint16_T)CANFDRcvFcn_BCU_B.AmbientTemp;
-  rtb_TmpSignalConversionAtSFunct[459] = CANFDRcvFcn_BCU_B.DTC_Code;
+  rtb_TmpSignalConversionAtSFunct[459] = Chiller_Fault;
   rtb_TmpSignalConversionAtSFunct[460] = Chiller_InletPressure;
   rtb_TmpSignalConversionAtSFunct[461] = Chiller_TempInlet;
   u = fmodf(floorf(10.0F * CANFDRcvFcn_BCU_B.OutWaterPressure), 65536.0F);
@@ -8287,9 +8288,14 @@ void CANFDRcvFcn_BCU_step(void)
   }
 
   while (port_index < port_len) {
-    if (CANFDRcvFcn_BCU_ConstP.portDimensions_Value[port_index] == 1U) {
-      modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] =
-        rtb_TmpSignalConversionAtSFunct[rtb_DataTypeConversion40];
+    if (CANFDRcvFcn_BCU_ConstP.portDimensions_Value[port_index] == 1U) 
+    {
+      modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] = rtb_TmpSignalConversionAtSFunct[rtb_DataTypeConversion40];
+      // if(459 == rtb_DataTypeConversion40){
+      //   printf("Chiller_Fault = %d\n", rtb_TmpSignalConversionAtSFunct[rtb_DataTypeConversion40]);
+      //   printf("CANFDRcvFcn_BCU_ConstP.index_Value[port_index] = %x\n", CANFDRcvFcn_BCU_ConstP.index_Value[port_index]);
+      //   printf("modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]] = %x\n", modbusBuff[CANFDRcvFcn_BCU_ConstP.index_Value[port_index]]);
+      // }
       qY = rtb_DataTypeConversion40 + 1U;
       if (rtb_DataTypeConversion40 + 1U < rtb_DataTypeConversion40) {
         qY = MAX_uint32_T;

@@ -38,10 +38,11 @@ void update_bat_data(sqlite3 *db)
             data.uiBmuExErrorNum[i] = 65535;
         }
     }
-#if 0
+
     data.iDcPower = get_BCU_iDcPower();
     data.ullPosEleQuantity = get_BCU_ullPosEleQuantity();
     data.ullNegEleQuantity = get_BCU_ullNegEleQuantity();
+
     data.usAirState = get_BCU_usAirState();
     data.usAirPumpState = get_BCU_usAirPumpState();
     data.usAirCompressorSta = get_BCU_usAirCompressorSta();
@@ -83,40 +84,25 @@ void update_bat_data(sqlite3 *db)
         data.uiAirErrorLv3 |= (1U << faultCode);
     }
 
-    data.usTempInside = get_usTempInside();
-    data.usTempOutside = get_usTempOutside();
-    data.usHumidityInside = 0;
+
 
     data.usBmuH2MaxConcentration = get_usBmuH2MaxConcentration();
-  
-    data.usBmuH2MinConcentration = 0;
     data.usBmuCOMaxConcentration = get_usBmuCOMaxConcentration();
-
-    data.usBmuCOMinConcentration = 0;
     data.usBmuPressureMax = get_usBmuPressureMax();
-
-    data.usBmuPressureMin = 0;
     data.usBmuLightMax = get_usBmuLightMax();
-    data.usBmuLightMin = 0;
+
     data.usBmuH2MaxIndex = get_usBmuH2MaxIndex();
     data.usBmuCOMaxIndex = get_usBmuCOMaxIndex();
-    data.usBmuCOMinIndex = 0;
     data.usBmuPressureMaxIndex = get_usBmuPressureMaxIndex();
-    data.usBmuPressureMinIndex = 0;
     data.usBmuLightMaxIndex = get_usBmuLightMaxIndex();
-    data.usBmuLightMinIndex = 0;
 
     data.usAirEnergyMode = get_usAirEnergyMode();
-
-    data.usAirInletPressure = get_usAirInletPressure();
-
-    data.usAirCoolSetTemp = get_usAirCoolSetTemp() * 10;
-    data.usAirHeatSetTemp = get_usAirHeatSetTemp() * 10;
+    
+    data.usAirCoolSetTemp = get_usAirCoolSetTemp();
+    data.usAirInletPressure = get_usAirInletPressure()*10;
     data.usAirOutWaterTemp = get_usAirOutWaterTemp() * 10;
-
-    data.usAirReturnWaterTemp = get_usAirReturnWaterTemp() * 10;
-
-
+    data.usAirReturnWaterTemp =  get_usAirReturnWaterTemp() * 10;
+#if 0
     data.usBatMaxVoltCellIndex = get_usBatMaxVoltCellIndex();
     data.usBatMinVoltCellIndex = get_usBatMinVoltCellIndex();
     data.usBatMaxTempCellIndex = get_usBatMaxTempCellIndex();

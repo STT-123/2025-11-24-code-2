@@ -363,83 +363,79 @@ uint32_T get_BMU_DAqX_FaultCode2_at(int idx) {
     return DAqX_FaultCode2[idx];
 }
 
+int32_T get_BCU_iDcPower(void) {
 
-
-
-real32_T get_BCU_ullPosEleQuantity(void) {
-
-    return 1;  /* 返回 */
+    return (int)BCU_RealtimePower;  /* 返回 */
 }
-real32_T get_BCU_ullNegEleQuantity(void) {
-    return 1;  /* 返回 */
+unsigned long long get_BCU_ullPosEleQuantity(void) {
+
+    return (unsigned long long)BCU_EngryAccumulateDisChrg;  /* 返回 */
+}
+unsigned long long get_BCU_ullNegEleQuantity(void) {
+    return (unsigned long long)BCU_EngryAccumulateChrg;  /* 返回 */
 }
 uint16_T get_BCU_usAirState(void) {
-    return 1;  /* 返回 */
+    return Chiller_ModeFb;  /* 返回 */
 }
 uint16_T get_BCU_usAirPumpState(void) {
-    return 1;  /* 返回 */
+    return Chiller_PumpStatus;  /* 返回 */
 }
 uint16_T get_BCU_usAirCompressorSta(void) {
-    return 1;  /* 返回 */
+    return Chiller_CompressorStatus;  /* 返回 */
 }
-real32_T get_BCU_uiAirErrorfaultCode(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+uint16_T get_BCU_uiAirErrorfaultCode(void){
+    return Chiller_Fault;  /* xxxxxxxxxxx 待定*/
 }
-uint16_T get_usTempInside(){
-    return 1;  /* xxxxxxxxxxx 待定*/
-}
-uint16_T get_usTempOutside(){
-    return 1;  /* xxxxxxxxxxx 待定*/
-}
+
 uint16_T get_usBmuH2MaxConcentration(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasH2MaxValue;  /* xxxxxxxxxxx 待定*/
 }
 uint16_T get_usBmuCOMaxConcentration(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasCOMaxValue;  /* xxxxxxxxxxx 待定*/
 }
 uint16_T get_usBmuPressureMax(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasPressMaxValue;  /* xxxxxxxxxxx 待定*/
 }
 uint16_T get_usBmuLightMax(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasLightMaxValue;  /* xxxxxxxxxxx 待定*/
 }
 uint16_T get_usBmuH2MaxIndex(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasLightMaxValue;  /* xxxxxxxxxxx 待定*/
 }
 uint16_T get_usBmuCOMaxIndex(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasCOMaxIdx;  /* xxxxxxxxxxx 待定*/
 }
 uint16_T get_usBmuPressureMaxIndex(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasPressMaxIdx;  /* xxxxxxxxxxx 待定*/
 }
 
 uint16_T get_usBmuLightMaxIndex(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+    return BCU_FasLightMaxIdx;  /* xxxxxxxxxxx 待定*/
 }
 
-uint8_T get_usAirEnergyMode(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+uint16_T get_usAirEnergyMode(){
+    uint16_t value = 0;  // 分配实际内存
+    get_modbus_reg_val(0x3418, &value);
+    return value;  /* xxxxxxxxxxx 待定*/
 }
 
-uint8_T get_usAirInletPressure(){
-    return 1;  /* xxxxxxxxxxx 待定*/
+uint16_T get_usAirInletPressure(){
+    return Chiller_InletPressure;  /* xxxxxxxxxxx 待定*/
 }
 
-int32_T get_usAirCoolSetTemp(){
-    return 1;
+uint16_T get_usAirCoolSetTemp(){
+    return ThermCtrl_ACWarmGoal;
 }
 
-uint16_T get_usAirHeatSetTemp(){
-    return 1;
-}
 
 uint16_T get_usAirOutWaterTemp(){
-    return 1;
+    return Chiller_TempOutlet;
 }
 
-uint16_T get_usAirReturnWaterTemp(){
-    return 1;
+uint16_T  get_usAirReturnWaterTemp(){
+    return Chiller_TempInlet;
 }
+
 
 uint16_T get_usBatMaxVoltCellIndex(){
     return 1;
