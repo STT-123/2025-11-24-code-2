@@ -38,26 +38,26 @@ static int Drv_bcu_resetcan_device(const char *can_name)
 
 static void bcu_can_epoll_msg_transmit(void *arg)
 {
-    struct canfd_frame can_rev ;
-    struct can_frame can_send ;
+    struct canfd_frame canfd_rev ;
+    struct can_frame can_rev ;
 
-    memset(&can_rev, 0, sizeof(struct canfd_frame));
-    memset(&can_send, 0, sizeof(struct can_frame));
+    memset(&canfd_rev, 0, sizeof(struct canfd_frame));
+    memset(&can_rev, 0, sizeof(struct can_frame));
 
     if(BCU_CAN_FD <0){
         return;
     }
-    int frame_type = HAL_canfd_read(BCU_CAN_FD, &can_rev, 1);
+    int frame_type = HAL_canfd_read(BCU_CAN_FD, &canfd_rev, 1);
 
     time(&g_last_bcu_rx_time);
     
-    if (frame_type == 1)//1表示CAN 数据-8
+    if (frame_type == 1)//1 表示CAN 数据-8
     {
-        Convert_canfd_frame_to_can_fram(&can_rev, &can_send);
+        Convert_canfd_frame_to_can_fram(&canfd_rev, &can_rev);
         
-        if (((get_TCU_PowerUpCmd()) == BMS_POWER_UPDATING) && (can_send.can_id == 0x30C1600 || can_send.can_id == 0x61B || can_send.can_id == 0x1CB010E4))
+        if (((get_TCU_PowerUpCmd()) == BMS_POWER_UPDATING) && (can_rev.can_id == 0x30C1600 || can_rev.can_id == 0x61B || can_rev.can_id == 0x1CB010E4))
         {
-            if (queue_post(&Queue_BCURevData, &can_send, sizeof(CAN_MESSAGE)) != 0)
+            if (queue_post(&Queue_BCURevData, &can_rev, sizeof(CAN_MESSAGE)) != 0)
             {   
                 queue_destroy(&Queue_BCURevData);
                 queue_init(&Queue_BCURevData);
@@ -65,10 +65,9 @@ static void bcu_can_epoll_msg_transmit(void *arg)
             else{
             }
         }
-        //  else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING && can_send.ID == 0x18FFC13A && can_send.ID != 0x18FFC13B && can_send.ID != 0x18FFC13C && can_send.ID != 0x18FAE6E1 && can_send.ID != 0x18FD7BE1 && can_send.ID != 0X18FA78F1 && can_send.ID != 0x18FFC13D && can_send.ID != 0x18FA78F5 && can_send.ID != 0x18FAE6E2)
-        else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING)
+        else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING)//
         {
-            if (queue_post(&Queue_BCURevData, &can_send, sizeof(CAN_MESSAGE)) != 0)
+            if (queue_post(&Queue_BCURevData, &can_rev, sizeof(CAN_MESSAGE)) != 0)
             {             
                 queue_destroy(&Queue_BCURevData);
                 queue_init(&Queue_BCURevData);
@@ -78,10 +77,10 @@ static void bcu_can_epoll_msg_transmit(void *arg)
 
         }
     }
-    else if (frame_type == 2)//2表示CAN FD数据-64
+    else if (frame_type == 2)//2    表示CAN FD数据-64
     {
         //往can fd队列方数据，但是数据满了,在升级过程在，不再从canfd队列取数据了，此时fd满了
-        if (queue_post(&Queue_BCURevData_FD, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
+        if (queue_post(&Queue_BCURevData_FD, (unsigned char *)&canfd_rev, sizeof(canfd_rev)) != 0)
         {
             queue_destroy(&Queue_BCURevData_FD);
             queue_init(&Queue_BCURevData_FD);
@@ -104,8 +103,6 @@ static void bcu_can_epoll_msg_transmit(void *arg)
 /*======================================外部函数==================================================*/
 bool bcu_Init(void)
 {
-
-
     queue_init(&Queue_BCURevData);    // 用于接收消息后存入
     queue_init(&Queue_BCURevData_FD); // 用于接收消息后存入
 #if testcan

@@ -14,17 +14,16 @@ extern uint8_t modbusBuffInitFlag ;//保证modbusBuff空间分配好了,bcu才�
 extern struct timespec start_tick;
 void *bcu_DealTask(void *arg)
 {
-    struct canfd_frame canrev_frame = {0};
-    struct can_frame canrev_frame2 = {0};
-    CANFD_MESSAGE canfd_msg_buf ={0};
-    CANFD_MESSAGE   can_msg_buf ={0};
-    LOG("Func_thread_can0_dealwith is running\n");
+    struct canfd_frame canfd_revframe = {0};//linux标准can fd结构
+    struct can_frame can_revframe = {0};//linux标准can结构
     unsigned int call_count = 0;
     int len = 0;
     int bms_analysis_done = 0;
     clock_gettime(CLOCK_MONOTONIC, &start_tick); // 记录线程开始时间
+
     bcu_Init();// ecu 和 bcu通信can初始化（打开can口 绑定回调）
 
+    LOG("Func_thread_can0_dealwith is running\n");
     while (1)
     {
         // usleep(200*1000);
@@ -36,22 +35,22 @@ void *bcu_DealTask(void *arg)
             }
             call_count = (call_count + 1) % 25;
 
-            if (queue_pend(&Queue_BCURevData_FD, (unsigned char *)&canrev_frame, &len) == 0)
+            if (queue_pend(&Queue_BCURevData_FD, (unsigned char *)&canfd_revframe, &len) == 0)
             {
                 
-                if ((canrev_frame.len > 8))
+                if ((canfd_revframe.len > 8))
                 {
-                    canrev_frame.can_id &= CAN_EFF_MASK;
+                    canfd_revframe.can_id &= CAN_EFF_MASK;
+
                     if(1 == modbusBuffInitFlag){
-                        ConvertCANFDToBus(&canrev_frame, &CANFDRcvMsg);
+                        ConvertCANFDToBus(&canfd_revframe, &CANFDRcvMsg);
                         CANFDRcvFcn_BCU_step();           
-                        ConvertCANFDToBus(&canrev_frame, &canfd_msg_buf);
-                        Drv_write_to_active_buffer(&canfd_msg_buf, 1);
+                        Drv_write_to_active_buffer(&CANFDRcvMsg, 1);
                     }
                     
                 }
                 
-                memset(&canrev_frame, 0, sizeof(canrev_frame));
+                memset(&canfd_revframe, 0, sizeof(canfd_revframe));
             }
             else
             {
@@ -68,22 +67,21 @@ void *bcu_DealTask(void *arg)
                 }
             }
 
-            if (queue_pend(&Queue_BCURevData, (unsigned char *)&canrev_frame2, &len) == 0)
+            if (queue_pend(&Queue_BCURevData, (unsigned char *)&can_revframe, &len) == 0)
             {
-                if(canrev_frame2.can_dlc == 8 )
+                if(can_revframe.can_dlc <= 8 )
                 {
-                    canrev_frame2.can_id &= CAN_EFF_MASK;
-                    
-                    if(1 == modbusBuffInitFlag)
-                    {  
-                        ConvertCANToBus(&canrev_frame2, &CANFDRcvMsg);
+                    can_revframe.can_id &= CAN_EFF_MASK;
+                    // if((0x18FFC13A == can_revframe.can_id) || (0x18FFC13D == can_revframe.can_id) || (0x18FF0001 == can_revframe.can_id)|| (0x18FF45F0 == can_revframe.can_id)){
+                    //     LOG("can_id = 0x%x\r\n", can_revframe.can_id);
+                    // }
+                    if(1 == modbusBuffInitFlag){  
+                        ConvertCANToBus(&can_revframe, &CANFDRcvMsg);
                         CANFDRcvFcn_BCU_step();           
-                        ConvertCANToBus(&canrev_frame2, &can_msg_buf);
-                        // printf("can_msg_buf.can_id = %x\r\n",can_msg_buf.ID);
-                        Drv_write_to_active_buffer(&can_msg_buf, 1);
+                        Drv_write_to_active_buffer(&CANFDRcvMsg, 1);
                     }
                 }
-                memset(&canrev_frame2, 0, sizeof(canrev_frame2));
+                memset(&can_revframe, 0, sizeof(can_revframe));
             }
         }
 
