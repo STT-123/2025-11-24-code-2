@@ -24,11 +24,6 @@
 #define BMS_POWER_UPDATING 0x05
 #define BMS_POWER_DEFAULT 0x00
 
-extern float Electric_Meter_BCU_V3;
-extern float Electric_Meter_BCU_Curr2;
-extern int32_t Electric_Meter_BCU_RealtimePower;
-extern float Electric_Meter_BCU_EngryAccumulateChrg;
-extern float Electric_Meter_BCU_EngryAccumulateDisChrg;
 
 void Set_BCU_Voltage(float voltage);
 
@@ -146,12 +141,11 @@ uint16_T get_usAirReturnWaterTemp();
 
 uint16_T get_usBatMaxVoltCellIndex();
 uint16_T get_usBatMinVoltCellIndex();
-uint8_T get_usBatMaxTempCellIndex();
-uint8_T get_usBatMinTempCellIndex();
+uint16_T get_usBatMaxTempCellIndex();
+uint16_T get_usBatMinTempCellIndex();
 uint16_T get_usBatCellVoltMax();
 uint16_T get_usBatCellVoltMin();
-int16_T get_usBatCellTempMax();
-int16_T get_usBatCellTempMin();
-uint32_T get_usBatMaxVoltCellTempe();
-int16_T get_usBatMinVoltCellTemp();
+uint16_T get_usBatCellTempMax();
+uint16_T get_usBatCellTempMin();
+
 #endif

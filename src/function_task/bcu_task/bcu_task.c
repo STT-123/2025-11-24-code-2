@@ -41,7 +41,7 @@ void *bcu_DealTask(void *arg)
                 if ((canfd_revframe.len > 8))
                 {
                     canfd_revframe.can_id &= CAN_EFF_MASK;
-
+                    //printf("canfd_revframe = %x\r\n",canfd_revframe.can_id);
                     if(1 == modbusBuffInitFlag){
                         ConvertCANFDToBus(&canfd_revframe, &CANFDRcvMsg);
                         CANFDRcvFcn_BCU_step();           

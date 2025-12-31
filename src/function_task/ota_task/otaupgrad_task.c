@@ -35,13 +35,13 @@ void *ota_Upgrade_Task(void *arg)
     // set_ota_deviceID(0x1821FF10) ;
 
     //BCU
-    set_ota_OTAFilename("XC_BCU_V502.tar");
-    set_ota_deviceType(BCU);
-    set_ota_deviceID(BCUOTACANID) ;//BCU
+    // set_ota_OTAFilename("XC_BCU_V502.tar");
+    // set_ota_deviceType(BCU);
+    // set_ota_deviceID(BCUOTACANID) ;//BCU
     //ECU
-    // set_ota_OTAFilename("XC_ECU_V123.tar");
-    // set_ota_deviceType(ECU);
-    // set_ota_deviceID(0) ;//ECU
+    set_ota_OTAFilename("XC_ECU_V123.tar");
+    set_ota_deviceType(ECU);
+    set_ota_deviceID(0) ;//ECU
 
     set_ota_OTAStart(1) ;
     printf("get_ota_OTAFilename() : %s\r\n",get_ota_OTAFilename());
@@ -61,8 +61,9 @@ void *ota_Upgrade_Task(void *arg)
 
                 while(ECUOtaFlag <3)
                 {
+                     set_ota_OTAStart(1);
                      ECU_OTA();
-                     if(ecustatus.ErrorReg == 0 && get_ota_OTAStart() == 0)
+                     if(ecustatus.ErrorReg == 0)
                      {
                         LOG("[OTA] CAN ID 0x%x BCU OTA success!\r\n", get_ota_deviceID());
                         break;
@@ -191,8 +192,7 @@ void *ota_Upgrade_Task(void *arg)
 
                     // 主业务判断：检查CAN2是否就绪
                     if (!is_bcu_can_ready()) {
-                        LOG("[OTA] CAN2 not ready, waiting...\n");
-                        // 可以等待几秒或直接报错
+                        LOG("[OTA] CAN2 not ready, waiting...\n");// 可以等待几秒或直接报错
                         int wait_count = 0;
                         while (!is_bcu_can_ready() && wait_count < 10) {
                             usleep(500000); // 500ms
@@ -211,7 +211,7 @@ void *ota_Upgrade_Task(void *arg)
                             queue_init(&Queue_BCURevData);//情况缓存消息队列
 
                             XCP_OTA();
-                            if ((xcpstatus.ErrorReg == 0) && (get_ota_OTAStart() == 0))
+                            if (xcpstatus.ErrorReg == 0)
                             {
                                 LOG("[OTA] CAN ID 0x%x BCU OTA success!\r\n", get_ota_deviceID());
                                 break;
@@ -272,7 +272,7 @@ void *ota_Upgrade_Task(void *arg)
                                     LOG("[OTA] CAN ID 0x%x BMU OTA failed, retry count: %d\r\n", get_ota_deviceID(), ReOtaFlag);
                                 }
                             }
-                            if((xcpstatus.ErrorReg == 0) && (get_ota_OTAStart() == 0))
+                            if(xcpstatus.ErrorReg == 0)
                             {
                                 sleep(2);
                                 //这段代码是，一共15个BMU，每ota完一个增加7%的进度
@@ -291,7 +291,7 @@ void *ota_Upgrade_Task(void *arg)
                         LOG("[OTA] CAN3 is not ready\r\n");
                     }                    
                 }
-                FinshhBCUBMUOtaAndCleanup();         
+                FinshhBCUBMUOtaAndCleanup();    
             }
         }
         usleep(10 * 1000);

@@ -53,11 +53,11 @@ static void bcu_can_epoll_msg_transmit(void *arg)
     
     if (frame_type == 1)//1 表示CAN 数据-8
     {
-        Convert_canfd_frame_to_can_fram(&canfd_rev, &can_rev);
+        Convert_canfd_frame_to_can_fram(&canfd_rev, &can_rev);//把canfd转换成can
         
         if (((get_TCU_PowerUpCmd()) == BMS_POWER_UPDATING) && (can_rev.can_id == 0x30C1600 || can_rev.can_id == 0x61B || can_rev.can_id == 0x1CB010E4))
         {
-            if (queue_post(&Queue_BCURevData, &can_rev, sizeof(CAN_MESSAGE)) != 0)
+            if (queue_post(&Queue_BCURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
             {   
                 queue_destroy(&Queue_BCURevData);
                 queue_init(&Queue_BCURevData);
@@ -67,7 +67,7 @@ static void bcu_can_epoll_msg_transmit(void *arg)
         }
         else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING)//
         {
-            if (queue_post(&Queue_BCURevData, &can_rev, sizeof(CAN_MESSAGE)) != 0)
+            if (queue_post(&Queue_BCURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
             {             
                 queue_destroy(&Queue_BCURevData);
                 queue_init(&Queue_BCURevData);

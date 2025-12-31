@@ -31,25 +31,14 @@ static void *epoll_thread_func(void *arg)
         {
             //perror("epoll error");
         }
-        for (i = 0; i < num; i++)
-        {
-            if (events[i].events & EPOLLPRI)
-            {
-                event = *(my_event_data_ptr)events[i].data.ptr;
-                event.fun_handle(events[i].data.ptr);
-                lseek(event.fd, 0, SEEK_SET); // 清中断，epoll采用默认LT模式，如果不管会一直触发。
+        for (i = 0; i < num; i++) {
+            my_event_data_t *ev_data = events[i].data.ptr;
+            // 根据事件类型调用处理函数
+            if (events[i].events & (EPOLLPRI | EPOLLIN)) {
+                ev_data->fun_handle(ev_data);
             }
-            else if ((events[i].events & EPOLLIN))
-            {
-                event = *(my_event_data_ptr)events[i].data.ptr;
-                event.fun_handle(events[i].data.ptr);
-                lseek(event.fd, 0, SEEK_SET); // 清中断，epoll采用默认LT模式，如果不管会一直触发。
-            }
-            else
-            {
-                event = *(my_event_data_ptr)events[i].data.ptr;
-                lseek(event.fd, 0, SEEK_SET); // 清中断，epoll采用默认LT模式，如果不管会一直触发。
-            }
+            // 无论何种事件类型，都需要清中断
+            lseek(ev_data->fd, 0, SEEK_SET);
         }
     }
 

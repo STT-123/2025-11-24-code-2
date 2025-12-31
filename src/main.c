@@ -109,14 +109,16 @@ int main(int argc, char **argv)
     
     while (1)
     {
+        // printf("data.get_usBatMaxTempCellIndex = %ld\n", get_usBatMaxTempCellIndex());
+        // printf("data. get_usBatCellTempMax( = %d\n",  get_usBatCellTempMax());
+        // printf("data. get_usBatMinTempCellIndex( = %d\n",  get_usBatMinTempCellIndex());
+        // printf("data.get_usBatCellTempMin = %ld\n", get_usBatCellTempMin());
 
-        printf("data. get_usAirInletPressure( = %d\n",  get_usAirInletPressure());
-
-        printf("data.get_usAirOutWaterTemp = %ld\n", get_usAirOutWaterTemp());
-
-        printf("data.get_usAirReturnWaterTemp = %ld\n", get_usAirReturnWaterTemp());
+        // printf("data. get_usBatMaxVoltCellIndex( = %d\n",  get_usBatMaxVoltCellIndex());
+        // printf("data.get_usBatCellVoltMax = %ld\n", get_usBatCellVoltMax());
+        // printf("data.get_usBatMinVoltCellIndex = %ld\n", get_usBatMinVoltCellIndex());
+        // printf("data.get_usBatCellVoltMin = %ld\n", get_usBatCellVoltMin());
         sleep(1);
-        // update_bat_data();
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");
         // int index1 = 0x604E - 0x3000;

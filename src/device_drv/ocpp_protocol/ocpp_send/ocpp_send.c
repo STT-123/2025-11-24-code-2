@@ -27,10 +27,8 @@ void update_bat_data(sqlite3 *db)
     // }
 
 
-    for(int i = 0; i < 15; i++)
-    {
-        if(batDAq_version[i] != 0)
-        {
+    for(int i = 0; i < 15; i++){
+        if(batDAq_version[i] != 0){
             data.uiBmuErrorNum[i] = get_BMU_DAqX_FaultCode1_at(i);
             data.uiBmuExErrorNum[i] = get_BMU_DAqX_FaultCode2_at(i);
         }else{
@@ -53,38 +51,27 @@ void update_bat_data(sqlite3 *db)
     data.uiAirErrorLv3 = 0;
 
     // Lv1 错误判断
-    if (faultCode == 1)
-    {
+    if (faultCode == 1){
         data.uiAirErrorLv1 |= (1U << 1);   
     }
-    if (faultCode == 3)
-    {
+    if (faultCode == 3){
         data.uiAirErrorLv1 |= (1U << 3);    
     }
-    if (faultCode == 28)
-    {
+    if (faultCode == 28){
         data.uiAirErrorLv1 |= (1U << 28);
     }
 
     // Lv2 错误判断
-    if (faultCode == 4 || faultCode == 5 ||
-        (faultCode >= 8 && faultCode <= 17) ||
-        (faultCode >= 20 && faultCode <= 22) ||
-        faultCode == 25 || faultCode == 29 ||
-        faultCode == 30 || faultCode == 31)
-    {
+    if (faultCode == 4 || faultCode == 5 ||(faultCode >= 8 && faultCode <= 17) ||(faultCode >= 20 && faultCode <= 22) ||
+        faultCode == 25 || faultCode == 29 ||faultCode == 30 || faultCode == 31){
         data.uiAirErrorLv2 |= (1U << faultCode);      
     }
 
     // Lv3 错误判断
-    if (faultCode == 18 || faultCode == 19 ||
-        faultCode == 23 || faultCode == 24 ||
-        faultCode == 26 || faultCode == 27)
+    if (faultCode == 18 || faultCode == 19 ||faultCode == 23 || faultCode == 24 ||faultCode == 26 || faultCode == 27)
     {
         data.uiAirErrorLv3 |= (1U << faultCode);
     }
-
-
 
     data.usBmuH2MaxConcentration = get_usBmuH2MaxConcentration();
     data.usBmuCOMaxConcentration = get_usBmuCOMaxConcentration();
@@ -102,23 +89,16 @@ void update_bat_data(sqlite3 *db)
     data.usAirInletPressure = get_usAirInletPressure()*10;
     data.usAirOutWaterTemp = get_usAirOutWaterTemp() * 10;
     data.usAirReturnWaterTemp =  get_usAirReturnWaterTemp() * 10;
-#if 0
+
     data.usBatMaxVoltCellIndex = get_usBatMaxVoltCellIndex();
     data.usBatMinVoltCellIndex = get_usBatMinVoltCellIndex();
     data.usBatMaxTempCellIndex = get_usBatMaxTempCellIndex();
     data.usBatMinTempCellIndex = get_usBatMinTempCellIndex();
+
     data.usBatCellVoltMax = get_usBatCellVoltMax();
     data.usBatCellVoltMin = get_usBatCellVoltMin();
-
-    data.usBatMaxTempCellVolt = 0;
-    data.usBatMinTempCellVolt = 0;
     data.usBatCellTempMax = get_usBatCellTempMax();
     data.usBatCellTempMin =get_usBatCellTempMin();
-    data.usBatMaxVoltCellTemp = get_usBatMaxVoltCellTempe();
-    data.usBatMinVoltCellTemp = get_usBatMinVoltCellTemp();
-
-
-#endif
 
     struct tm utc_timeinfo;
     utc_timeinfo.tm_year = get_BCU_TimeYearValue() + 100; // BCU年是如24，tm_year从1900起

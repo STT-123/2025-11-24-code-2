@@ -5,12 +5,6 @@
 #include "interface/bms/bms_simulink/CANSendFcn.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
-float Electric_Meter_BCU_V3 = 102.3;
-float Electric_Meter_BCU_Curr2 = 0;
-int32_t Electric_Meter_BCU_RealtimePower = 0;
-float Electric_Meter_BCU_EngryAccumulateChrg = 0;
-float Electric_Meter_BCU_EngryAccumulateDisChrg =  0;
-
 
 
 void my_modbus_set_float_badc(float f, uint16_t *dest)
@@ -172,17 +166,6 @@ void Convert_canfd_frame_to_CAN_MESSAGE(const struct canfd_frame *frame, CAN_MES
 
 void Convert_canfd_frame_to_can_fram(const struct canfd_frame *frame, struct can_frame *msg)
 {
-
-    struct can_frame {
-	canid_t can_id;  /* 32 bit CAN_ID + EFF/RTR/ERR flags */
-	__u8    can_dlc; /* frame payload length in byte (0 .. CAN_MAX_DLEN) */
-	__u8    __pad;   /* padding */
-	__u8    __res0;  /* reserved / padding */
-	__u8    __res1;  /* reserved / padding */
-	__u8    data[CAN_MAX_DLEN] __attribute__((aligned(8)));
-};
-
-
     memset(msg, 0, sizeof(struct can_frame));
     msg->can_id = frame->can_id & CAN_EFF_MASK;// 提取 CAN ID
 
@@ -438,36 +421,28 @@ uint16_T  get_usAirReturnWaterTemp(){
 
 
 uint16_T get_usBatMaxVoltCellIndex(){
-    return 1;
+    return BCU_VoltMaxIdx;
 }
 uint16_T get_usBatMinVoltCellIndex(){
-    return 1;
+    return BCU_VoltMinIdx;
 }
-uint8_T get_usBatMaxTempCellIndex(){
-    return 1;
+uint16_T  get_usBatMaxTempCellIndex(){
+    return BCU_TempMaxIdx;
 }
-uint8_T get_usBatMinTempCellIndex(){
-    return 1;
+uint16_T  get_usBatMinTempCellIndex(){
+    return BCU_TempMinIdx;
 }
 
 uint16_T get_usBatCellVoltMax(){
-    return 1;
+    return BCU_VoltMaxCellValue;
 }
 uint16_T get_usBatCellVoltMin(){
-    return 1;
+    return BCU_VoltMinCellValue;
 }
 
-int16_T get_usBatCellTempMax(){
-    return 1;
+uint16_T get_usBatCellTempMax(){
+    return BCU_TempMaxValue;
 }
-int16_T get_usBatCellTempMin(){
-    return 1;
-}
-
-uint32_T get_usBatMaxVoltCellTempe(){
-    return 1;
-}
-
-int16_T get_usBatMinVoltCellTemp(){
-    return 1;
+uint16_T get_usBatCellTempMin(){
+    return BCU_VoltMinCellValue;
 }

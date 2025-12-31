@@ -372,7 +372,7 @@ void check_bcu_rx_timeout(void)
  * 检测CAN 是否异常函数
 */
 int can_monitor_fun(void) {
-	int bcu_can_state = check_can_state(BCU_CAN_DEVICE_NAME);
+	int bcu_can_state = check_can_state(BCU_CAN_DEVICE_NAME);//检测到LOWER_UP，则g_bcu_can_ready为1。
 	if (bcu_can_state == 0 && g_bcu_can_ready == 1) {
 		LOG("[Check] can2 abnormal, restarting...\n");
 		restart_can_interface(BCU_CAN_DEVICE_NAME);

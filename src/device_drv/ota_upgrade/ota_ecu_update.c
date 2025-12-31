@@ -24,7 +24,7 @@ void ECU_OTA(void)
     LOG("[OTA] get_ota_deviceType() : %d \r\n", get_ota_deviceType());
     LOG("[OTA] can id 0x%x device ota start!\r\n", get_ota_deviceID());
     set_modbus_reg_val(OTASTATUSREGADDR, OTASTARTRUNNING);
-    
+
     if( (get_ota_deviceID() == 0) && (get_ota_deviceType() == ECU))
     {
         set_modbus_reg_val(OTAPPROGRESSREGADDR, 10); // 进度10%
