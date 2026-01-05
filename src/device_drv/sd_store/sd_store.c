@@ -343,6 +343,10 @@ static int Drv_check_and_update_message(const CANFD_MESSAGE *msg)
         {
             if(msg->ID == 0x180110E4)
             {
+                /*
+                    这段代码的意义：正常存储规则，3S 每个ID的数据存储最多2帧，当检测到get_BCU_SystemWorkModeValue变化时
+                    重新开始算3S 计时间器，并触发存储
+                */
                 if ( get_BCU_SystemWorkModeValue() != old_BMSWorkMode_value)
                 {
                     LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n", old_BMSWorkMode_value, msg->Data[6]);                 

@@ -51,6 +51,6 @@ typedef struct
 } XCPStatus;
 
 extern XCPStatus xcpstatus;
-void XCP_OTA(void);
+void XCP_OTA(int bmucount);
 void FinshhBCUBMUOtaAndCleanup(void );
 #endif

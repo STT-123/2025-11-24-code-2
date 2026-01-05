@@ -29,15 +29,12 @@ extern unsigned short g_ota_flag;
         if ((address >= REGISTERS_START_ADDRESS) && (address < (REGISTERS_START_ADDRESS + REGISTERS_NB)))
         {
             // 开关机操作
-            if ((address == 0x6700) && (g_otactrl.UpDating == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
+            if ((address == 0x6700) && (get_ota_OTAStart() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
             {
                 if (data == 0)
                 {
-                    if(g_ota_flag != OTASTARTRUNNING)
-                    {
-                        set_TCU_PowerUpCmd(BMS_POWER_ON);
-                        // printf("1get_TCU_PowerUpCmd(BMS_POWER_ON) = %d\r\n",(int)get_TCU_PowerUpCmd());
-                    }
+					set_TCU_PowerUpCmd(BMS_POWER_ON);
+					// printf("1get_TCU_PowerUpCmd(BMS_POWER_ON) = %d\r\n",(int)get_TCU_PowerUpCmd());
                 }
                 else if (data == 1)
                 {

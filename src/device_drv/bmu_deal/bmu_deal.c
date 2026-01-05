@@ -3,7 +3,6 @@
 #include "device_drv/bcu_deal/bcu_deal.h"
 static int BMU_CAN_FD = -1;
 queue_t Queue_BMURevData; // 分机消息队列，用于epoll接收数据存入，防止处理不过来所以用队列，内部使用
-
 my_event_data_t bmuCanEventData = {
     .fd = -1,  // 无效的文件描述符
     .pin = -1, // 无效的引脚
@@ -15,20 +14,16 @@ my_event_data_t bmuCanEventData = {
 static void bmu_can_epoll_msg_transmit(void *arg)
 {
     struct can_frame can_rev;
-    CAN_MESSAGE bmu_message;
-
     memset(&can_rev, 0, sizeof(struct can_frame));
-    memset(&bmu_message, 0, sizeof(CAN_MESSAGE));
 
     if(BMU_CAN_FD < 0){
         return;
     }
 
-    if (HAL_can_read(BMU_CAN_FD, &can_rev, 1) > 0) //   后期改小这个参数
+    if (HAL_can_read(BMU_CAN_FD, &can_rev, 1) > 0) 
     {
-        Convert_can_frame_to_CAN_MESSAGE(&can_rev, &bmu_message);
-
-        if (queue_post(&Queue_BMURevData, (unsigned char *)&bmu_message, sizeof(CAN_MESSAGE)) != 0)
+        // 在OTA 的过程中，可以根据CAN ID进行过滤放在消息队列中，避免在OTA浪费计算
+        if (queue_post(&Queue_BMURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
         {
             queue_destroy(&Queue_BMURevData);
             queue_init(&Queue_BMURevData);

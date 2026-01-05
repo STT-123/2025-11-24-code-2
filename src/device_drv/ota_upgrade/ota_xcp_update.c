@@ -197,7 +197,7 @@ static int XCPCANOTAMSGParseMult(XCPStatus *xcpstatus)
 	        	return 0;
 	        }
             else{
-                LOG("[OTA] XCPCANOTAMSGParse =  %d\r\n",res);//-4表示内部存在其他值，不是升级的反馈值，BCU不存在，BMU存在
+                LOG("[OTA] XCPCANOTAMSGParse =  %d, canmsg.can_dlc = %d \r\n",res,canmsg.can_dlc);//-4表示内部存在其他值，不是升级的反馈值，BCU不存在，BMU存在
             }
 	    }
 		else if (GetTimeDifference_ms(xStartTime)>500 )//50->100
@@ -403,16 +403,12 @@ static int  SendOTACommand( unsigned char *buf, unsigned int len, XCPStatus *xcp
             xcpstatus->ErrorDeviceID = get_ota_deviceID();
             return 1;
         }
-
         int result = XCPCANOTAMSGParseMult(xcpstatus);
         if (result == 0) {
             return 0;
         }
         else
         {
-            for(int i = 0; i < len; i++){
-                printf("buf [%d] = %02x \r\n",i, buf[i]);
-            }
             memset(xcpstatus, 0, sizeof(XCPStatus));
             xcpstatus->ErrorReg |= 1 << 8;
             xcpstatus->ErrorDeviceID = get_ota_deviceID();
@@ -744,7 +740,7 @@ signed char XcpProgramResetHandler(XCPStatus *xcpstatus)
     }
 
 }
-void XCP_OTA(void)
+void XCP_OTA(int bmucount)
 {
     int ret = 0;
     if (!get_ota_OTAStart()) return;
@@ -752,15 +748,16 @@ void XCP_OTA(void)
     {
         memset(&xcpstatus, 0, sizeof(XCPStatus));
         FILE *rfile = NULL;
-        
         LOG("[OTA] OTAing.....................\r\n");
         OTA_RecvPacketCount = 0;//接收包计数为0
-
-        ret = unzipfile(USB_MOUNT_POINT,(unsigned int *)&xcpstatus.ErrorReg,FILE_TYPE_BIN);
-        if(ret < 0){
-            goto xcpcleanup;
+        if(bmucount == 0){//BMU 不用每次都解压
+            ret = unzipfile(USB_MOUNT_POINT,(unsigned int *)&xcpstatus.ErrorReg,FILE_TYPE_BIN);
+            if(ret < 0){
+                goto xcpcleanup;
+            }
+        }else{
+            // do nothing
         }
-
         if(xcpstatus.ErrorReg == 0)
         {
             char otafilenamestr1[OTAFILENAMEMAXLENGTH + 64] = {'\0'};

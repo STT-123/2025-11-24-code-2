@@ -469,7 +469,6 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
 int HAL_canfd_read(int fd, struct canfd_frame *pFrame, unsigned int msTimeout)
 {
 	int len = read(fd, pFrame, sizeof(struct canfd_frame));
-	// printf("pFrame->can_id : 0x%X\n",pFrame->can_id);
 	if (len == sizeof(struct can_frame))
 	{
 
@@ -501,7 +500,6 @@ int HAL_canfd_read(int fd, struct canfd_frame *pFrame, unsigned int msTimeout)
 int HAL_can_read(int fd, struct can_frame *pFrame, unsigned int msTimeout)
 {
 	int len = read(fd, pFrame, sizeof(struct can_frame));
-
 	if (len == sizeof(struct can_frame))
 	{
 		return 1; // 成功读取一个标准 CAN 报文

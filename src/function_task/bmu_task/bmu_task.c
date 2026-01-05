@@ -11,28 +11,27 @@ pthread_t BMURecvDel_TASKHandle = 0;
 void *bmu_DealTask(void *arg)
 {
     int err = 0;
-    CAN_MESSAGE canrev_frame;
+    CAN_MESSAGE CANMsg;
+    struct can_frame canrev_frame;
 
     LOG("bmu_DealTask is running\n");
     bmu_Init(); // ecu 和 bmu通信can初始化（打开can口 绑定回调）
     while (1)
     {
-        if ((g_ota_flag == OTAIDLE || g_ota_flag == OTAFAILED || g_otactrl.deviceType == AC))
+        if  ((get_ota_OTAStart() == 0) || (get_ota_deviceType() == AC))
         {
-
             // 等待信号，有信号则有消息来，处理以后加进消息接收中
             if (queue_pend(&Queue_BMURevData, (unsigned char *)&canrev_frame, &err) == 0)
             {
-                if ((g_ota_flag == OTAIDLE || g_ota_flag == OTAFAILED))
+                if(canrev_frame.can_dlc == 8)
                 {
-                    //printf("[CANRcvFcn] Receive CAN Message\r\n");
-                    memcpy(&CANMsg, &canrev_frame, sizeof(CAN_MESSAGE));
+                    Convert_can_frame_to_CAN_MESSAGE(&canrev_frame, &CANMsg);         
                     CANRcvFcn_BMU_step();
                     memset(&canrev_frame, 0, sizeof(canrev_frame));
                 }
+
             }
         }
-
         // printf("queue_pend return err = %d\r\n", err);
         usleep(10 * 1000);
     }

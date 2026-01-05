@@ -47,7 +47,7 @@ void *SDCardDataSaveTask(void *arg)
             }
         }
 
-        if ((g_ota_flag == OTAIDLE || g_ota_flag == OTAFAILED) && SD_INIT_flag != 1)// 没有ota中 并且 sd卡初始化过
+        if ((get_ota_OTAStart() == 0) && SD_INIT_flag != 1)// 没有ota中 并且 sd卡初始化过
         {
   
             pthread_mutex_lock(&ftp_file_io_mutex);  // ← 加锁，ftp读文件的时候，不写文件

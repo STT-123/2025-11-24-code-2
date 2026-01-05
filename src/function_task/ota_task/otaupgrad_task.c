@@ -30,22 +30,22 @@ void *ota_Upgrade_Task(void *arg)
 #if 0
     sleep(10);
     //BMU
-    // set_ota_OTAFilename("XC_BMU_V302.tar");
-    // set_ota_deviceType(BMU);
-    // set_ota_deviceID(0x1821FF10) ;
+    set_ota_OTAFilename("XC_BMU_V302.tar");
+    set_ota_deviceType(BMU);
+    set_ota_deviceID(0x1821FF10) ;
 
     //BCU
     // set_ota_OTAFilename("XC_BCU_V502.tar");
     // set_ota_deviceType(BCU);
     // set_ota_deviceID(BCUOTACANID) ;//BCU
     //ECU
-    set_ota_OTAFilename("XC_ECU_V123.tar");
-    set_ota_deviceType(ECU);
-    set_ota_deviceID(0) ;//ECU
+    // set_ota_OTAFilename("XC_ECU_V123.tar");
+    // set_ota_deviceType(ECU);
+    // set_ota_deviceID(0) ;//ECU
 
     set_ota_OTAStart(1) ;
     printf("get_ota_OTAFilename() : %s\r\n",get_ota_OTAFilename());
-    printf("get_ota_deviceID(): %u\r\n",get_ota_deviceID());
+    printf("get_ota_deviceID(): %x\r\n",get_ota_deviceID());
 #endif
     while (1)
     {
@@ -210,7 +210,7 @@ void *ota_Upgrade_Task(void *arg)
                             queue_destroy(&Queue_BCURevData);
                             queue_init(&Queue_BCURevData);//情况缓存消息队列
 
-                            XCP_OTA();
+                            XCP_OTA(0);
                             if (xcpstatus.ErrorReg == 0)
                             {
                                 LOG("[OTA] CAN ID 0x%x BCU OTA success!\r\n", get_ota_deviceID());
@@ -246,7 +246,7 @@ void *ota_Upgrade_Task(void *arg)
                     }
                     if (is_bmu_can_ready())
                     {
-                        for (int i = 0; i < BMUMAXNUM; i++)
+                        for (int i = 0; i < BMUMAXNUM; i++)//BMUMAXNUM
                         {
                             LOG("[OTA] BMU OTA start! i : ,ReOtaFlag = %d %d\r\n", i,ReOtaFlag);
                             ReOtaFlag = 0;
@@ -256,12 +256,10 @@ void *ota_Upgrade_Task(void *arg)
                                 CurrentOTADeviceCanID = (0x1821D << 12) | ((i + 1) << 8) | 0x10;
                                 set_ota_deviceID(CurrentOTADeviceCanID);
                                 LOG("[OTA] Start OTA try %d, CAN ID 0x%x BMU %d\r\n", ReOtaFlag + 1, CurrentOTADeviceCanID, i);
-                                LOG("[OTA] get_ota_deviceID() ==  : %x\r\n", get_ota_deviceID());
-                                set_ota_OTAStart(1) ;                     
-                                LOG("[OTA] Start OTA try %d, CAN ID 0x%x BMU %d\r\n", ReOtaFlag + 1, CurrentOTADeviceCanID, i);
-                                XCP_OTA();
+                                LOG("[OTA] get_ota_deviceID() ==  : %x\r\n", get_ota_deviceID());                  
+                                XCP_OTA(i);
 
-                                if ((xcpstatus.ErrorReg == 0) && (get_ota_OTAStart() == 0))
+                                if (xcpstatus.ErrorReg == 0)
                                 {
                                     LOG("[OTA] CAN ID 0x%x BMU OTA success!\r\n", get_ota_deviceID());
                                     break;

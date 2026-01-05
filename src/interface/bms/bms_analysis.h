@@ -100,7 +100,7 @@ real_T get_BCU_FaultInfoLv4Value(void) ;
 real_T get_BCU_SOCValue(void) ;
 real_T get_BCU_SystemWorkModeValue(void) ;
 
-void ConvertCANFDToBus(const struct canfd_frame *frame, CAN_FD_MESSAGE_BUS *msg);
+void ConvertCANFDToBus(struct canfd_frame *frame, CAN_FD_MESSAGE_BUS *msg);
 void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg);
 
 void ConvertBusToCANFD(const CAN_FD_MESSAGE_BUS *msg, struct canfd_frame *frame);

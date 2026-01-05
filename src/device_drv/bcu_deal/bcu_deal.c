@@ -54,27 +54,13 @@ static void bcu_can_epoll_msg_transmit(void *arg)
     if (frame_type == 1)//1 表示CAN 数据-8
     {
         Convert_canfd_frame_to_can_fram(&canfd_rev, &can_rev);//把canfd转换成can
-        
-        if (((get_TCU_PowerUpCmd()) == BMS_POWER_UPDATING) && (can_rev.can_id == 0x30C1600 || can_rev.can_id == 0x61B || can_rev.can_id == 0x1CB010E4))
-        {
-            if (queue_post(&Queue_BCURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
-            {   
-                queue_destroy(&Queue_BCURevData);
-                queue_init(&Queue_BCURevData);
-            }
-            else{
-            }
+        // 在OTA 的过程中，可以根据CAN ID进行过滤放在消息队列中，避免在OTA浪费计算
+        if (queue_post(&Queue_BCURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
+        {   
+            queue_destroy(&Queue_BCURevData);
+            queue_init(&Queue_BCURevData);
         }
-        else if ((get_TCU_PowerUpCmd()) != BMS_POWER_UPDATING)//
-        {
-            if (queue_post(&Queue_BCURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
-            {             
-                queue_destroy(&Queue_BCURevData);
-                queue_init(&Queue_BCURevData);
-            }
-            else{
-            }
-
+        else{
         }
     }
     else if (frame_type == 2)//2    表示CAN FD数据-64
@@ -93,8 +79,7 @@ static void bcu_can_epoll_msg_transmit(void *arg)
         if (errno == EBADF) 
         {
             LOG("[BCU] CAN fd is bad, triggering recovery...\n");
-            Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE, 
-                               &BCU_CAN_FD, bcu_can_epoll_msg_transmit);
+            Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE, &BCU_CAN_FD, bcu_can_epoll_msg_transmit);
         }
     }
 }
