@@ -10,7 +10,6 @@
 #include "device_drv/ota_upgrade/ota_fun.h"
 
 pthread_t BCURecDel_TASKHandle = 0;
-extern uint8_t modbusBuffInitFlag ;//保证modbusBuff空间分配好了,bcu才能使用,不然bcu操作空指针会段错误
 extern struct timespec start_tick;
 void *bcu_DealTask(void *arg)
 {
@@ -37,16 +36,13 @@ void *bcu_DealTask(void *arg)
 
             if (queue_pend(&Queue_BCURevData_FD, (unsigned char *)&canfd_revframe, &len) == 0)
             {
-                if ((canfd_revframe.len > 8))
+
+                if ((canfd_revframe.len > 8) && (modbusBuff != NULL))//保证modbusBuff空间分配好了,bcu才能使用,不然bcu操作空指针会段错误
                 {
-                    if(1 == modbusBuffInitFlag){
-                        ConvertCANFDToBus(&canfd_revframe, &CANFDRcvMsg);
-                        CANFDRcvFcn_BCU_step();           
-                        Drv_write_to_active_buffer(&CANFDRcvMsg, 1);
-                    }
-                    
-                }
-                
+                    ConvertCANFDToBus(&canfd_revframe, &CANFDRcvMsg);
+                    CANFDRcvFcn_BCU_step();           
+                    Drv_write_to_active_buffer(&CANFDRcvMsg, 1);      
+                }         
                 memset(&canfd_revframe, 0, sizeof(canfd_revframe));
             }
             else
@@ -54,29 +50,27 @@ void *bcu_DealTask(void *arg)
                 // 仅在初始化后10秒执行一次
                 if (!bms_analysis_done)
                 {
-
                     if(GetTimeDifference_ms(start_tick) >= 10000){
-                        CANFDRcvFcn_BCU_step();
-                        CANFDSendFcn_BCU_step();
-                        bms_analysis_done = 1;
-                        LOG("Drv_BMS_Analysis executed after 10s delay\r\n");
+                        if (modbusBuff == NULL){
+                            continue;//如果modbusBuff为空，则不处理数据
+                        }else{
+                            CANFDRcvFcn_BCU_step();
+                            CANFDSendFcn_BCU_step();
+                            bms_analysis_done = 1;
+                            LOG("Drv_BMS_Analysis executed after 10s delay\r\n");
+                        }
+
                     }
                 }
             }
 
             if (queue_pend(&Queue_BCURevData, (unsigned char *)&can_revframe, &len) == 0)
             {
-                if(can_revframe.can_dlc <= 8 )
-                {
-                    can_revframe.can_id &= CAN_EFF_MASK;
-                    // if((0x18FFC13A == can_revframe.can_id) || (0x18FFC13D == can_revframe.can_id) || (0x18FF0001 == can_revframe.can_id)|| (0x18FF45F0 == can_revframe.can_id)){
-                    //     LOG("can_id = 0x%x\r\n", can_revframe.can_id);
-                    // }
-                    if(1 == modbusBuffInitFlag){  
-                        ConvertCANToBus(&can_revframe, &CANFDRcvMsg);
-                        CANFDRcvFcn_BCU_step();           
-                        Drv_write_to_active_buffer(&CANFDRcvMsg, 1);
-                    }
+                if( (can_revframe.can_dlc <= 8) && (modbusBuff != NULL) )
+                {     
+                    ConvertCANToBus(&can_revframe, &CANFDRcvMsg);
+                    CANFDRcvFcn_BCU_step();           
+                    Drv_write_to_active_buffer(&CANFDRcvMsg, 1);
                 }
                 memset(&can_revframe, 0, sizeof(can_revframe));
             }

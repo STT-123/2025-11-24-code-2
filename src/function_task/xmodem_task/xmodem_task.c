@@ -48,7 +48,7 @@ void *XmodemCommTask(void *arg)
 
         if (ret < 0)
         {
-            printf("ret %d get modbus reg val error\n", ret);
+            //printf("ret %d get modbus reg val error\n", ret);
         }
         else
         {

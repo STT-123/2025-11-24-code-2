@@ -6,12 +6,10 @@
 #include "function_task/sd_task/sd_task.h"
 #include "device_drv/ota_upgrade/ota_fun.h"
 
-
 pthread_t BMURecvDel_TASKHandle = 0;
 void *bmu_DealTask(void *arg)
 {
     int err = 0;
-    CAN_MESSAGE CANMsg;
     struct can_frame canrev_frame;
 
     LOG("bmu_DealTask is running\n");
@@ -23,14 +21,12 @@ void *bmu_DealTask(void *arg)
             // 等待信号，有信号则有消息来，处理以后加进消息接收中
             if (queue_pend(&Queue_BMURevData, (unsigned char *)&canrev_frame, &err) == 0)
             {
-                // printf("xxxxxxxxxXXXXXXX canrev_frame.id = 0x%x\r\n",canrev_frame.can_id);
-                if(canrev_frame.can_dlc == 8)
+                if( (canrev_frame.can_dlc == 8) && (modbusBuff != NULL))
                 {
-                    Convert_can_frame_to_CAN_MESSAGE(&canrev_frame, &CANMsg);         
+                    Convert_can_frame_to_CAN_MESSAGE(&canrev_frame, &CANMsg); 
                     CANRcvFcn_BMU_step();
                     memset(&canrev_frame, 0, sizeof(canrev_frame));
                 }
-
             }
         }
         // printf("queue_pend return err = %d\r\n", err);

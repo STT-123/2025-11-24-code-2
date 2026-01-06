@@ -26,19 +26,15 @@ void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg)
     if (!frame || !msg){
         printf("eeee Raw can_id      : 0x%08lX\n", frame->can_id);
         return;
-
     }
+
+    msg->ID = frame->can_id & CAN_EFF_MASK; // 取 29 位
     msg->Extended = 1;
     msg->Remote = 0;
     msg->Error = 0;
     msg->Length = frame->can_dlc;
-    // printf("Raw can_id      : 0x%08lX\n", frame->can_id);
-    // printf("Extended    : %d\n", (frame->can_id & CAN_EFF_FLAG) ? 1 : 0);
-    // printf(" frame->can_id : %08lX\r\n", frame->can_id);
-    msg->ID = frame->can_id; // 取 29 位
-    // printf(" msg->ID  : %08lX\r\n", msg->ID );
+    
     msg->Timestamp = 0;
-
     memcpy(msg->Data, frame->data, frame->can_dlc);
 }
 
