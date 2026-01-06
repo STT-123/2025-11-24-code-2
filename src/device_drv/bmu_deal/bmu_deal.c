@@ -22,6 +22,12 @@ static void bmu_can_epoll_msg_transmit(void *arg)
 
     if (HAL_can_read(BMU_CAN_FD, &can_rev, 1) > 0) 
     {
+        // for (int i = 0; i < 8; i++)
+        // {
+        //     printf("d[%d] = 0x%x  ",i,can_rev.data[i]);
+        // }
+        // printf("\r\n");
+
         // 在OTA 的过程中，可以根据CAN ID进行过滤放在消息队列中，避免在OTA浪费计算
         if (queue_post(&Queue_BMURevData, (unsigned char *)&can_rev, sizeof(can_rev)) != 0)
         {

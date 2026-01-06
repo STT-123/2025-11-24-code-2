@@ -23,6 +23,7 @@ void *bmu_DealTask(void *arg)
             // 等待信号，有信号则有消息来，处理以后加进消息接收中
             if (queue_pend(&Queue_BMURevData, (unsigned char *)&canrev_frame, &err) == 0)
             {
+                // printf("xxxxxxxxxXXXXXXX canrev_frame.id = 0x%x\r\n",canrev_frame.can_id);
                 if(canrev_frame.can_dlc == 8)
                 {
                     Convert_can_frame_to_CAN_MESSAGE(&canrev_frame, &CANMsg);         

@@ -100,20 +100,19 @@ void update_bat_data(sqlite3 *db)
     data.usBatCellTempMax = get_usBatCellTempMax();
     data.usBatCellTempMin =get_usBatCellTempMin();
 
-    struct tm utc_timeinfo;
-    utc_timeinfo.tm_year = get_BCU_TimeYearValue() + 100; // BCU年是如24，tm_year从1900起
-    utc_timeinfo.tm_mon = get_BCU_TimeMonthValue() - 1;   // BCU月是1~12，tm_mon是0~11
-    utc_timeinfo.tm_mday = get_BCU_TimeDayValue();
-    utc_timeinfo.tm_hour = get_BCU_TimeHourValue() - 8;
-    utc_timeinfo.tm_min = get_BCU_TimeMinuteValue();
-    utc_timeinfo.tm_sec = get_BCU_TimeSencondValue();
-    utc_timeinfo.tm_isdst = -1;
-
-    time_t t = mktime(&utc_timeinfo);
-
-    data.uiTimeStamp = (unsigned int)t;
+    // struct tm utc_timeinfo;
+    // utc_timeinfo.tm_year = get_BCU_TimeYearValue() + 100; // BCU年是如24，tm_year从1900起
+    // utc_timeinfo.tm_mon = get_BCU_TimeMonthValue() - 1;   // BCU月是1~12，tm_mon是0~11
+    // utc_timeinfo.tm_mday = get_BCU_TimeDayValue();
+    // utc_timeinfo.tm_hour = get_BCU_TimeHourValue() - 8;
+    // utc_timeinfo.tm_min = get_BCU_TimeMinuteValue();
+    // utc_timeinfo.tm_sec = get_BCU_TimeSencondValue();
+    // utc_timeinfo.tm_isdst = -1;
+    // time_t t = mktime(&utc_timeinfo);
+    // data.uiTimeStamp = (unsigned int)t;
+    
     // printf("Unix时间戳: %u (十进制), 0x%08x (十六进制)\n", (unsigned int)t, (unsigned int)t);
-    // data.uiTimeStamp = (unsigned int)time(NULL); //如果时间比ocpp网页的小，则网页不更新数据，所以不要错误的给网页一个过大的时间戳
+    data.uiTimeStamp = (unsigned int)time(NULL); //如果时间比ocpp网页的小，则网页不更新数据，所以不要错误的给网页一个过大的时间戳
     convert_tBatData_to_big_endian(&data_be, &data);
     insert_data(db, &data_be);
 }
@@ -219,7 +218,7 @@ void *websocket_send_thread(void *arg)
         
         // 更新电池数据
         if (db) {
-            update_bat_data1(db);
+            update_bat_data(db);
         }
 
         // db消息（每10秒）

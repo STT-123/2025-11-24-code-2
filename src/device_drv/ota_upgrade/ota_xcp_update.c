@@ -403,6 +403,12 @@ static int  SendOTACommand( unsigned char *buf, unsigned int len, XCPStatus *xcp
             xcpstatus->ErrorDeviceID = get_ota_deviceID();
             return 1;
         }
+        // for (int x = 0; x < len; x++)
+        // {
+        //     printf("buf[%d]: %x ",x,buf[x]);
+        // }
+        // printf("\r\n");
+
         int result = XCPCANOTAMSGParseMult(xcpstatus);
         if (result == 0) {
             return 0;
