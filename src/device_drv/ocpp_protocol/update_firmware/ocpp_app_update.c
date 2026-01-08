@@ -1,5 +1,4 @@
 #include "ocpp_app_update.h"
-#include "interface/globalVariable.h"
 #include "device_drv/ota_upgrade/ota_xcp_update.h"
 #include "interface/modbus/modbus_defines.h"
 #include "device_drv/ota_upgrade/ota_other_update.h"

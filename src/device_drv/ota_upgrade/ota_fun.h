@@ -2,10 +2,9 @@
 #define _OTA_FUN_H 
 #include <string.h>
 #include <pthread.h>
-#include "interface/globalVariable.h"
+#include <stdatomic.h>
 
-
- #define XMODEMISTTRANFERINGFILE 0x0001  // XMODEM正在传输文件
+#define XMODEMISTTRANFERINGFILE 0x0001  // XMODEM正在传输文件
 #define XMODEMNORMALTERMINATION 0x0002  // XMODEM正常终止（传输成功）
 #define XMODEMOUTTIMETERMINATION 0x0004 // XMODEM超时终止
 #define XMODEMABORTTERMINATION 0x0006   // XMODEM异常中止

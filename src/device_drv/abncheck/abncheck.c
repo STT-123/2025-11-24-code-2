@@ -6,7 +6,6 @@
 #include "device_drv/bcu_deal/bcu_deal.h"
 #include "device_drv/bmu_deal/bmu_deal.h"
 #include "device_drv/modbustcp_pro/modbustcp_pro.h"
-#include "interface/globalVariable.h"
 #include "interface/setting/ip_setting.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"

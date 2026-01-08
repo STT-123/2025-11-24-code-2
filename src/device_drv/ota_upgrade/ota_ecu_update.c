@@ -1,5 +1,4 @@
 #include "ota_ecu_update.h"
-#include "interface/globalVariable.h"
 #include "interface/log/log.h"
 #include "interface/ini/ini.h"
 #include "interface/bms/bms_analysis.h"

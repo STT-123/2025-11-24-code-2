@@ -11,7 +11,6 @@
 #include <errno.h>
 #include "interface/modbus/modbus.h"
 #include "interface/modbus/modbus-tcp.h"
-#include "interface/globalVariable.h"
 
 #define LOGO 0x9528  //公司标识
 #define ECU_VERSION 0x119 //  表示v1.01 格式xx。yy xx 高八位yy低八位
@@ -21,6 +20,17 @@
 #define MDBUS_ADDR_BECU_FAULT1 0x3441
 #define MDBUS_ADDR_BECU_FAULT2 0x3442
 #define MDBUS_ADDR_BECU_FAULT3 0x3443
+
+
+typedef struct
+{
+	uint16_t year;	  /**< @brief Year       */
+	uint16_t month;	  /**< @brief Month      */
+	uint16_t day;	  /**< @brief Day        */
+	uint16_t hour;	  /**< @brief Hour       */
+	uint16_t minutes; /**< @brief Minutes    */
+	uint8_t seconds;  /**< @brief Seconds    */
+} Rtc_Ip_TimedateType;
 
 static void set_ems_bms_reboot();
 static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data);

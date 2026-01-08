@@ -1,7 +1,6 @@
 #include <time.h>
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
-#include "interface/globalVariable.h"
 #include "interface/log/log.h"
 #include "interface/epoll/myepoll.h"
 #include "interface/setting/ip_setting.h"
@@ -109,6 +108,7 @@ int main(int argc, char **argv)
     unsigned int index1 = 0;
     while (1)
     {
+        // can_do_stop("can2");
         // printf("DAqX_FaultCode1 = %d\r\n", DAqX_FaultCode1[0]);//一级故障
         // printf("data.get_usBatMaxTempCellIndex = %ld\n", get_usBatMaxTempCellIndex());
         // printf("data. get_usBatCellTempMax( = %d\n",  get_usBatCellTempMax());

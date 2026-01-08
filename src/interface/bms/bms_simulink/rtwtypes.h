@@ -27,6 +27,7 @@
 #endif
 #endif
 #define DEFINED_TYPEDEF_FOR_CAN_FD_MESSAGE_BUS_
+#define DEFINED_TYPEDEF_FOR_CAN_MESSAGE_BUS_
 /*=======================================================================*
  * Target hardware information
  *   Device type: NXP->Cortex-M4

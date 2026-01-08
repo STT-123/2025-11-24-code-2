@@ -2,7 +2,6 @@
 // #include "C_OTADataMonitor.h"
 #include "xmodemdata.h"
 #include "xmodemstate.h"
-#include "interface/globalVariable.h"
 #include "interface/modbus/modbus_defines.h"
 #include "interface/log/log.h"
 #include "device_drv/ota_upgrade/ota_uds_update.h"

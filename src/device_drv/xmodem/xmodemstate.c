@@ -2,7 +2,6 @@
 // #include "C_OTAStateMonitor.h"
 #include "xmodemstate.h"
 #include "interface/modbus/modbus_defines.h"
-#include "interface/globalVariable.h"
 #include "xmodemlisten.h"
 #include "function_task/modbustcp_task/modbustcp_task.h"
 #include "xmodemdata.h"

@@ -1,5 +1,4 @@
 #include "modbustcp_pro.h"
-#include "interface/globalVariable.h"
 #include "function_task/modbustcp_task/modbustcp_task.h"
 #include "device_drv/bcu_deal/bcu_deal.h"
 #include "device_drv/sd_store/sd_store.h"
@@ -266,7 +265,7 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 {
 	static uint8_t SOHCmd, SOCMaxCmd, SOCMinCmd,relayCtl = 0;
-    static CANFD_MESSAGE bms_calibration_msg = {0}; // <-- 关键：static + 初始化一次,参考DBC文件，要是DBC 文件改了，这个也要动
+    static CAN_FD_MESSAGE bms_calibration_msg = {0}; // <-- 关键：static + 初始化一次,参考DBC文件，要是DBC 文件改了，这个也要动
 
     // 第一次调用时初始化结构体头（只做一次）
     if (bms_calibration_msg.ID == 0) {

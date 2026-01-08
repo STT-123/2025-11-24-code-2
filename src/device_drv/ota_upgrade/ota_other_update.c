@@ -1,6 +1,5 @@
 #define _GNU_SOURCE
 #include "ota_other_update.h"
-#include "interface/globalVariable.h"
 #include "device_drv/bcu_deal/bcu_deal.h"
 #include "interface/modbus/modbus_defines.h"
 #include "interface/log/log.h"

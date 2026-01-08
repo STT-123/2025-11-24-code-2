@@ -197,10 +197,10 @@ static int XCPCANOTAMSGParseMult(XCPStatus *xcpstatus)
 	        	return 0;
 	        }
             else{
-                LOG("[OTA] XCPCANOTAMSGParse =  %d, canmsg.can_dlc = %d \r\n",res,canmsg.can_dlc);//-4表示内部存在其他值，不是升级的反馈值，BCU不存在，BMU存在
+                // LOG("[OTA] XCPCANOTAMSGParse =  %d, canmsg.can_dlc = %d \r\n",res,canmsg.can_dlc);//-4表示内部存在其他值，不是升级的反馈值，BCU不存在，BMU存在
             }
 	    }
-		else if (GetTimeDifference_ms(xStartTime)>500 )//50->100
+		else if (GetTimeDifference_ms(xStartTime)>1000 )//50->100
 		{
             printf("GetTimeDifference_ms(xStartTime) = %d\r\n",GetTimeDifference_ms(xStartTime));
             LOG("[OTA] XCPCANOTAMSGParseMult_timeout\r\n");

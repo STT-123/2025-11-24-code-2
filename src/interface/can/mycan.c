@@ -2,7 +2,6 @@
 #define _GNU_SOURCE
 #include "mycan.h"
 #include "interface/log/log.h"
-#include "interface/globalVariable.h"
 #include "interface/epoll/myepoll.h"
 
 #define GET_STATE 1

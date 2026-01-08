@@ -1,7 +1,5 @@
 #define _GNU_SOURCE
 #include "sd_store.h"
-#include "interface/globalVariable.h"
-#include "device_drv/modbustcp_pro/modbustcp_pro.h"
 #include "device_drv/abncheck/abncheck.h"
 #include "interface/log/log.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
@@ -335,7 +333,7 @@ static int AscFileWriteTimeHeader(FILE *file, struct tm *timeinfo)
 
 
 // 查找指定CAN ID的历史消息，并与当前消息对比
-static int Drv_check_and_update_message(const CANFD_MESSAGE *msg)
+static int Drv_check_and_update_message(const CAN_FD_MESSAGE *msg)
 {
     static old_BMSWorkMode_value = 0;
     for (int i = 0; i < CAN_ID_HISTORY_SIZE; i++)
@@ -647,7 +645,7 @@ int ensure_mount_point(const char *path)
  * 初始化缓存
 */
 
-void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
+void Drv_write_to_active_buffer(const CAN_FD_MESSAGE *msg, uint8_t channel)
 {
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
     uint8_t ret = 0;
@@ -680,7 +678,7 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 
     logMsg->Timestamp = get_relative_timestamp_seconds(); // 如57093.038
 
-    memcpy(&logMsg->msg, msg, sizeof(CANFD_MESSAGE));
+    memcpy(&logMsg->msg, msg, sizeof(CAN_FD_MESSAGE));
     logMsg->channel = channel;
 
     activeBuffer->writeIndex = (activeBuffer->writeIndex + 1) % BUFFER_SIZE;
@@ -789,7 +787,7 @@ void Drv_write_buffer_to_file(void)
 
     // 如果不是新创建的文件 从文件的末尾追加写入
     fseek(file, 0, SEEK_END);
-
+    // printf("sd storage start\r\n");
     while (inactiveBuffer->count > 0)
     {
         CAN_LOG_MESSAGE *logMsg = &inactiveBuffer->buffer[inactiveBuffer->readIndex];

@@ -11,6 +11,8 @@
 #include "interface/bms/bms_simulink/rtwtypes.h"
 
 #define Emergencystop_output 32
+#define SET_ERROR 0
+#define SET_RECOVER 1
 
 //参考APP_DCB储能相关协议
 #define PCS_STOP 0x03					// 外部急停，充电桩急停输入		emcu0 的第3bit，BCU提供

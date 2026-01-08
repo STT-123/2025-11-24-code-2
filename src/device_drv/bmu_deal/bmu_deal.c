@@ -42,35 +42,13 @@ bool bmu_Init(void)
 {
     struct epoll_event ev;
     queue_init(&Queue_BMURevData); // 用于接收消息后存入
-#if testcan
+
     if(Drv_can_bind_interface(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE ,&BMU_CAN_FD,bmu_can_epoll_msg_transmit))
     {
         LOG("[BCU]%s initial bind failed\n", BMU_CAN_DEVICE_NAME);
         return false;
     }
-#else
-    if (can_ifconfig_init(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE) == false)
-    {
-        LOG("[BMU] %s can_ifconfig_init 失败\n", BMU_CAN_DEVICE_NAME);
-        return false;
-    }
 
-    while (can_band_init(BMU_CAN_DEVICE_NAME, &BMU_CAN_FD) == false)
-    {
-        LOG("[BMU]%s can_band_init 失败，重试中...\n", BMU_CAN_DEVICE_NAME);
-        sleep(1);
-    }
-
-    bmuCanEventData.fd = BMU_CAN_FD;
-    bmuCanEventData.fun_handle = (void *)bmu_can_epoll_msg_transmit;
-    ev.events = EPOLLIN;
-    ev.data.ptr = (void *)&bmuCanEventData;
-    if (-1 == my_epoll_addtast(bmuCanEventData.fd, &ev))
-    {
-        LOG("[BMU]%s add epoll failed \n", BMU_CAN_DEVICE_NAME);
-        return false;
-    }
-#endif
     return true;
 }
 

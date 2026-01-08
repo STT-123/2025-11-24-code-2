@@ -92,38 +92,13 @@ bool bcu_Init(void)
 {
     queue_init(&Queue_BCURevData);    // 用于接收消息后存入
     queue_init(&Queue_BCURevData_FD); // 用于接收消息后存入
-#if testcan
+
     if(Drv_can_bind_interface(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE ,&BCU_CAN_FD,bcu_can_epoll_msg_transmit))
     {
         LOG("[BCU]%s initial bind failed\n", BCU_CAN_DEVICE_NAME);
         return false;
     }
-#else
-
-    struct epoll_event ev;
-
-    if (can_ifconfig_init(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE) == false)
-    {
-        LOG("[BCU]%s can_ifconfig_init 失败\n", BCU_CAN_DEVICE_NAME);
-        return false;
-    }
-
-    while (can_band_init(BCU_CAN_DEVICE_NAME, &BCU_CAN_FD) == false)
-    {
-        LOG("[BCU]%s can_band_init 失败，重试中...\n", BCU_CAN_DEVICE_NAME);
-        sleep(1);
-    }
     
-    bcuCanEventData.fd = BCU_CAN_FD;
-    bcuCanEventData.fun_handle = (void *)bcu_can_epoll_msg_transmit; // 回调函数
-    ev.events = EPOLLIN;
-    ev.data.ptr = (void *)&bcuCanEventData;
-    if (-1 == my_epoll_addtast(bcuCanEventData.fd, &ev))
-    {
-        LOG("[BCU]%s add epoll failed \n", BCU_CAN_DEVICE_NAME);
-        return false;
-    }
-#endif
     return true;
 }
 

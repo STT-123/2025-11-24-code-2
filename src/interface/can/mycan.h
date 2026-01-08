@@ -23,7 +23,7 @@
 #include <sys/epoll.h> 
 #include <errno.h>
 #include <fcntl.h>
-
+#include "libsocketcan.h"
 #ifndef PF_CAN
 #define PF_CAN 29
 #endif

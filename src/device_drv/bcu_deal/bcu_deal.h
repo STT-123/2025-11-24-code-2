@@ -12,13 +12,9 @@
 #include <pthread.h>
 
 #include "interface/bms/bms_analysis.h"
-#include "interface/globalVariable.h"
 
-#ifdef yinhantong
-    #define BCU_CAN_DEVICE_NAME "can2"
-#else
-    #define BCU_CAN_DEVICE_NAME "can0"
-#endif
+#define BCU_CAN_DEVICE_NAME "can2"
+
 #define BCU_CAN_BITRATE 500000
 #define BCU_OTA_ID 0x101
 extern queue_t Queue_BCURevData; // 分机消息队列，用于epoll接收数据存入，防止处理不过来所以用队列，内部使用

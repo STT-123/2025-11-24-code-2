@@ -2,7 +2,6 @@
 #include "sd_task.h"
 #include "device_drv/modbustcp_pro/modbustcp_pro.h"
 #include "interface/modbus/modbus_defines.h"
-#include "interface/globalVariable.h"
 #include "interface/log/log.h"
 
 

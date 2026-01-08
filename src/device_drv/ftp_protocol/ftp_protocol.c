@@ -1,5 +1,4 @@
 #include "ftp_protocol.h"
-#include "interface/globalVariable.h"
 #include "device_drv/sd_store/sd_store.h"
 #include "interface/setting/ip_setting.h"
 #define DATA_PORT 40900

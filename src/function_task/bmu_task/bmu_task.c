@@ -23,6 +23,7 @@ void *bmu_DealTask(void *arg)
             {
                 if( (canrev_frame.can_dlc == 8) && (modbusBuff != NULL))
                 {
+                    // printf("canrev_frame.id = 0x%x\r\n",canrev_frame.can_id);
                     Convert_can_frame_to_CAN_MESSAGE(&canrev_frame, &CANMsg); 
                     CANRcvFcn_BMU_step();
                     memset(&canrev_frame, 0, sizeof(canrev_frame));

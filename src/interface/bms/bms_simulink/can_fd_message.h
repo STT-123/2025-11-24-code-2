@@ -9,11 +9,9 @@
 #ifndef CANFDMESSAGE_HEADER_H
 #define CANFDMESSAGE_HEADER_H
 
-#ifdef RTWTYPES_H
+
 #include "rtwtypes.h" /* Use rtwtypes.h if available */
-#else
-#include "tmwtypes.h"
-#endif
+
 
 /* Define invalid CAN Identifier value. This can be used to specify an invalid message
 This represents a uint32_T value */

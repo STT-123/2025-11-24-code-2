@@ -12,7 +12,6 @@
 #include <linux/can/error.h>
 #include <linux/can.h>
 #include <stdint.h>
-#include "interface/globalVariable.h"
 #include "bms_simulink/rtwtypes.h"
 #include "bms_simulink/CANFDRcvFcn_BCU_types.h"
 #include "bms_simulink/CANRcvFcn_BMU_types.h"

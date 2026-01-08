@@ -14,7 +14,8 @@
 #include <sys/stat.h>
 #include <limits.h>
 #include <time.h>
-#include "interface/globalVariable.h"
+#include "interface/bms/bms_simulink/can_fd_message.h"
+#include "device_drv/modbustcp_pro/modbustcp_pro.h"
 
 #define MAX_FILES_IN_FOLDER 80
 #define BUFFER_SIZE 100 // 每个环形缓冲区的容量
@@ -31,7 +32,7 @@
 typedef struct
 {
     double Timestamp; // 相对时间戳
-    CANFD_MESSAGE msg;
+    CAN_FD_MESSAGE msg;
     unsigned char channel;
 } CAN_LOG_MESSAGE;
 
@@ -51,7 +52,7 @@ typedef struct
     pthread_mutex_t switchMutex; // 用于保护缓冲区切换
 } DoubleRingBuffer;
 
-static int  Drv_check_and_update_message(const CANFD_MESSAGE *msg);
+static int  Drv_check_and_update_message(const CAN_FD_MESSAGE *msg);
 static void Drv_write_canmsg_cache_to_file(FILE *file, uint32_t timestamp_ms);
 static void Drv_RTCGetTime(Rtc_Ip_TimedateType *rtcTime);
 static int  mount_sdcard_fat32(void);
@@ -60,7 +61,7 @@ static int should_store_frame(uint32_t msg_id);
 static uint8_t CalculateDLC(uint8_t data_length);
 int  SD_Initialize(void);
 int  ensure_mount_point(const char *path);
-void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel);
+void Drv_write_to_active_buffer(const CAN_FD_MESSAGE *msg, uint8_t channel);
 void Drv_write_buffer_to_file(void);
 void checkSDCardCapacity(void);
 void sd_storeInit(void);

@@ -1,5 +1,4 @@
 #include "ip_setting.h"
-#include "interface/globalVariable.h"
 #include "interface/log/log.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
