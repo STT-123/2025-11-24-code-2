@@ -30,6 +30,7 @@ void update_bat_data(sqlite3 *db)
     for(int i = 0; i < 15; i++){
         if(batDAq_version[i] != 0){
             data.uiBmuErrorNum[i] = get_BMU_DAqX_FaultCode1_at(i);
+            // printf(" data.uiBmuErrorNum[%d]  = %x \r\n",i, data.uiBmuErrorNum[i]);
             data.uiBmuExErrorNum[i] = get_BMU_DAqX_FaultCode2_at(i);
         }else{
             data.uiBmuErrorNum[i] = 65535;
@@ -86,9 +87,9 @@ void update_bat_data(sqlite3 *db)
     data.usAirEnergyMode = get_usAirEnergyMode();
     
     data.usAirCoolSetTemp = get_usAirCoolSetTemp();
-    data.usAirInletPressure = get_usAirInletPressure()*10;
-    data.usAirOutWaterTemp = get_usAirOutWaterTemp() * 10;
-    data.usAirReturnWaterTemp =  get_usAirReturnWaterTemp() * 10;
+    data.usAirInletPressure = get_usAirInletPressure();
+    data.usAirOutWaterTemp = get_usAirOutWaterTemp();
+    data.usAirReturnWaterTemp =  get_usAirReturnWaterTemp();
 
     data.usBatMaxVoltCellIndex = get_usBatMaxVoltCellIndex();
     data.usBatMinVoltCellIndex = get_usBatMinVoltCellIndex();

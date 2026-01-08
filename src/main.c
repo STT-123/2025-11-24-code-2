@@ -106,9 +106,10 @@ int main(int argc, char **argv)
     abnormalDetectionTaskCreate(); // 异常监测任务
     // ocppCommunicationTaskCreate(); //ocpp通信任务
     FtpServiceThreadCreate();
-    
+    unsigned int index1 = 0;
     while (1)
     {
+        // printf("DAqX_FaultCode1 = %d\r\n", DAqX_FaultCode1[0]);//一级故障
         // printf("data.get_usBatMaxTempCellIndex = %ld\n", get_usBatMaxTempCellIndex());
         // printf("data. get_usBatCellTempMax( = %d\n",  get_usBatCellTempMax());
         // printf("data. get_usBatMinTempCellIndex( = %d\n",  get_usBatMinTempCellIndex());
@@ -121,8 +122,10 @@ int main(int argc, char **argv)
         sleep(1);
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");
-        // int index1 = 0x604E - 0x3000;
-        // printf("Mobud[0x604E] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
+        // index1 = 0x4B5C - 0x3000;
+        // printf("Mobud[0x4B5C] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
+        // index1 = 0x4B5D - 0x3000;
+        // printf("Mobud[0x4B5D] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
         // printf("BCU_SystemWorkMode = %x\r\n",BCU_SystemWorkMode);//ota上载寄存器判断
         // printf("BCU_FaultInfoLv1 = %x\r\n",BCU_FaultInfoLv1);//ota上载寄存器判断
         // printf("BCU_FaultInfoLv2 = %x\r\n",BCU_FaultInfoLv2);//ota上载寄存器判断    

@@ -3,6 +3,8 @@
 #include "interface/epoll/myepoll.h"
 #include "device_drv/abncheck/abncheck.h"
 #include "device_drv/bmu_deal/bmu_deal.h"
+#include "device_drv/sd_store/sd_store.h"
+
 static int BCU_CAN_FD = -1;
 queue_t Queue_BCURevData;
 queue_t Queue_BCURevData_FD;
@@ -147,8 +149,8 @@ int Drv_bcu_can_send(CAN_MESSAGE *pFrame)
     }
     if (retryCount >= maxRetries)//软件层面发送失败，系统的can底层有问题了
     {
-        LOG("[BCU]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
-        Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
+        // LOG("[BCU]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
+        // Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
         // Drv_bcu_resetcan_device(BCU_CAN_DEVICE_NAME);
     }
 
@@ -160,7 +162,9 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
     struct canfd_frame canfd_frame;
     int retryCount = 0;
     const int maxRetries = 5;
-    Drv_write_to_active_buffer(&pFrame, 0); // 0709添加
+
+    Drv_write_to_active_buffer(pFrame, 0); // 0709添加
+    
     ConvertBusToCANFD(pFrame, &canfd_frame);
 
     while (retryCount < maxRetries)
@@ -177,19 +181,12 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
     if (retryCount >= maxRetries)
     {
         // LOG("[BCUFD]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
-        Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
+        //Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
         // Drv_bcu_resetcan_device(BCU_CAN_DEVICE_NAME);
     }
     return -1;
 }
 
-
-int bcu_can_check_state(void)
-{ 
-    printf("bcu_can_check_state in Drv_can_auto_recover\r\n");
-    return Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,
-                           &BCU_CAN_FD, bcu_can_epoll_msg_transmit);
-}
 
 
 /**
@@ -293,7 +290,7 @@ int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr,
     int ret = -1;
 
     // 1. 检查物理链路状态
-    if (!check_can_state(can_name)) 
+    if (!check_can_state_detailed(can_name)) 
     {
         LOG("[CAN]%s physical link is DOWN, need rebind\n", can_name);
         need_rebind = true;

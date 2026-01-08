@@ -92,8 +92,8 @@ int Drv_bmu_can_send(CAN_MESSAGE *pFrame)
     }
     if (retryCount >= maxRetries)
     {
-        LOG("[BMU] Drv_can_auto_recover... Drv_bmu_can_send\r\n");
-        Drv_can_auto_recover(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE,&BMU_CAN_FD, bmu_can_epoll_msg_transmit);
+        // LOG("[BMU] Drv_can_auto_recover... Drv_bmu_can_send\r\n");
+        // Drv_can_auto_recover(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE,&BMU_CAN_FD, bmu_can_epoll_msg_transmit);
     }
     return -1;
 }
@@ -116,13 +116,8 @@ int Drv_bmu_canfd_send(struct canfd_frame *cansend_data)
     }
     if (retryCount >= maxRetries)
     {
-        LOG("[BMU] Drv_can_auto_recover... Drv_bmu_canfd_send\r\n");
-        Drv_can_auto_recover(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE,&BMU_CAN_FD, bmu_can_epoll_msg_transmit);
+        // LOG("[BMU] Drv_can_auto_recover... Drv_bmu_canfd_send\r\n");
+        // Drv_can_auto_recover(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE,&BMU_CAN_FD, bmu_can_epoll_msg_transmit);
     }
     return -1;
-}
-int bmu_can_check_state(void)
-{ 
-    return Drv_can_auto_recover(BMU_CAN_DEVICE_NAME, BMU_CAN_BITRATE,
-                           &BMU_CAN_FD, bmu_can_epoll_msg_transmit);
 }

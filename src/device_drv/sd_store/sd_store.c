@@ -22,6 +22,7 @@ Rtc_Ip_TimedateType initialTime = {0};
 Rtc_Ip_TimedateType currentTime = {0};
 struct timespec start_tick = {0};
 static uint32_t CAN_IDs[] = {
+    // 0x1801E410,
     //BCU电池ID 
     0x180110E4,0x180210E4,0x180310E4,0x180410E4,0x1A0110E4,0x1B0110E4,
     //空调ID 
@@ -567,6 +568,7 @@ static void Func_DeleteOldestFolder(void)
 static void Drv_init_can_id_history(void)
 {
     int i = 0;
+    // printf("CAN_ID_HISTORY_SIZE = %d\r\n",CAN_ID_HISTORY_SIZE);
     for (i = 0; i < CAN_ID_HISTORY_SIZE; i++)
     {
         can_msg_cache[i].ID = CAN_IDs[i];
@@ -649,7 +651,7 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
 {
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
     uint8_t ret = 0;
-
+ 
     if (((msg->ID == 0x1cb0e410) && (msg->Data[0] == 0xC9)) ||
         (msg->ID == 0x1cb010e4) || (msg->ID == 0x1823E410) || (msg->ID == 0))
     {
@@ -666,7 +668,9 @@ void Drv_write_to_active_buffer(const CANFD_MESSAGE *msg, uint8_t channel)
     if (!should_store_frame(msg->ID)) {
         return;
     }
-
+    // if(msg->ID == 0x1801e410){
+    //     printf("should_store_frame  0x1801e410\r\n");
+    // }
     pthread_mutex_lock(&drb->switchMutex);
     RingBuffer *activeBuffer = &drb->buffers[drb->activeBuffer];
     pthread_mutex_lock(&activeBuffer->mutex);
@@ -785,9 +789,6 @@ void Drv_write_buffer_to_file(void)
 
     // 如果不是新创建的文件 从文件的末尾追加写入
     fseek(file, 0, SEEK_END);
-    int originalCount = inactiveBuffer->count;
-    int messagesWritten = 0;
-    // LOG("[SD Card] Starting to write %d messages to file: %s\n", originalCount, filePath);
 
     while (inactiveBuffer->count > 0)
     {

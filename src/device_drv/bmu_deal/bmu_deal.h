@@ -28,5 +28,4 @@ extern queue_t Queue_BMURevData; // 分机消息队列，用于epoll接收数据
 bool bmu_Init(void);
 int Drv_bmu_can_send(CAN_MESSAGE *pFrame);
 int Drv_bmu_canfd_send(struct canfd_frame *cansend_data);
-int bmu_can_check_state(void);
 #endif

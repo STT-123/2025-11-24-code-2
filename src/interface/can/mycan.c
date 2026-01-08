@@ -130,8 +130,7 @@ static int HAL_do_get_nl_link(int fd, __u8 acquire, const char *name, void *res)
 			struct ifinfomsg *ifi = NLMSG_DATA(nl_msg);
 			struct rtattr *tb[IFLA_MAX + 1];
 
-			len =
-				nl_msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
+			len = nl_msg->nlmsg_len - NLMSG_LENGTH(sizeof(struct ifaddrmsg));
 			HAL_parse_rtattr(tb, IFLA_MAX, IFLA_RTA(ifi), len);
 
 			if (strcmp((char *)RTA_DATA(tb[IFLA_IFNAME]), name) != 0)
@@ -425,7 +424,7 @@ bool HAL_canfd_write(int fd, struct canfd_frame *pFrame)
 			default:
 				LOG("[CAN FD] Write failed: errno=%d (%s)\n", errno, strerror(errno));
 				break;
-	}
+		}
 	}
 		return false;
 }
@@ -449,7 +448,7 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
                 break;
             case ENOBUFS:
 				{
-					LOG("[CAN] Write failed: No buffer space available\n");//缓存满了
+					//LOG("[CAN] Write failed: No buffer space available\n");//缓存满了
 					break;
 				}
             case EIO:

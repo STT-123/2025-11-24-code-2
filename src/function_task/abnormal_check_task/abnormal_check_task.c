@@ -14,6 +14,7 @@ void *AbnormalDetection(void *arg)
     /**
      * 目前检测的故障只有、CAN0通道、SD卡
     */
+   sleep(5);
     while (1)
     {
         /* code */

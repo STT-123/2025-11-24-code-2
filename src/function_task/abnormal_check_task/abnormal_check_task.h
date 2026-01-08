@@ -10,5 +10,4 @@
 #include <termios.h>
 
 void  abnormalDetectionTaskCreate(void);
-
 #endif
