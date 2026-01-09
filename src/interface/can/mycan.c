@@ -350,6 +350,8 @@ bool can_ifconfig_init(const char *device, int bitrate)
 	pclose(fp);
 
 	return state;
+
+    // ========== 使用 libsocketcan API ==========
 }
 
 bool can_band_init(const char *device, int *fd)
@@ -404,7 +406,7 @@ bool HAL_canfd_write(int fd, struct canfd_frame *pFrame)
 	{
 		switch(errno) {
 			case ENETDOWN:
-				LOG("[CAN FD] Write failed: Network interface down\n");
+				// LOG("[CAN FD] Write failed: Network interface down\n");
 				break;
 			case EINVAL:
 				LOG("[CAN FD] Write failed: Invalid argument\n");
@@ -440,7 +442,7 @@ bool HAL_can_write(int fd, struct can_frame *pFrame)
 	{
 		switch(errno) {
             case ENETDOWN:
-                LOG("[CAN] Write failed: Network interface down\n");
+                // LOG("[CAN] Write failed: Network interface down\n");
                 break;
             case EINVAL:
                 LOG("[CAN] Write failed: Invalid argument\n");

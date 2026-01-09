@@ -382,15 +382,7 @@ int can_monitor_fun(void) {
         
         // 避免频繁重启（至少间隔30秒）
         if (now - last_restart_time_can2 > 10) 
-        {
-            if (bcu_can_state == -2) 
-            {
-                LOG("[CHECK] can2 ERROR detected\n");
-            } else if (bcu_can_state == 0) 
-            {
-                LOG("[CHECK] can2 LOWER_UP lost\n");
-            }
-            
+        {          
             LOG("[CHECK] Restarting can2...\n");
             restart_can_interface_enhanced(BCU_CAN_DEVICE_NAME);
             last_restart_time_can2 = now;
@@ -422,15 +414,7 @@ int can_monitor_fun(void) {
         
         // 避免频繁重启（至少间隔30秒）
         if (now - last_restart_time_can3 > 10) 
-        {
-            if (bmu_can_state == -2) 
-            {
-                LOG("[CHECK] can3 BUS-OFF detected\n");
-            } else if (bmu_can_state == 0) 
-            {
-                LOG("[CHECK] can3 LOWER_UP lost\n");
-            }
-            
+        {           
             LOG("[CHECK] Restarting can3...\n");
             restart_can_interface_enhanced(BMU_CAN_DEVICE_NAME);
             last_restart_time_can3 = now;
@@ -452,7 +436,6 @@ int can_monitor_fun(void) {
     }
 }
 static void restart_can_interface_enhanced(const char* can_if) {
-    LOG("[CAN] Restarting %s...\n", can_if);
     char cmd[256];
     
     // 1. 先彻底关闭
@@ -479,86 +462,18 @@ static void restart_can_interface_enhanced(const char* can_if) {
              "grep -E 'state|berr-counter'", can_if);
     system(cmd);
     
-    // 5. 强制发送一帧测试（如果接口正常）
-    snprintf(cmd, sizeof(cmd), 
-             "timeout 1 /bin/cansend %s 001#11223344 2>/dev/null", can_if);
-    int ret = system(cmd);
-    LOG("[CHECK] Test send result: %d\n", ret >> 8);
 }
 
 int check_can_state_detailed(const char* can_if) {
-    char cmd[256];
-    FILE *fp;
-    char line[512];
-    
-    // 方法1：检查状态标志
-    snprintf(cmd, sizeof(cmd), 
-             "/bin/ip -details link show %s 2>/dev/null", can_if);
-    
-    fp = popen(cmd, "r");
-    if (!fp) return -1;
-    
-    int state = 0;  // 0:异常, 1:正常
-    int error = 0;
+ 
+    int state = 0;  
 
-    while (fgets(line, sizeof(line), fp)) {
-        // 检查LOWER_UP
-        if (strstr(line, "LOWER_UP")) {
-            state = 1;
-        }     
-        // 检查ERROR-PASSIVE/WARNING
-        if (strstr(line, "state ERROR-PASSIVE") || 
-            strstr(line, "state ERROR-WARNING")) {
-            // 这些状态可以通信，但需要关注
-            state = 1;
-        }
-
-        // 检查BUS-OFF状态
-        if (strstr(line, "state BUS-OFF")) {
-            LOG("[CHECK] %s interface is BUS-OFF\n", can_if);
-            error = 1;
-            state = 0;
-        }
-        
-        // 检查接口DOWN
-        if (strstr(line, "state DOWN")) {
-            LOG("[CHECK] %s interface is DOWN\n", can_if);
-            error = 1;
-            state = 0;
-        }
-        
-        // 检查STOPPED
-        if (strstr(line, "state STOPPED")) {
-            LOG("[CHECK] %s controller STOPPED\n", can_if);
-            error = 1;
-            state = 0;
-        }
-        
-        // 检查NO-CARRIER
-        if (strstr(line, "NO-CARRIER")) {
-            LOG("[CHECK] %s physical disconnect\n", can_if);
-            error = 1;
-            state = 0;
-        }
-
-        // 检查错误计数器
-        if (strstr(line, "berr-counter")) {
-            int tx_err = 0, rx_err = 0;
-            sscanf(line, "berr-counter tx %d rx %d", &tx_err, &rx_err);
-            if (tx_err > 100 || rx_err > 100) {
-                LOG("[CHECK] High error count: tx=%d, rx=%d\n", tx_err, rx_err);
-            }
-        }
-    }
-    
-    pclose(fp);
-    
-    if (error) {
+    can_get_state(can_if,&state);
+    if((state == CAN_STATE_BUS_OFF )|| (state == CAN_STATE_STOPPED)){
         LOG("[CHECK] %s is in ERROR state\n", can_if);
         return -2;  // 特殊返回码表示BUS-OFF
-    }
-    
-    return state;
+    }  
+    return 1;
 }
 
 // 主业务判断函数

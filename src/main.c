@@ -86,6 +86,7 @@ void setup_crash_handler() {
     
     printf("Crash handler installed\n");
 }
+
 int main(int argc, char **argv)
 {
     setup_crash_handler();
@@ -105,7 +106,9 @@ int main(int argc, char **argv)
     abnormalDetectionTaskCreate(); // 异常监测任务
     // ocppCommunicationTaskCreate(); //ocpp通信任务
     FtpServiceThreadCreate();
-    unsigned int index1 = 0;
+     int index1 = 0;
+    /*teste*/
+
     while (1)
     {
         // can_do_stop("can2");

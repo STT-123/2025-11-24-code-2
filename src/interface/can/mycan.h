@@ -34,9 +34,6 @@
 
 
 
-
-
-
 bool can_ifconfig_init(const char *device, int bitrate);
 bool can_band_init(const char *device, int *fd);
 
