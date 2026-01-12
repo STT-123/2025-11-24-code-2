@@ -42,16 +42,16 @@ typedef enum {
 
 typedef struct
 {
-	_Atomic unsigned char OTAFileType;
+	_Atomic unsigned char OTAFileType; //文件类型
 	char OTAFilename[OTAFILENAMEMAXLENGTH];//其他ota文件名
 	char OTAUdsSblFilename[MAX_FILE_COUNT][OTAFILENAMEMAXLENGTH];//专门给AC使用的
 	char OTAUdsFilename[MAX_FILE_COUNT][OTAFILENAMEMAXLENGTH];//专门给AC使用的
-	_Atomic unsigned int deviceID;//原子操作
-	_Atomic unsigned char deviceType;
-	_Atomic unsigned char OTAStart;
-	_Atomic unsigned char multDeviceOTA;
-	_Atomic unsigned char multDeviceOTANum;
-	_Atomic unsigned char UpDating;
+	_Atomic unsigned int deviceID;//CAN 设备ID 
+	_Atomic unsigned char deviceType;	//设备类型
+	_Atomic unsigned char OTAStart;	//OTA 开始标志
+	_Atomic unsigned char multDeviceOTA; //
+	_Atomic unsigned char multDeviceOTANum;	//
+	_Atomic unsigned char UpDating;	//上传更新文件开始标志。OTA顺序：上传更新文件+烧写文件
 } OTAObject;
 
 extern OTAObject g_otactrl;
@@ -79,10 +79,6 @@ extern OTAObject g_otactrl;
  void set_ota_multDeviceOTANum(unsigned char value);
 
 // UpDating 操作
- unsigned char get_ota_UpDating(void);
- void set_ota_UpDating(unsigned char value);
-
-// OTAFileType 操作
  unsigned char get_ota_UpDating(void);
  void set_ota_UpDating(unsigned char value);
 

@@ -31,7 +31,7 @@ void *XmodemCommTask(void *arg)
     step = 1;
     while (1)
     {
-        if (g_otactrl.UpDating == 1)
+        if (get_ota_UpDating() == 1)
         {
             set_TCU_PowerUpCmd(BMS_POWER_UPDATING);
         }
@@ -162,7 +162,7 @@ void *XmodemCommTask(void *arg)
                                 if (times >= 30)
                                 {
                                     times = 0;
-                                    g_otactrl.UpDating = 0;
+                                    set_ota_UpDating(0);
                                     LOG("[Xmodem] Write C 30 times over time!");
                                     break;
                                 }
@@ -195,7 +195,7 @@ void *XmodemCommTask(void *arg)
                 if (prvotaCtrregval == 0x0008 && curotaCtrregval == 0x0080)
                 {
                     set_modbus_reg_val(OTASTATUSREGADDR, OTASTARTRUNNING);
-                    g_otactrl.OTAStart = 1;
+                    set_ota_OTAStart(1);
                 }
 
                 // 0x0000 -> !0x0001
@@ -234,7 +234,7 @@ void *XmodemCommTask(void *arg)
             {
                 if (get_timeout_flag() == 1)
                 {
-                    g_otactrl.UpDating = 0;
+                    set_ota_UpDating(0);
                     set_modbus_reg_val(OTASTATUSREGADDR, 0);
                 }
                 prvmsgtimer = curmsgtimer = 0;

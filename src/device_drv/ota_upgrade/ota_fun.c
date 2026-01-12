@@ -310,6 +310,14 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
     // 步骤2: 在tmp创建临时文件夹
     char extract_dir[512] = {0};
     snprintf(extract_dir, sizeof(extract_dir), "/tmp/ota_extract_%d", (int)getpid());
+
+    if (access(extract_dir, F_OK) == 0) { // 清理已存在的目录
+        char rm_cmd[512];
+        snprintf(rm_cmd, sizeof(rm_cmd), "rm -rf \"%s\"", extract_dir);
+        LOG("[OTA] Cleaning existing directory: %s\n", rm_cmd);
+        system(rm_cmd);
+    }
+
     if (mkdir(extract_dir, 0755) != 0 && errno != EEXIST) {
         LOG("[OTA] Failed to create extract dir: %s\n", extract_dir);
         *error_status |= 1 << 3; // 自定义错误位，比如 bit3 表示解压失败
@@ -420,9 +428,9 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
         
         int ret = system(cp_cmd);
         if (ret == 0) {
-            LOG("[OTA] File copy to /var successful: %s\n", file_path);
+            LOG("[OTA] File copy to successful: %s\n", file_path);
         } else {
-            LOG("[OTA] File copy to /var failed\n");
+            LOG("[OTA] File copy to failed\n");
             *error_status |= 1 << 2;
             goto upcelanup;
         }

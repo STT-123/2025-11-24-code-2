@@ -121,14 +121,14 @@ void *lwip_data_TASK(void *param)
 									if(strstr(otafilenamestr, "ECU") != NULL)									
 									{
 										otadeviceType = ECU;
-										g_otactrl.UpDating = 1;//1130
+										set_ota_UpDating(1);//1130
 										printf("otadeviceType  %d\r\n", otadeviceType);
 									}//tst，我也不知道为什么51、52、53必须是0x420x430x55同理BMU （暂追不到原因）
 									else if(strstr(otafilenamestr, "BCU") != NULL)
 									{
 
 										otadeviceType = BCU;
-										g_otactrl.UpDating = 1;//1130
+										set_ota_UpDating(1);//1130g_otactrl.UpDating
 										printf("otadeviceType  %d\r\n", otadeviceType);
 										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
 										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
@@ -138,7 +138,7 @@ void *lwip_data_TASK(void *param)
 									{
 
 										otadeviceType = BMU;
-										g_otactrl.UpDating = 1;//1130
+										set_ota_UpDating(1);//1130
 										printf("otadeviceType  %d\r\n", otadeviceType);
 										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
 										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
@@ -147,23 +147,23 @@ void *lwip_data_TASK(void *param)
 									else if( sblfilenumber == 1)//AC
 									{
 										printf("sblfilenumber = %d\r\n",sblfilenumber);
-										g_otactrl.UpDating = 1;//1130
+										set_ota_UpDating(1);//1130
 
 									}
 									else if(strstr(otafilenamestr, "ACP") != NULL)
 									{
 										printf("ACP_OTA_FILE_DATA..... \r\n");
-										g_otactrl.UpDating = 1;//1220
+										set_ota_UpDating(1);//1220
 									}
 									else if(strstr(otafilenamestr, "DCDC") != NULL)
 									{
 										printf("DCDC UpDating ..... \r\n");
-										g_otactrl.UpDating = 1;//1220
+										set_ota_UpDating(1);//1220
 									}
 
 									else
 									{
-										g_otactrl.UpDating = 0;//1130
+										set_ota_UpDating(0);//1130
 										otadeviceType = 0;
 										delete_files_with_prefix("USB_MOUNT_POINT", "XC");
 										LOG("[Xmodem] Invalid upgrade file\r\n");
@@ -177,7 +177,7 @@ void *lwip_data_TASK(void *param)
 								if(err != 0)
 								{
 									filenormalflag =1;
-									g_otactrl.UpDating = 0;//1130
+									set_ota_UpDating(0);//1130
 									otadeviceType = 0;
 									if (fclose(&OTAfil) != 0)
 									{
@@ -202,7 +202,7 @@ void *lwip_data_TASK(void *param)
 								if(err != 0)
 								{
 									filenormalflag =1;
-									g_otactrl.UpDating = 0;//1130
+									set_ota_UpDating(0);//1130
 									otadeviceType = 0;
 									if (fclose(&OTAfil) != 0)
 									{
@@ -220,54 +220,50 @@ void *lwip_data_TASK(void *param)
 									set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
 								}
 								setXmodemServerReceiveFileEnd(1);//考虑后移动
+								printf("get_ota_UpDating(): %d\r\n",get_ota_UpDating());
 								printf("otafilenamestr1111111 : %s\r\n",otafilenamestr1);
 								if((strstr(otafilenamestr, "bin") != NULL) || (strstr(otafilenamestr1, "bz2") != NULL) || (strstr(otafilenamestr1, "deb") != NULL) || (strstr(otafilenamestr1, "tar") != NULL))
 								{
 									set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
-									g_otactrl.OTAFileType = 0;
+									set_ota_OTAFileType(0);
 									if(strstr(otafilenamestr, "ECU") != NULL)
 									{
-										g_otactrl.deviceType = otadeviceType;
+										set_ota_deviceType(otadeviceType);
 										printf("ECU_OTA_otadeviceType: %u\r\n");
 										printf("otafilenamestr: %u\r\n",otafilenamestr);
-										memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
-										memcpy(g_otactrl.OTAFilename, otafilenamestr, strlen(otafilenamestr));
-										g_otactrl.OTAStart = 1;
+										set_ota_OTAFilename(otafilenamestr);
+										set_ota_deviceID(0);
+										set_ota_OTAStart(1);
 
 									}
 									else if(strstr(otafilenamestr, "BCU") != NULL)
 									{
-										g_otactrl.deviceType = otadeviceType;
-										g_otactrl.deviceID = BCUOTACANID;
-										memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
-										memcpy(g_otactrl.OTAFilename, otafilenamestr, strlen(otafilenamestr));
-
-										g_otactrl.OTAStart = 1;
+										set_ota_deviceType(otadeviceType);
+										set_ota_deviceID(BCUOTACANID);
+										set_ota_OTAFilename(otafilenamestr);
+										set_ota_OTAStart(1);
 									}
 									else if(strstr(otafilenamestr, "BMU") != NULL)
 									{
-										g_otactrl.deviceType = otadeviceType;
-										memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
-										memcpy(g_otactrl.OTAFilename, otafilenamestr, strlen(otafilenamestr));
-										g_otactrl.deviceID = 0x1821FF10;
-										g_otactrl.OTAStart = 1;
+										set_ota_deviceType(otadeviceType);
+										set_ota_OTAFilename(otafilenamestr);
+										set_ota_deviceID(0x1821FF10);
+										set_ota_OTAStart(1);
 									}
 									else if(strstr(otafilenamestr, "ACP") != NULL)
 									{
-										g_otactrl.deviceType = ACP;//1126
-										memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
-										memcpy(g_otactrl.OTAFilename, otafilenamestr, strlen(otafilenamestr));
-										g_otactrl.deviceID = ACPOTACANID;
-										g_otactrl.OTAStart = 1;
+										set_ota_deviceType(ACP);
+										set_ota_OTAFilename(otafilenamestr);
+										set_ota_deviceID(ACPOTACANID);
+										set_ota_OTAStart(1);
 
 									}
 									else if(strstr(otafilenamestr, "DCDC") != NULL)
 									{
-										g_otactrl.deviceType = DCDC;//1126
-										memset(g_otactrl.OTAFilename ,0 ,sizeof(g_otactrl.OTAFilename));
-										memcpy(g_otactrl.OTAFilename, otafilenamestr, strlen(otafilenamestr));
-										g_otactrl.deviceID = DCDCOTACANID;
-										g_otactrl.OTAStart = 1;
+										set_ota_deviceType(DCDC);
+										set_ota_OTAFilename(otafilenamestr);
+										set_ota_deviceID(DCDCOTACANID);
+										set_ota_OTAStart(1);
 									}
 									//------------------------------OTAACP----------------------------------------//
 									else if(strstr(otafilenamestr, "AC") != NULL) 
@@ -276,7 +272,7 @@ void *lwip_data_TASK(void *param)
 									    char *delimiter = "_";
 										set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
 
-										g_otactrl.OTAFileType = 0;
+										set_ota_OTAFileType(0);
 										if(strstr(otafilenamestr, "AC_SBL") != NULL)//XC_AC_SBL_<地址>_<长度>_<CRC>.bin    // Bootloader
 										{
 											clock_gettime(CLOCK_MONOTONIC, &AC_OTA_lastCheckTick);
@@ -343,9 +339,9 @@ void *lwip_data_TASK(void *param)
 										printf("APP_index ...  %d \r\n",APP_index);
 										printf("sblfilenumber...%d\r\n",sblfilenumber);
 										printf("appfilenumber...%d\r\n",appfilenumber);
-										g_otactrl.deviceID = ACOTACANID;
-										g_otactrl.deviceType = AC;
-										g_otactrl.OTAStart = 1;
+										set_ota_deviceID(ACOTACANID);
+										set_ota_deviceType(AC);
+										set_ota_OTAStart(1);
 
 									}
 									//------------------------------OTAACP----------------------------------------//
@@ -428,7 +424,7 @@ void *lwip_data_TASK(void *param)
 								if(strstr(otafilenamestr, "ECU") != NULL)									
 								{
 									otadeviceType = ECU;
-									g_otactrl.UpDating = 1;//1130
+									set_ota_UpDating(1);//1130
 								}
 								else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x43 && tcp_server_recvbuf[53]==0x55)
 								{
@@ -456,7 +452,7 @@ void *lwip_data_TASK(void *param)
 							if(err != 0)
 							{
 								filenormalflag =1;
-								g_otactrl.UpDating = 0;//1130
+								set_ota_UpDating(0);//1130
 								otadeviceType = 0;
 								if (fclose(&OTAfil) != 0)
 								{
@@ -482,7 +478,7 @@ void *lwip_data_TASK(void *param)
 							if(err != 0)
 							{
 								filenormalflag =1;
-								g_otactrl.UpDating = 0;//1130
+								set_ota_UpDating(0);//1130
 								otadeviceType = 0;
 								if (fclose(&OTAfil) != 0)
 								{
@@ -503,7 +499,7 @@ void *lwip_data_TASK(void *param)
 
 							if(strstr(otafilenamestr1, "bin") != NULL)
 							{
-								g_otactrl.OTAFileType = 0;
+								set_ota_OTAFileType(0);
 								if(strstr(otafilenamestr1, "ECU") != NULL)
 								{
 									g_otactrl.deviceType = otadeviceType;
@@ -557,7 +553,7 @@ void *lwip_data_TASK(void *param)
 							}
 							else if(strstr(otafilenamestr1, "zip") != NULL)
 							{
-								g_otactrl.OTAFileType = 0;
+								set_ota_OTAFileType(0);
 								if(strstr(otafilenamestr1, "ECU") != NULL)
 								{
 									LOG("[Xmodem] ECU tar.bz2 file\r\n");
@@ -597,7 +593,7 @@ void *lwip_data_TASK(void *param)
 			    if (errorCount >= 10)
 			    {
 					setXmodemServerReceiveFileEnd(1);
-			        g_otactrl.UpDating = 0;//1130
+			        set_ota_UpDating(0);//1130
 			    }
 			}
 			else

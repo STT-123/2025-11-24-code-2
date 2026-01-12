@@ -223,12 +223,13 @@ void *websocket_send_thread(void *arg)
         }
 
         // db消息（每10秒）
-        printf("dbcounter =%d...\n", dbcounter);
+        // printf("dbcounter =%d...\n", dbcounter);
         if (dbcounter++ >= 60) {
             
             int ids[REPORT_COUNT];
             int count = 0;
             send_ocpp_message(compress_detail_data(db, ids, &count));
+            LOG("SEND BAT DATA \r\n");
             dbcounter = 0;
         }
         

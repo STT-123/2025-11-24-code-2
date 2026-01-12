@@ -75,7 +75,7 @@ void FinshhECUOtaAndCleanup(void)
     delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
     delete_files_with_prefix(USB_MOUNT_POINT, "deb"); // 删除升级文件
     delete_files_with_prefix(USB_MOUNT_POINT, "tar"); // 删除升级文件
-	g_otactrl.UpDating = 0;//1130(升级结束)
+	set_ota_UpDating(0);//1130(升级结束)
 	ecustatus.CANStartOTA = 0;
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
     LOG("[OTA] OTA finished, cleaning up...\n");

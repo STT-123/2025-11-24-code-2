@@ -123,6 +123,7 @@ int main(int argc, char **argv)
         // printf("data.get_usBatMinVoltCellIndex = %ld\n", get_usBatMinVoltCellIndex());
         // printf("data.get_usBatCellVoltMin = %ld\n", get_usBatCellVoltMin());
         sleep(1);
+        // printf("get_ota_UpDating(): %d\r\n",get_ota_UpDating());
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");
         // index1 = 0x4B5C - 0x3000;

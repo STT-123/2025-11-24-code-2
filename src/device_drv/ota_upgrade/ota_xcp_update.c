@@ -193,7 +193,7 @@ static int XCPCANOTAMSGParseMult(XCPStatus *xcpstatus)
             
 	        if (res == 0)
 	        {
-                printf("[OTA] get_ota_deviceID(): 0x %x, OTA_RecvPacketCount = %d\r\n", get_ota_deviceID(),OTA_RecvPacketCount++);
+                // printf("[OTA] get_ota_deviceID(): 0x %x, OTA_RecvPacketCount = %d\r\n", get_ota_deviceID(),OTA_RecvPacketCount++);
 	        	return 0;
 	        }
             else{
@@ -893,7 +893,7 @@ void FinshhBCUBMUOtaAndCleanup(void)
     delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
     delete_files_with_prefix(USB_MOUNT_POINT, "tar"); 
 
-	g_otactrl.UpDating = 0;//1130(升级结束)
+	set_ota_UpDating(0);//1130(升级结束)
 	memset(&xcpstatus,0,sizeof(xcpstatus));
     set_OTA_XCPConnect(0);//删除跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);

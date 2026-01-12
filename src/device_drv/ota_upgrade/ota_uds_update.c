@@ -1644,7 +1644,7 @@ void UDS_OTA(void)
             udsstatus.DeviceProgramOkFlag = 1;
             set_modbus_reg_val(OTAPPROGRESSREGADDR, 100);//0124,升级进度
             set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
-            g_otactrl.UpDating = 0;//1130(升级成功)
+            set_ota_UpDating(0);//1130(升级成功)
             udsstatus.CANStartOTA = 0;
 
         }
@@ -1668,7 +1668,7 @@ void FinishACOtaAndCleanup(void)
 	delete_files_with_prefix(USB_MOUNT_POINT, "AC");//  这个要删除升级文件，判断xcpstatus状态，成功或者失败删除
 	delete_files_with_prefix(USB_MOUNT_POINT, "XC");//  这个要删除升级文件，判断xcpstatus状态，成功或者失败删除
 	delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
-	g_otactrl.UpDating = 0;//1130(升级结束)
+	set_ota_UpDating(0);//1130(升级结束)
 	udsstatus.CANStartOTA = 0;
 	SBl_index = 0;
 	APP_index = 0;
