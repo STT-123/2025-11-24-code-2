@@ -44,8 +44,8 @@ void *ota_Upgrade_Task(void *arg)
     // set_ota_deviceID(0) ;//ECU
 
     set_ota_OTAStart(1) ;
-    printf("get_ota_OTAFilename() : %s\r\n",get_ota_OTAFilename());
-    printf("get_ota_deviceID(): %x\r\n",get_ota_deviceID());
+    LOG("[OTA] get_ota_OTAFilename() : %s\r\n",get_ota_OTAFilename());
+    LOG("[OTA] get_ota_deviceID(): %x\r\n",get_ota_deviceID());
 #endif
     while (1)
     {
@@ -129,7 +129,7 @@ void *ota_Upgrade_Task(void *arg)
                 else if (independentStatus.DeviceProgramOkFlag)
                 {
                     independentStatus.DeviceProgramOkFlag = 0; // 需要添加
-                    printf("CAN ID 0x%x ACP OTA success!\r\n", get_ota_deviceID());
+                    LOG("[OTA] CAN ID 0x%x ACP OTA success!\r\n", get_ota_deviceID());
                     LOG("[OTA] CAN ID 0x%x ACP OTA success!\r\n", get_ota_deviceID());
                     if (get_ota_deviceType() == ACP)
                     {
@@ -169,7 +169,7 @@ void *ota_Upgrade_Task(void *arg)
                 else if (udsstatus.DeviceProgramOkFlag)
                 {
                     udsstatus.DeviceProgramOkFlag = 0; // 需要添加
-                    printf("CAN ID 0x%x ACP OTA success!\r\n", get_ota_deviceID());
+                    LOG("[OTA] CAN ID 0x%x ACP OTA success!\r\n", get_ota_deviceID());
                     LOG("[OTA] CAN ID 0x%x ACP OTA success!\r\n", get_ota_deviceID());
                     if (get_ota_deviceType() == AC)
                     {
@@ -179,13 +179,13 @@ void *ota_Upgrade_Task(void *arg)
             }
             else if (get_ota_deviceType() == BCU || get_ota_deviceType() == BMU)
             {
-                printf("BCU or BMU OTA start!\r\n");
-                printf("get_ota_deviceType() == BCU : %u\r\n", get_ota_deviceType());
+                LOG("[OTA] BCU or BMU OTA start!\r\n");
+                LOG("[OTA] get_ota_deviceType() == BCU : %u\r\n", get_ota_deviceType());
                 if (get_ota_deviceType() == BCU)
                 {
                     for (unsigned int i = 0; i < 5; i++){
                         set_OTA_XCPConnect((real_T)255);//设置跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
-                        printf("111\r\n");
+                        LOG("[OTA] 111\r\n");
                         CANFDSendFcn_BCU_step();
                         usleep(200*1000);
                     }                 

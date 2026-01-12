@@ -2,12 +2,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-
+#include <sys/types.h>    // 必须包含
+#include <sys/stat.h>     // 必须包含，定义了struct stat
 // 0 成功
 // -1 配置文件不对
 // -2 初始化失败
 int log_init()
 {
+    int ret;
+       
     if (F_OK != access(ZLOG_DATA_FILE_PATH, 0))
     {
         system("mkdir " ZLOG_DATA_FILE_PATH); // 创建文件夹

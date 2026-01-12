@@ -53,8 +53,8 @@ const unsigned int crc_table[256] = {
 
 void *lwip_data_TASK(void *param)
 {
-	printf("lwip_data_TASK %d\r\n", otasock1);
-	printf("otasock1 %d\r\n", otasock1);
+	LOG("[Xmodem] lwip_data_TASK %d\r\n", otasock1);
+	LOG("[Xmodem] otasock1 %d\r\n", otasock1);
 	char otafilenamestr[128] = {'\0'};//文件名
 	int filesize = 0;//总字节数
 	int xmodempacknum = 0;//总包数
@@ -76,7 +76,7 @@ void *lwip_data_TASK(void *param)
 			memset(tcp_server_recvbuf, 0, 2048);
 			int length = read(otasock1, tcp_server_recvbuf, 2048);
 			curmsgtimer = OsIf_GetMilliseconds();
-			// printf("length :%d\r\n",length);
+			// LOG("[Xmodem] length :%d\r\n",length);
 			//目前接收到的BCU\BMU\ECU都是133长度的数据
 			if(length == 133)
 			{
@@ -111,53 +111,53 @@ void *lwip_data_TASK(void *param)
 								packidoverflownum++;//循环次数
 							}
 							packno = tcp_server_recvbuf[1] + packidoverflownum * 255;//总包数
-							printf("recv packnum = %d \r\n",packno);
+							LOG("[Xmodem] recv packnum = %d \r\n",packno);
 							if(packno != xmodempacknum)
 							{
 								readdatanum = 128;//每次读取128字节
 								if(packno == 1)//第一包
 								{
-									printf("otafilenamestr : %s\r\n",otafilenamestr);
+									LOG("[Xmodem] otafilenamestr : %s\r\n",otafilenamestr);
 									if(strstr(otafilenamestr, "ECU") != NULL)									
 									{
 										otadeviceType = ECU;
 										set_ota_UpDating(1);//1130
-										printf("otadeviceType  %d\r\n", otadeviceType);
+										LOG("[Xmodem] otadeviceType  %d\r\n", otadeviceType);
 									}//tst，我也不知道为什么51、52、53必须是0x420x430x55同理BMU （暂追不到原因）
 									else if(strstr(otafilenamestr, "BCU") != NULL)
 									{
 
 										otadeviceType = BCU;
 										set_ota_UpDating(1);//1130g_otactrl.UpDating
-										printf("otadeviceType  %d\r\n", otadeviceType);
-										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
+										LOG("[Xmodem] otadeviceType  %d\r\n", otadeviceType);
+										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
+										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
+										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 									}
 									else if(strstr(otafilenamestr, "BMU") != NULL)
 									{
 
 										otadeviceType = BMU;
 										set_ota_UpDating(1);//1130
-										printf("otadeviceType  %d\r\n", otadeviceType);
-										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-										printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
+										LOG("[Xmodem] otadeviceType  %d\r\n", otadeviceType);
+										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
+										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
+										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 									}
 									else if( sblfilenumber == 1)//AC
 									{
-										printf("sblfilenumber = %d\r\n",sblfilenumber);
+										LOG("[Xmodem] sblfilenumber = %d\r\n",sblfilenumber);
 										set_ota_UpDating(1);//1130
 
 									}
 									else if(strstr(otafilenamestr, "ACP") != NULL)
 									{
-										printf("ACP_OTA_FILE_DATA..... \r\n");
+										LOG("[Xmodem] ACP_OTA_FILE_DATA..... \r\n");
 										set_ota_UpDating(1);//1220
 									}
 									else if(strstr(otafilenamestr, "DCDC") != NULL)
 									{
-										printf("DCDC UpDating ..... \r\n");
+										LOG("[Xmodem] DCDC UpDating ..... \r\n");
 										set_ota_UpDating(1);//1220
 									}
 
@@ -220,8 +220,8 @@ void *lwip_data_TASK(void *param)
 									set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
 								}
 								setXmodemServerReceiveFileEnd(1);//考虑后移动
-								printf("get_ota_UpDating(): %d\r\n",get_ota_UpDating());
-								printf("otafilenamestr1111111 : %s\r\n",otafilenamestr1);
+								LOG("[Xmodem] get_ota_UpDating(): %d\r\n",get_ota_UpDating());
+								LOG("[Xmodem] otafilenamestr1111111 : %s\r\n",otafilenamestr1);
 								if((strstr(otafilenamestr, "bin") != NULL) || (strstr(otafilenamestr1, "bz2") != NULL) || (strstr(otafilenamestr1, "deb") != NULL) || (strstr(otafilenamestr1, "tar") != NULL))
 								{
 									set_modbus_reg_val(OTASTATUSREGADDR, FILEDECRYPTIONNORMALTERMINATION);
@@ -229,8 +229,8 @@ void *lwip_data_TASK(void *param)
 									if(strstr(otafilenamestr, "ECU") != NULL)
 									{
 										set_ota_deviceType(otadeviceType);
-										printf("ECU_OTA_otadeviceType: %u\r\n");
-										printf("otafilenamestr: %u\r\n",otafilenamestr);
+										LOG("[Xmodem] ECU_OTA_otadeviceType: %u\r\n");
+										LOG("[Xmodem] otafilenamestr: %u\r\n",otafilenamestr);
 										set_ota_OTAFilename(otafilenamestr);
 										set_ota_deviceID(0);
 										set_ota_OTAStart(1);
@@ -278,8 +278,8 @@ void *lwip_data_TASK(void *param)
 											clock_gettime(CLOCK_MONOTONIC, &AC_OTA_lastCheckTick);
 											memset(g_otactrl.OTAUdsSblFilename[SBl_index],0 ,sizeof(g_otactrl.OTAUdsSblFilename[SBl_index]));
 											//需要告诉我一共分成多少bin文件，然后达到数量后赋值otactrl.deviceType = ACP;，进入XcpOTATestTask
-											printf("AC_SBL_OTA_FILE_NAME: %s\r\n", otafilenamestr);
-											printf("AC_SBL_OTA_FILE_NAME: %s\r\n", otafilenamestr1);
+											LOG("[Xmodem] AC_SBL_OTA_FILE_NAME: %s\r\n", otafilenamestr);
+											LOG("[Xmodem] AC_SBL_OTA_FILE_NAME: %s\r\n", otafilenamestr1);
 											memcpy(g_otactrl.OTAUdsSblFilename[SBl_index], otafilenamestr1, strlen(otafilenamestr1));
 
 										    token = strtok(otafilenamestr, delimiter); // AC
@@ -290,11 +290,11 @@ void *lwip_data_TASK(void *param)
 											flashData.writeLen =(uint32_t)strtoul(token, NULL, 16);
 											token = strtok(NULL, delimiter);
 											flashData.CRC =(uint16_t)strtoul(token, NULL, 16);
-											printf("g_otactrl.OTAUdsSblFilename[SBl_index]: %s!\r\n", g_otactrl.OTAUdsSblFilename[SBl_index]);
-											printf("flashData.writeAddr: 0x%08X\r\n", flashData.writeAddr);
-											printf("flashData.writeLen: 0x%08X\r\n", flashData.writeLen);
-											printf("flashData.CRC: 0x%04X\r\n", flashData.CRC);
-											printf("SBl_index: %d\r\n", SBl_index);
+											LOG("[Xmodem] g_otactrl.OTAUdsSblFilename[SBl_index]: %s!\r\n", g_otactrl.OTAUdsSblFilename[SBl_index]);
+											LOG("[Xmodem] flashData.writeAddr: 0x%08X\r\n", flashData.writeAddr);
+											LOG("[Xmodem] flashData.writeLen: 0x%08X\r\n", flashData.writeLen);
+											LOG("[Xmodem] flashData.CRC: 0x%04X\r\n", flashData.CRC);
+											LOG("[Xmodem] SBl_index: %d\r\n", SBl_index);
 											SBl_index++;
 
 										}
@@ -302,8 +302,8 @@ void *lwip_data_TASK(void *param)
 										{
 												clock_gettime(CLOCK_MONOTONIC, &AC_OTA_lastCheckTick);
 												memset(g_otactrl.OTAUdsFilename[APP_index],0 ,sizeof(g_otactrl.OTAUdsFilename[APP_index]));
-												printf("AC_APP_OTA_FILE_NAME: %s\r\n", otafilenamestr);
-												printf("AC_SBL_OTA_FILE_NAME: %s\r\n", otafilenamestr1);
+												LOG("[Xmodem] AC_APP_OTA_FILE_NAME: %s\r\n", otafilenamestr);
+												LOG("[Xmodem] AC_SBL_OTA_FILE_NAME: %s\r\n", otafilenamestr1);
 												memcpy(g_otactrl.OTAUdsFilename[APP_index], otafilenamestr1, strlen(otafilenamestr1));
 
 											    token = strtok(otafilenamestr, delimiter); // AC
@@ -314,11 +314,11 @@ void *lwip_data_TASK(void *param)
 												appData[APP_index].writeLen =(uint32_t)strtoul(token, NULL, 16);
 												token = strtok(NULL, delimiter);
 												appData[APP_index].CRC =(uint16_t)strtoul(token, NULL, 16);
-												printf("g_otactrl.OTAUdsFilename[APP_index]: %s\r\n", g_otactrl.OTAUdsFilename[APP_index]);
-												printf("appData.writeAddr[APP_index]: 0x%08X\r\n", appData[APP_index].writeAddr);
-												printf("appData.writeLen[APP_index]: 0x%08X\r\n", appData[APP_index].writeLen);
-												printf("appData.CRC[APP_index]: 0x%04X!\r\n", appData[APP_index].CRC);
-												printf("APP_index: %d\r\n", APP_index);
+												LOG("[Xmodem] g_otactrl.OTAUdsFilename[APP_index]: %s\r\n", g_otactrl.OTAUdsFilename[APP_index]);
+												LOG("[Xmodem] appData.writeAddr[APP_index]: 0x%08X\r\n", appData[APP_index].writeAddr);
+												LOG("[Xmodem] appData.writeLen[APP_index]: 0x%08X\r\n", appData[APP_index].writeLen);
+												LOG("[Xmodem] appData.CRC[APP_index]: 0x%04X!\r\n", appData[APP_index].CRC);
+												LOG("[Xmodem] APP_index: %d\r\n", APP_index);
 												APP_index++;
 
 										}
@@ -327,18 +327,18 @@ void *lwip_data_TASK(void *param)
 										get_modbus_reg_val(AC_SBL_OTAFILENUMBER, &sblfilenumber);
 										get_modbus_reg_val(AC_APP_OTAFILENUMBER, &appfilenumber);
 										usleep(50*1000);
-										printf("SBl_index ...  %d \r\n",SBl_index);
-										printf("APP_index ...  %d \r\n",APP_index);
-										printf("sblfilenumber...%d\r\n",sblfilenumber);
-										printf("appfilenumber...%d\r\n",appfilenumber);
+										LOG("[Xmodem] SBl_index ...  %d \r\n",SBl_index);
+										LOG("[Xmodem] APP_index ...  %d \r\n",APP_index);
+										LOG("[Xmodem] sblfilenumber...%d\r\n",sblfilenumber);
+										LOG("[Xmodem] appfilenumber...%d\r\n",appfilenumber);
 
 
 									if((SBl_index != 0) && (SBl_index == sblfilenumber) && (APP_index != 0) && (APP_index == appfilenumber))
 									{
-										printf("SBl_index ...  %d \r\n",SBl_index);
-										printf("APP_index ...  %d \r\n",APP_index);
-										printf("sblfilenumber...%d\r\n",sblfilenumber);
-										printf("appfilenumber...%d\r\n",appfilenumber);
+										LOG("[Xmodem] SBl_index ...  %d \r\n",SBl_index);
+										LOG("[Xmodem] APP_index ...  %d \r\n",APP_index);
+										LOG("[Xmodem] sblfilenumber...%d\r\n",sblfilenumber);
+										LOG("[Xmodem] appfilenumber...%d\r\n",appfilenumber);
 										set_ota_deviceID(ACOTACANID);
 										set_ota_deviceType(AC);
 										set_ota_OTAStart(1);
@@ -350,7 +350,7 @@ void *lwip_data_TASK(void *param)
 									{
 
 									}
-									printf("OTAStart:%d,deviceID:%d,OTAFilename:%s,OTAFileType:%d,deviceType:%d\n", g_otactrl.OTAStart, g_otactrl.deviceID, g_otactrl.OTAFilename, g_otactrl.OTAFileType, g_otactrl.deviceType);
+									LOG("[Xmodem] OTAStart:%d,deviceID:%d,OTAFilename:%s,OTAFileType:%d,deviceType:%d\n", g_otactrl.OTAStart, g_otactrl.deviceID, g_otactrl.OTAFilename, g_otactrl.OTAFileType, g_otactrl.deviceType);
 
 								}
 								else if(strstr(otafilenamestr, "srec") != NULL || strstr(otafilenamestr, "s19") != NULL)
@@ -429,22 +429,22 @@ void *lwip_data_TASK(void *param)
 								else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x43 && tcp_server_recvbuf[53]==0x55)
 								{
 									otadeviceType = BCU;
-									printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-									printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-									printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
+									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
+									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
+									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 								}
 								else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x4d && tcp_server_recvbuf[53]==0x55)
 								{
 									otadeviceType = BMU;
-									printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-									printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-									printf("As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
+									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
+									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
+									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 								}
 								else
 								{
 									delete_files_with_prefix(USB_MOUNT_POINT, "XC");
 									otadeviceType = 0;
-									printf("Invalid upgrade file\r\n");
+									LOG("[Xmodem] Invalid upgrade file\r\n");
 									setXmodemServerReceiveFileEnd(1);
 								}
 							}
@@ -473,7 +473,7 @@ void *lwip_data_TASK(void *param)
 						{
 
 							filesize%1024?(readdatanum = filesize%1024):(readdatanum = 1024);
-							printf("Receive the last pack , need read %d data from xmodem data area!\r\n", readdatanum);
+							LOG("[Xmodem] Receive the last pack , need read %d data from xmodem data area!\r\n", readdatanum);
 							int err = SaveOtaFile(otafilenamestr, &(tcp_server_recvbuf[3]), xmodempacknum, packno, readdatanum);
 							if(err != 0)
 							{
@@ -580,7 +580,7 @@ void *lwip_data_TASK(void *param)
 			}
 			else if(length == 1)
 			{
-				printf("Rcv 1 byte data -> 0x%x\r\n", tcp_server_recvbuf[0]);
+				LOG("[Xmodem] Rcv 1 byte data -> 0x%x\r\n", tcp_server_recvbuf[0]);
 				if(tcp_server_recvbuf[0] == EOT)
 				{
 					setXmodemServerReceiveEOT(1);
@@ -604,7 +604,7 @@ void *lwip_data_TASK(void *param)
 
 		if(errpacknum > 5)
 		{
-			printf("error pack over 5!\r\n");
+			LOG("[Xmodem] error pack over 5!\r\n");
 			setXmodemServerEnd(1);
 		}
 
@@ -653,7 +653,7 @@ signed char GetOTAFILEInfo(unsigned char *databuf, char *name, int *filesize, in
 	unsigned short i = 0;
 	if(databuf == NULL)
 	{
-		printf("databuf null\r\n");
+		LOG("[Xmodem] databuf null\r\n");
 		return -1;
 	}
 
@@ -702,7 +702,7 @@ signed char GetOTAFILEInfo(unsigned char *databuf, char *name, int *filesize, in
 	}
 	else
 	{
-		printf("filesize %s->%d error \r\n");
+		LOG("[Xmodem] filesize %s->%d error \r\n");
 		return -2;
 	}
 	if (sscanf(filepacknumbuf, "%d", xmodempacknum) == 1)
@@ -711,7 +711,7 @@ signed char GetOTAFILEInfo(unsigned char *databuf, char *name, int *filesize, in
 	}
 	else
 	{
-		printf("xmodempacknum %s->%d error \r\n");
+		LOG("[Xmodem] xmodempacknum %s->%d error \r\n");
 		return -3;
 	}
 
@@ -732,7 +732,7 @@ int switch_to_root_directory(void) {
 
     if (strcmp(current_path, "/") != 0) {
         if (chdir("/") == 0) {
-            printf("Changed to root directory.\n");
+            LOG("[Xmodem] Changed to root directory.\n");
         } else {
             perror("Failed to change to root directory");
             return errno;
@@ -765,14 +765,14 @@ signed char SaveOtaFile(char *name, unsigned char *buf, int totalpacknum, int cu
         }
         else
         {
-            printf("file create successfully!\n");
+            LOG("[Xmodem] file create successfully!\n");
         }
     }
 
     writebytenum = fwrite(buf, 1, datanum, OTAfil);
     if(writebytenum != datanum)
     {
-        printf("xmodem write file %s error! Expected %d bytes, wrote %d bytes\n", name, datanum, writebytenum);
+        LOG("[Xmodem] xmodem write file %s error! Expected %d bytes, wrote %d bytes\n", name, datanum, writebytenum);
         return -2;
     }
 
@@ -784,7 +784,7 @@ signed char SaveOtaFile(char *name, unsigned char *buf, int totalpacknum, int cu
 
     if(curpackno == totalpacknum)
     {
-        printf("The last pack!\n");
+        LOG("[Xmodem] The last pack!\n");
         if(fclose(OTAfil) != 0)
         {
             perror("close ota file error");
@@ -841,10 +841,10 @@ void delete_files_with_prefix(const char *path, const char *substring) {
         // Check prefix match
         if (strstr(entry->d_name, substring) != NULL){
             if (unlink(filepath) == 0) {
-                printf("Deleted: %s\n", filepath);
+                LOG("[Xmodem] Deleted: %s\n", filepath);
             } else {
                 perror("Failed to delete file");
-                printf("Filename: %s\n", filepath);
+                LOG("[Xmodem] Filename: %s\n", filepath);
             }
         }
     }

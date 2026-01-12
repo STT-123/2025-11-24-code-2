@@ -8,7 +8,7 @@
 
 void* Lwip_Listen_TASK(void* param)
 {
-    printf("Lwip_Listen_TASK\r\n");
+    LOG("[Xmodem] Lwip_Listen_TASK\r\n");
 
     struct sockaddr_in address, remote;
     socklen_t size;
@@ -16,13 +16,13 @@ void* Lwip_Listen_TASK(void* param)
 
     otasock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (otasock < 0) {
-        printf("OTA socket create error\n");
+        LOG("[Xmodem] OTA socket create error\n");
         return NULL;
     }
 
     int optval = 1;
     if (setsockopt(otasock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
-        printf("setsockopt failed\n");
+        LOG("[Xmodem] setsockopt failed\n");
         close(otasock);
         return NULL;
     }
@@ -32,7 +32,7 @@ void* Lwip_Listen_TASK(void* param)
     address.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(otasock, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        printf("bind error!\n");
+        LOG("[Xmodem] bind error!\n");
         close(otasock);
         return NULL;
     }
@@ -42,14 +42,14 @@ void* Lwip_Listen_TASK(void* param)
     size = sizeof(remote);
     while (1)
     {
-        printf("otasock1 before accept: %d\n", otasock1);
+        LOG("[Xmodem] otasock1 before accept: %d\n", otasock1);
         otasock1 = accept(otasock, (struct sockaddr *)&remote, &size);
         if (otasock1 > 0)
         {
             setClientConnected(1);
             // clientConnected = 1;
-            printf("otasock1 = %d\n", otasock1);
-            printf("Client connected: %s:%d\n",inet_ntoa(remote.sin_addr), ntohs(remote.sin_port));
+            LOG("[Xmodem] otasock1 = %d\n", otasock1);
+            LOG("[Xmodem] Client connected: %s:%d\n",inet_ntoa(remote.sin_addr), ntohs(remote.sin_port));
 
             if (*pLwIPTCPDataTaskHandle == NULL)
             {

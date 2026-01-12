@@ -18,7 +18,7 @@ static void *ftp_service_thread_func(void *arg)
     server_sock = socket(AF_INET, SOCK_STREAM, 0);
     if (server_sock < 0)
     {
-        printf("Failed to create socket\n");
+        LOG("[FTP] Failed to create socket\n");
         return;
     }
 
@@ -37,7 +37,7 @@ static void *ftp_service_thread_func(void *arg)
     // Bind socket to address
     if (bind(server_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
     {
-        printf("Failed to bind socket\n");
+        LOG("[FTP] Failed to bind socket\n");
         close(server_sock);
         return;
     }
@@ -57,7 +57,7 @@ static void *ftp_service_thread_func(void *arg)
         state.control_sock = accept(server_sock, (struct sockaddr *)&state.client_addr, &state.client_addr_len);
         if (state.control_sock < 0)
         {
-            printf("Failed to accept connection\n");
+            LOG("[FTP] Failed to accept connection\n");
             sleep(1);
             continue;
         }

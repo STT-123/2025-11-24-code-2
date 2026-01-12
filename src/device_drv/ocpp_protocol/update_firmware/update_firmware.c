@@ -98,7 +98,7 @@ void* firmware_download_worker(void* arg) {
 void handle_update_firmware(struct lws *wsi, json_object *json) {
     // json: [2, "messageId", "UpdateFirmware", { "location": "...", "retrieveDate": "..." }]
     if (!json_object_is_type(json, json_type_array)) {
-        printf("Invalid message: not a JSON array.\n");
+        LOG("[OCPP] Invalid message: not a JSON array.\n");
         return;
     }
 
@@ -108,7 +108,7 @@ void handle_update_firmware(struct lws *wsi, json_object *json) {
     json_object *payload = json_object_array_get_idx(json, 3);
 
     if (!msg_type || !msg_id || !payload || !json_object_is_type(msg_id, json_type_string) || !json_object_is_type(payload, json_type_object)) {
-        printf("Invalid UpdateFirmware message structure.\n");
+        LOG("[OCPP] Invalid UpdateFirmware message structure.\n");
         return;
     }
 

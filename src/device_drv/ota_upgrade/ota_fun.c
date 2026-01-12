@@ -301,7 +301,7 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
         LOG("Source file path: %s\n", sd_source_file);
         // 检查源文件是否存在
         if (access(sd_source_file, F_OK) != 0) {
-            printf("OTA source file does not exist: %s\n", sd_source_file);
+            LOG("OTA source file does not exist: %s\n", sd_source_file);
             *error_status |= 1 << 2;
             goto upcelanup;
         }         

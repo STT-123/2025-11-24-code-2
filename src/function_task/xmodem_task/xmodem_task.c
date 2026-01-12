@@ -44,17 +44,17 @@ void *XmodemCommTask(void *arg)
         int ret = get_modbus_reg_val(OTACTRLREGADDR, &curotaCtrregval);
         ret = get_modbus_reg_val(AC_SBL_OTAFILENUMBER, &sblfilenumber);
         ret = get_modbus_reg_val(AC_APP_OTAFILENUMBER, &appfilenumber);
-        //  printf("curotaCtrregval %d sblfilenumber %d appfilenumber %d\n", curotaCtrregval, sblfilenumber, appfilenumber);
+        //  LOG("[Xmodem] curotaCtrregval %d sblfilenumber %d appfilenumber %d\n", curotaCtrregval, sblfilenumber, appfilenumber);
 
         if (ret < 0)
         {
-            //printf("ret %d get modbus reg val error\n", ret);
+            //LOG("[Xmodem] ret %d get modbus reg val error\n", ret);
         }
         else
         {
             if ((curotaCtrregval != prvotaCtrregval) && (g_otactrl.OTAStart == 0))
             {
-                printf("ota curotaCtrregval 0x%x prvotaCtrregval 0x%x\n", curotaCtrregval, prvotaCtrregval);
+                LOG("[Xmodem] ota curotaCtrregval 0x%x prvotaCtrregval 0x%x\n", curotaCtrregval, prvotaCtrregval);
 
                 if (curotaCtrregval == 0x0000)
                 {
@@ -68,7 +68,7 @@ void *XmodemCommTask(void *arg)
                 if (curotaCtrregval == 0x0001)//上位机发送升级文件，curotaCtrregval值会被改变
                 {
                     // 临界区保护：确保任务创建不会出现竞态条件
-                    printf("TcpServerExample task malloc!\n");
+                    LOG("[Xmodem] TcpServerExample task malloc!\n");
                     pthread_mutex_lock(&task_mutex); // 锁住临界区
 
                     if (pLwIPTCPListenTaskHandle == NULL)
@@ -177,7 +177,7 @@ void *XmodemCommTask(void *arg)
                                 setXmodemServerEnd(1);
                                 set_modbus_reg_val(OTASTATUSREGADDR, 0);
                                 set_modbus_reg_val(OTAPPROGRESSREGADDR, 0);
-                                printf("Without client connect over 60s, close xmodem tcp server!\n");
+                                LOG("[Xmodem] Without client connect over 60s, close xmodem tcp server!\n");
                                 LOG("[Xmodem] Without client connect over 60s, close xmodem tcp server!");
                                 break;
                             }
@@ -204,12 +204,12 @@ void *XmodemCommTask(void *arg)
                     setXmodemServerEnd(1);
                     set_modbus_reg_val(OTASTATUSREGADDR, 0);
                     set_modbus_reg_val(OTAPPROGRESSREGADDR, 0);
-                    printf("prvotaCtrregval == 0 && step == 2 && curotaCtrregval != 0x0001\n");
+                    LOG("[Xmodem] prvotaCtrregval == 0 && step == 2 && curotaCtrregval != 0x0001\n");
                 }
             }
             if (getXmodemServerEnd() == 1)
             {
-                printf("XmodemServerEnd\n");
+                LOG("[Xmodem] XmodemServerEnd\n");
                 CloseXModemServer();
                 setXmodemServerEnd(0);
             }

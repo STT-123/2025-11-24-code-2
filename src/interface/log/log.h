@@ -8,7 +8,7 @@
 */
 
 #define ZLOG_CONF_FILE_PATH "/opt/xcharge/zlog.conf"    // zlog 配置文件地址
-#define ZLOG_DATA_FILE_PATH "/opt/xcharge/log"          // zlog 日志存放地址
+#define ZLOG_DATA_FILE_PATH "/mnt/sda/log"          // zlog 日志存放地址
 
 zlog_category_t *log_printf;    // 终端
 zlog_category_t *log_record;    // 通用日志

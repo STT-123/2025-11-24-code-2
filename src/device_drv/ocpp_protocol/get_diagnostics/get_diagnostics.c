@@ -67,7 +67,7 @@ static int upload_progress_callback(void *clientp,
     if (ultotal > 0) {
         int percent = (int)(ulnow * 100 / ultotal);
         if (percent != last_percent) {
-            printf("Upload progress: %d%%\r\n", percent);
+            LOG("Upload progress: %d%%\r\n", percent);
             fflush(stdout);
             last_percent = percent;
         }
@@ -76,7 +76,7 @@ static int upload_progress_callback(void *clientp,
 }
 static size_t write_response(void *buffer, size_t size, size_t nmemb, void *userp) {
     size_t total = size * nmemb;
-    printf("Server response : %.*s\n", (int)total, (char*)buffer);
+    LOG("Server response : %.*s\n", (int)total, (char*)buffer);
     return total;
 }
 
@@ -105,7 +105,7 @@ int ocpp_upload_file(const char *url) {
         LOG("Compression failed.\n");
         // 这里可以检查具体错误
         if (WIFEXITED(result)) {
-            printf("压缩命令退出码: %d\n", WEXITSTATUS(result));
+            LOG("compress cmd ecit code: %d\n", WEXITSTATUS(result));
         }
     }
 
@@ -211,7 +211,7 @@ void* diagnostics_upload_worker(void* arg) {
 void handle_get_diagnostics(struct lws *wsi, json_object *json) {
 
     if (!json_object_is_type(json, json_type_array)) {
-        printf("Invalid message: not a JSON array.\n");
+        LOG("Invalid message: not a JSON array.\n");
         return;
     }
 
@@ -220,7 +220,7 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
 
     if (!msg_id || !json_object_is_type(msg_id, json_type_string) ||
         !payload || !json_object_is_type(payload, json_type_object)) {
-        printf("Invalid GetDiagnostics message structure.\n");
+        LOG("Invalid GetDiagnostics message structure.\n");
         return;
     }
 
@@ -243,7 +243,7 @@ void handle_get_diagnostics(struct lws *wsi, json_object *json) {
     json_object_object_get_ex(payload, "location", &location_obj);
 
     if (!location_obj || !json_object_is_type(location_obj, json_type_string)) {
-        printf("No valid location provided in GetDiagnostics.\n");
+        LOG("No valid location provided in GetDiagnostics.\n");
         return;
     }
 

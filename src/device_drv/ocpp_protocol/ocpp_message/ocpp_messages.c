@@ -16,7 +16,7 @@ int send_ocpp_message(json_object *msg) {
     if(enqueue_message(msg)){
         return 0;
     }else{
-        printf("enqueu_msg error\n");
+        LOG("enqueu_msg error\n");
         return -1;
     }    
 }
@@ -155,13 +155,13 @@ void handle_heartbeat(struct lws *wsi, json_object *json) {
 
 void handle_trigger_report_energy_storage_status_v2(struct lws *wsi, json_object *json) {
     if (!json_object_is_type(json, json_type_array)) {
-        printf("Invalid TriggerReportEnergyStorageStatusV2 message: not a JSON array.\n");
+        LOG("Invalid TriggerReportEnergyStorageStatusV2 message: not a JSON array.\n");
         return;
     }
 
     json_object *msg_id_obj = json_object_array_get_idx(json, 1);
     if (!msg_id_obj || !json_object_is_type(msg_id_obj, json_type_string)) {
-        printf("Missing or invalid message ID in TriggerReportEnergyStorageStatusV2.\n");
+        LOG("Missing or invalid message ID in TriggerReportEnergyStorageStatusV2.\n");
         return;
     }
 
@@ -182,7 +182,7 @@ void handle_trigger_report_energy_storage_status_v2(struct lws *wsi, json_object
     // ✅ 发送消息（会统一释放）
     send_ocpp_message(response);
 
-    printf("已回复 TriggerReportEnergyStorageStatusV2，status: %s\n", status);
+    LOG("call TriggerReportEnergyStorageStatusV2，status: %s\n", status);
 }
 
 
@@ -216,7 +216,7 @@ void handle_ChangeConfiguration(struct lws *wsi, json_object *json){
     // 步骤2：
     json_object *msg_id_obj = json_object_array_get_idx(json, 1);
     if (!msg_id_obj) {
-        printf("Missing or invalid message ID in TriggerReportEnergyStorageStatusV2.\n");
+        LOG("Missing or invalid message ID in TriggerReportEnergyStorageStatusV2.\n");
         json_object_put(response);
         return;
     }
@@ -451,7 +451,7 @@ struct json_object *compress_detail_data(sqlite3 *db, int *out_ids, int *out_id_
     size_t base64_len;
     char *base64_str = base64_encode(compressed, out.pos, &base64_len);
     if (!base64_str) {
-        printf("Base64 编码失败\n");
+        LOG("Base64 encoding error\n");
         free(compressed);
         return NULL;
     }

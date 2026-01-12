@@ -5,7 +5,7 @@
 #include "interface/bms/bms_simulink/CANSendFcn.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
-
+#include "interface/log/log.h"
 
 void my_modbus_set_float_badc(float f, uint16_t *dest)
 {
@@ -24,7 +24,7 @@ void my_modbus_set_float_badc(float f, uint16_t *dest)
 void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg)
 {
     if (!frame || !msg){
-        printf("eeee Raw can_id      : 0x%08lX\n", frame->can_id);
+        LOG("[BMS] eeee Raw can_id      : 0x%08lX\n", frame->can_id);
         return;
     }
 

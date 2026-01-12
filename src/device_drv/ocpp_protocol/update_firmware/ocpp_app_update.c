@@ -227,7 +227,7 @@ int upgarde_file_type(const char *filename,const char *filetype)
     }
 	else
 	{
-		printf("Match failed:%s \r\n",filetype);
+		LOG("Match failed:%s \r\n",filetype);
 		return -1;
 
 	}
@@ -252,7 +252,7 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 
 	memset(str, 0, sizeof(str));
 	sprintf(str, "tar tf %s ", filename);//列出来所有tar里面的目录，但是不实际解压
-	printf("1111\r\n");
+	LOG("get_check_upgarde_file_type 1111\r\n");
 	fp = NULL;
 	fp = popen(str, "r");
 	Log_DebugOut("str:%s \r\n", str);
@@ -265,17 +265,17 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 	memset(str, 0, sizeof(str));
 	while (fgets(str, sizeof(str), fp) != NULL)
 	{
-        printf("str:%s \r\n", str);
+        LOG("[OCPP] str:%s \r\n", str);
 		Log_DebugOut("get %s %s  \r\n", filename, str);
-		printf("2222\r\n");
+		LOG("[OCPP] 2222\r\n");
 		p = NULL;
-		printf("filetype :%s\r\n",filetype);
+		LOG("[OCPP] filetype :%s\r\n",filetype);
 		p = strstr((char *)str, filetype); //升级app 文件
-        printf("p:%s \r\n",p);
+        LOG("[OCPP] p:%s \r\n",p);
 		if (p)
 		{
 			app_upgrade_flag = true;
-            printf("app_upgrade_flag:%d \r\n", app_upgrade_flag);
+            LOG("[OCPP] app_upgrade_flag:%d \r\n", app_upgrade_flag);
                 // 清除换行符
             char *newline = strchr(str, '\n');
             if (newline) *newline = '\0';
@@ -283,15 +283,15 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
             // 拷贝到输出参数
             strncpy(out_matched_filename, str, max_len - 1);
             out_matched_filename[max_len - 1] = '\0';  // 确保结尾
-            printf("out_matched_filename Matched filename: %s\n", out_matched_filename);
+            LOG("[OCPP] out_matched_filename Matched filename: %s\n", out_matched_filename);
         }
-		printf("3333\r\n");
+		LOG("[OCPP] 3333\r\n");
 		p = NULL;
 		p = strstr((char *)str, ANY_SCRIPT_FILE); //主机 执行脚本文件
 		if (p)
 		{
 			any_script_flag = true;
-            printf("any_script_flag:%d \r\n", any_script_flag);
+            LOG("[OCPP] any_script_flag:%d \r\n", any_script_flag);
 		}
 
 		
@@ -304,7 +304,7 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 	if(app_upgrade_flag == true) //解压压缩包 校验应用的MD5值
 	{
 		memset(str, 0, sizeof(str));
-		printf("44444\r\n");
+		LOG("[OCPP] 44444\r\n");
 		sprintf(str, "cd %s && tar xvf %s", USB_MOUNT_POINT, filename); 
 		Log_DebugOut("%s \r\n", str);
 		system(str);
@@ -322,7 +322,7 @@ int get_check_upgarde_file_type(const char *filename,const char *filetype,char *
 		}
 		memset(str, 0, sizeof(str));
 		app_upgrade_flag = false;
-		printf("55555\r\n");
+		LOG("[OCPP] 55555\r\n");
 		while (fgets(str, sizeof(str), fp) != NULL)
 		{
 			Log_DebugOut("get %s  \r\n", str);
@@ -466,7 +466,7 @@ int get_check_ac_upgarde_file_type(const char *filename,
                 flashData[*sbl_index].writeLen = strtoul(token, NULL, 16);
                 token = strtok_r(NULL, ".", &saveptr);         // crc
                 flashData[*sbl_index].CRC = (uint16_t)strtoul(token, NULL, 16);
-                printf("SBL[%d] addr: 0x%08X, len: 0x%08X, crc: 0x%04X\n",
+                LOG("[OCPP] SBL[%d] addr: 0x%08X, len: 0x%08X, crc: 0x%04X\n",
                              *sbl_index,
                              flashData[*sbl_index].writeAddr,
                              flashData[*sbl_index].writeLen,
@@ -494,7 +494,7 @@ int get_check_ac_upgarde_file_type(const char *filename,
                 appData[*app_index].writeLen = strtoul(token, NULL, 16);
                 token = strtok_r(NULL, ".", &saveptr);         // crc
                 appData[*app_index].CRC = (uint16_t)strtoul(token, NULL, 16);
-                printf("APP[%d] addr: 0x%08X, len: 0x%08X, crc: 0x%04X\n",
+                LOG("[OCPP] APP[%d] addr: 0x%08X, len: 0x%08X, crc: 0x%04X\n",
                              *app_index,
                              appData[*app_index].writeAddr,
                              appData[*app_index].writeLen,

@@ -91,8 +91,8 @@ int main(int argc, char **argv)
 {
     setup_crash_handler();
     /*=================硬件接口初始化部分================*/
-    printf_version();//初始打印
     log_init();// 日志初始化
+    printf_version();//初始打印
     settings_Init();// 判断本机IP 如果不存在 默认使用110
     my_epoll_Init(); // 初始化epoll环境
    

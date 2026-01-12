@@ -70,7 +70,7 @@ void FinshhECUOtaAndCleanup(void)
 {
     set_ota_deviceType(0);
     set_ota_OTAStart(0);
-    printf("[OTA ECU] OTA finished, cleaning up...\n");
+    LOG("[OTA ECU] OTA finished, cleaning up...\n");
     delete_files_with_prefix(USB_MOUNT_POINT, "XC");//  这个要删除升级文件，判断xcpstatus状态，成功或者失败删除
     delete_files_with_prefix(USB_MOUNT_POINT, "md5"); // 删除升级文件
     delete_files_with_prefix(USB_MOUNT_POINT, "deb"); // 删除升级文件

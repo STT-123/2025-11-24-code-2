@@ -41,7 +41,7 @@ signed char XCPCANOTAMSGParse(struct can_frame *pCANMsg, XCPStatus *pXCPStatus)
 {
 	if(pCANMsg == NULL || pXCPStatus== NULL)
 	{
-        printf("pCANMsg == NULL  pXCPStatus== NULL\r\n");
+        LOG("[OTA] pCANMsg == NULL  pXCPStatus== NULL\r\n");
 		return -1;
 	}
 
@@ -57,17 +57,17 @@ signed char XCPCANOTAMSGParse(struct can_frame *pCANMsg, XCPStatus *pXCPStatus)
 	else if(pCANMsg->can_dlc == 6)//步骤2
 	{
 		unsigned char cmpbuf[6] ={0xFF, 0x00, 0x10, 0x00, 0x00, 0x00};
-        printf("pCANMsg->Data[0]: %x\n",pCANMsg->data[0]);
-        printf("pCANMsg->Data[1]: %x\n",pCANMsg->data[1]);
-        printf("pCANMsg->Data[2]: %x\n",pCANMsg->data[2]);
-        printf("pCANMsg->Data[3]: %x\n",pCANMsg->data[3]);
-        printf("pCANMsg->Data[4]: %x\n",pCANMsg->data[4]);
-        printf("pCANMsg->Data[5]: %x\n",pCANMsg->data[5]);
-        printf("pCANMsg->Data[6]: %x\n",pCANMsg->data[6]);
+        LOG("[OTA] pCANMsg->Data[0]: %x\n",pCANMsg->data[0]);
+        LOG("[OTA] pCANMsg->Data[1]: %x\n",pCANMsg->data[1]);
+        LOG("[OTA] pCANMsg->Data[2]: %x\n",pCANMsg->data[2]);
+        LOG("[OTA] pCANMsg->Data[3]: %x\n",pCANMsg->data[3]);
+        LOG("[OTA] pCANMsg->Data[4]: %x\n",pCANMsg->data[4]);
+        LOG("[OTA] pCANMsg->Data[5]: %x\n",pCANMsg->data[5]);
+        LOG("[OTA] pCANMsg->Data[6]: %x\n",pCANMsg->data[6]);
 
 		if(memcmp(cmpbuf, pCANMsg->data, 6) == 0)
 		{
-			printf("xcpstatus.DeviceCanProgramFlag -> 6\r\n");
+			LOG("[OTA] xcpstatus.DeviceCanProgramFlag -> 6\r\n");
             return 0;
 		}
         else{
@@ -80,15 +80,15 @@ signed char XCPCANOTAMSGParse(struct can_frame *pCANMsg, XCPStatus *pXCPStatus)
 		if(pCANMsg->data[0] == 0xFF && pCANMsg->data[1] == 0x10)//步骤1
 		{
 			//xxflag = 1;
-            printf("pCANMsg->Data[0]: %x\n",pCANMsg->data[0]);
-            printf("pCANMsg->Data[1]: %x\n",pCANMsg->data[1]);
-            printf("pCANMsg->Data[2]: %x\n",pCANMsg->data[2]);
-            printf("pCANMsg->Data[3]: %x\n",pCANMsg->data[3]);
-            printf("pCANMsg->Data[4]: %x\n",pCANMsg->data[4]);
-            printf("pCANMsg->Data[5]: %x\n",pCANMsg->data[5]);
-            printf("pCANMsg->Data[6]: %x\n",pCANMsg->data[6]);
-            printf("pCANMsg->Data[7]: %x\n",pCANMsg->data[7]);
-			printf("xcpstatus.DeviceConnectedFlag -> 8\r\n");
+            LOG("[OTA] pCANMsg->Data[0]: %x\n",pCANMsg->data[0]);
+            LOG("[OTA] pCANMsg->Data[1]: %x\n",pCANMsg->data[1]);
+            LOG("[OTA] pCANMsg->Data[2]: %x\n",pCANMsg->data[2]);
+            LOG("[OTA] pCANMsg->Data[3]: %x\n",pCANMsg->data[3]);
+            LOG("[OTA] pCANMsg->Data[4]: %x\n",pCANMsg->data[4]);
+            LOG("[OTA] pCANMsg->Data[5]: %x\n",pCANMsg->data[5]);
+            LOG("[OTA] pCANMsg->Data[6]: %x\n",pCANMsg->data[6]);
+            LOG("[OTA] pCANMsg->Data[7]: %x\n",pCANMsg->data[7]);
+			LOG("[OTA] xcpstatus.DeviceConnectedFlag -> 8\r\n");
             return 0;
 
 		}else{
@@ -98,7 +98,7 @@ signed char XCPCANOTAMSGParse(struct can_frame *pCANMsg, XCPStatus *pXCPStatus)
 	}
 	else
 	{
-		printf("Unsupported xcp responsed cmd!\r\n");
+		LOG("[OTA] Unsupported xcp responsed cmd!\r\n");
 		return -2;
 	}
 
@@ -125,7 +125,7 @@ signed char XcpSendQueryStatusCMD(unsigned int id, unsigned char xcpobjectid)
 	{
 		//return CANSendMsg(BCUXCPCANID, &CanMes);
 
-        printf("XcpSendQueryStatusCMD CanMes.Data[0] = 0x%x\r\n",CanMes.Data[0]);
+        LOG("[OTA] XcpSendQueryStatusCMD CanMes.Data[0] = 0x%x\r\n",CanMes.Data[0]);
 
 		return Drv_bcu_can_send(&CanMes);        
 	}
@@ -202,7 +202,7 @@ static int XCPCANOTAMSGParseMult(XCPStatus *xcpstatus)
 	    }
 		else if (GetTimeDifference_ms(xStartTime)>1000 )//50->100
 		{
-            printf("GetTimeDifference_ms(xStartTime) = %d\r\n",GetTimeDifference_ms(xStartTime));
+            LOG("[OTA] GetTimeDifference_ms(xStartTime) = %d\r\n",GetTimeDifference_ms(xStartTime));
             LOG("[OTA] XCPCANOTAMSGParseMult_timeout\r\n");
 			return -2;
 		}
@@ -219,8 +219,8 @@ signed char XcpSendProgramEndCMD(unsigned int id, unsigned char xcpobjectid)
 	CanMes.ID = id;
 	CanMes.Data[0] = 0xD0;
 	CanMes.Data[1] = 0x00;
-    printf("XcpSendProgramEndCMD CanMes.Data[0] = 0x%x\r\n",CanMes.Data[0]);
-    printf("XcpSendProgramEndCMD CanMes.Data[1] = 0x%x\r\n",CanMes.Data[1]);
+    LOG("[OTA] XcpSendProgramEndCMD CanMes.Data[0] = 0x%x\r\n",CanMes.Data[0]);
+    LOG("[OTA] XcpSendProgramEndCMD CanMes.Data[1] = 0x%x\r\n",CanMes.Data[1]);
 	if(xcpobjectid == 0)
 	{
 		return Drv_bmu_can_send(&CanMes);	
@@ -314,20 +314,20 @@ static int XcpTryQueryStatusOnce(XCPStatus *xcpstatus)
             }
             else
             {
-                printf("XcpSendQueryStatusCMD\r\n");
+                LOG("[OTA] XcpSendQueryStatusCMD\r\n");
                 xcpstatus->CANStartOTA = 1;
                 res = XcpSendQueryStatusCMD(get_ota_deviceID(), 1);
-                printf("XcpSendQueryStatusCMD res :%d\r\n",res);
+                LOG("[OTA] XcpSendQueryStatusCMD res :%d\r\n",res);
             }
 
             if (res < 0)
             {
-                printf("XCP SendQueryStatusCMD error, Error code %d\r\n", res);
+                LOG("[OTA] XCP SendQueryStatusCMD error, Error code %d\r\n", res);
                 xcpstatus->ErrorReg |= 1 << 4;
                 xcpstatus->ErrorDeviceID = get_ota_deviceID();
                 return -1;
             }
-            printf("xQueueReceive_ing\r\n");
+            LOG("[OTA] xQueueReceive_ing\r\n");
 
            int result = XCPCANOTAMSGParseMult(xcpstatus);
             if (result == 0) {
@@ -364,7 +364,7 @@ static bool ReadFileData(FILE *rfile, unsigned char *FileBuff, unsigned char *Fi
         rnum = fread(FileBuff, 1, bytes_to_read, rfile);
 
         if (rnum < 7) {
-            printf("file read 7 byte data failed! rnum: %zu\n", rnum);
+            LOG("[OTA] file read 7 byte data failed! rnum: %zu\n", rnum);
             return false;
         }
         *FileCount = 0;
@@ -375,7 +375,7 @@ static bool ReadFileData(FILE *rfile, unsigned char *FileBuff, unsigned char *Fi
 static int  SendOTACommand( unsigned char *buf, unsigned int len, XCPStatus *xcpstatus, unsigned int i, unsigned int totalpack, unsigned int percent_count) 
 {
     if ( xcpstatus == NULL) {
-            printf("Error: Null pointer passed to XCPCANOTAMSGParseMult.\n");
+            LOG("[OTA] Error: Null pointer passed to XCPCANOTAMSGParseMult.\n");
             return -1; 
         }
 
@@ -398,7 +398,7 @@ static int  SendOTACommand( unsigned char *buf, unsigned int len, XCPStatus *xcp
         }
 
         if (res != 0) {
-            printf("XCP XcpSendProgramMaxCMD error, Error code %d\r\n", res);
+            LOG("[OTA] XCP XcpSendProgramMaxCMD error, Error code %d\r\n", res);
             xcpstatus->ErrorReg |= 1 << 7;
             xcpstatus->ErrorDeviceID = get_ota_deviceID();
             return 1;
@@ -435,11 +435,11 @@ static int SendLastPacket(FILE*rfile, unsigned char lastpackdatanum, XCPStatus *
      rnum = fread(buf, 1, lastpackdatanum, rfile);
     // printf("file read %d byte data success!\r\n", rnum);
     if (rnum != lastpackdatanum) {
-        printf("file read %d byte data failed!\r\n", lastpackdatanum);
+        LOG("[OTA] file read %d byte data failed!\r\n", lastpackdatanum);
         xcpstatus->ErrorReg |= 1 << 6;
         xcpstatus->ErrorDeviceID = get_ota_deviceID();
     } else {
-        printf("file read %d byte data success!\r\n", rnum);
+        LOG("[OTA] file read %d byte data success!\r\n", rnum);
     }
 
     xcpstatus->XCPCMDOuttimeTimes = 1;
@@ -456,10 +456,10 @@ static int SendLastPacket(FILE*rfile, unsigned char lastpackdatanum, XCPStatus *
         else
         {
             res = XcpSendProgramMaxCMD(get_ota_deviceID(), buf, lastpackdatanum,1);
-            printf("SendLastPacket XcpTryProgramOnce   recv res: %d\r\n",res);
+            LOG("[OTA] SendLastPacket XcpTryProgramOnce   recv res: %d\r\n",res);
         }
         if (res != 0) {
-            printf("XCP XcpSendProgramCMD SendLastPacket error, Error code %d\r\n", res);
+            LOG("[OTA] XCP XcpSendProgramCMD SendLastPacket error, Error code %d\r\n", res);
             xcpstatus->ErrorReg |= 1 << 11;
             xcpstatus->ErrorDeviceID = get_ota_deviceID();
             return -1;
@@ -577,7 +577,7 @@ static int ReadFileAndSendData(FILE *rfile, XCPStatus *xcpstatus)
         } 
         else 
         {
-            printf("Total programmax pack %d\r\n", totalpack);
+            LOG("[OTA] Total programmax pack %d\r\n", totalpack);
             for (int i = 0; i < totalpack; i++) 
             {
                 unsigned char buf[7] = {0};
@@ -590,7 +590,7 @@ static int ReadFileAndSendData(FILE *rfile, XCPStatus *xcpstatus)
                     rnum = fread(FileBuff, 1, bytes_to_read, rfile);
 
                     if (rnum < 7) {
-                        printf("file read 7 byte data failed! rnum: %zu\n", rnum);
+                        LOG("[OTA] file read 7 byte data failed! rnum: %zu\n", rnum);
                         xcpstatus->ErrorReg |= 1 << 6;
                         xcpstatus->ErrorDeviceID = get_ota_deviceID();
                         return 3;
@@ -646,7 +646,7 @@ static int SendXcpProgramEndCommand(XCPStatus *xcpstatus) {
         }
 
         if (res != 0) {
-            printf(" XCP XcpSendProgramEndCMD error, Error code %d\r\n", res);
+            LOG("[OTA]  XCP XcpSendProgramEndCMD error, Error code %d\r\n", res);
             memset(xcpstatus, 0, sizeof(XCPStatus));
             xcpstatus->ErrorReg |= 1 << 14;
             xcpstatus->ErrorDeviceID = get_ota_deviceID();
@@ -723,7 +723,7 @@ signed char XcpProgramResetHandler(XCPStatus *xcpstatus)
 
             if (res != 0)
             {
-                printf("XCP XcpSendProgramResetCMD error, Error code %d\r\n", res);
+                LOG("[OTA] XCP XcpSendProgramResetCMD error, Error code %d\r\n", res);
                 memset(xcpstatus, 0, sizeof(XCPStatus));
                 xcpstatus->ErrorReg |= (1 << 9);
                 xcpstatus->ErrorDeviceID = get_ota_deviceID();

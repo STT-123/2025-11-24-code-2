@@ -273,7 +273,7 @@ static int HAL_open_nl_sock()
 	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
 	if (fd < 0)
 	{
-		printf("Cannot open netlink socket");
+		LOG("[CAN] Cannot open netlink socket");
 		return -1;
 	}
 
@@ -287,24 +287,24 @@ static int HAL_open_nl_sock()
 
 	if (bind(fd, (struct sockaddr *)&local, sizeof(local)) < 0)
 	{
-		printf("Cannot bind netlink socket");
+		LOG("[CAN] Cannot bind netlink socket");
 		return -1;
 	}
 
 	addr_len = sizeof(local);
 	if (getsockname(fd, (struct sockaddr *)&local, &addr_len) < 0)
 	{
-		printf("Cannot getsockname");
+		LOG("[CAN] Cannot getsockname");
 		return -1;
 	}
 	if (addr_len != sizeof(local))
 	{
-		printf("Wrong address length %u\n", addr_len);
+		LOG("[CAN] Wrong address length %u\n", addr_len);
 		return -1;
 	}
 	if (local.nl_family != AF_NETLINK)
 	{
-		printf("Wrong address family %d\n", local.nl_family);
+		LOG("[CAN] Wrong address family %d\n", local.nl_family);
 		return -1;
 	}
 	return fd;
@@ -514,7 +514,7 @@ int HAL_can_read(int fd, struct can_frame *pFrame, unsigned int msTimeout)
 		else
 		{
 			perror("HAL_can_read failed");
-			printf("HAL_can_read fd = %d\r\n",fd);
+			LOG("[CAN] HAL_can_read fd = %d\r\n",fd);
 			return 0; // 读取失败
 		}
 	}

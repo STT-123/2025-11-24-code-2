@@ -78,7 +78,7 @@ void save_ip_to_conffile(uint16_t address, uint16_t data)
         // 显示 IP
         struct in_addr ip_struct;
         ip_struct.s_addr = htonl(ip_addr); // 转为网络字节序
-        printf("Set IP to: %s\n", inet_ntoa(ip_struct));
+        LOG("[IP] Set IP to: %s\n", inet_ntoa(ip_struct));
         save_setting_to_file(CONFIG_FILE_PATH, &g_ipsetting);
         usleep(500 * 1000);
         system("reboot");
@@ -102,7 +102,7 @@ void set_system_time_from_bcu(void)
     time_t t = mktime(&tm); // 转为 time_t 类型（时间戳）
     if (t == -1)
     {
-        printf("Invalid time provided\n");
+        LOG("[IP] Invalid time provided\n");
         return;
     }
 

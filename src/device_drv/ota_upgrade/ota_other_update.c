@@ -10,12 +10,12 @@ IndependentStatus independentStatus = {0};
 
 void printBuffer(uint8_t *buffer, size_t size) {
     for (size_t i = 0; i < size; i++) {
-    	printf("0x%02X ", buffer[i]);  // 打印每个字节的十六进制值
+    	LOG("0x%02X ", buffer[i]);  // 打印每个字节的十六进制值
         if ((i + 1) % 16 == 0) {  // 每行打印16个字节
-        	printf("\n");
+        	LOG("\n");
         }
     }
-    printf("\n");
+    LOG("\n");
 }
 
 signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
@@ -33,7 +33,7 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
 	int TStatus;
 	int UStatus;
 	int err = 0;
-    printf("filename:%s\r\n", filename);
+    LOG("filename:%s\r\n", filename);
 
     // 打开文件
     rfile = fopen(filename, "rb");
@@ -46,9 +46,9 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
     totalCount = ftell(rfile);
     fseek(rfile, 0, SEEK_SET);
 
-    printf("Bin OTA file size: %d\r\n", totalCount);
+    LOG("Bin OTA file size: %d\r\n", totalCount);
     blockCount = (totalCount + ACPDC_BLOCK_SIZE - 1) / ACPDC_BLOCK_SIZE;
-    printf("blockCount : %d\r\n", blockCount);
+    LOG("blockCount : %d\r\n", blockCount);
     unsigned int percent_count = blockCount/80;
 	clock_gettime(CLOCK_MONOTONIC, &acpdcdcota_start);//更新系统启动时间
 	queue_clear(&Queue_BCURevData);
@@ -70,20 +70,20 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
             return 1;
         }
 
-        printf("bytesRead : %d\r\n", bytesRead);
+        LOG("bytesRead : %d\r\n", bytesRead);
         printBuffer(fileBuffer, ACPDC_BLOCK_SIZE);
         blockSize = bytesRead -4;
-        printf("blockSize : %d\r\n", blockSize);
+        LOG("blockSize : %d\r\n", blockSize);
         blockSizeSet = bytesRead +2;
-        printf("blockSizeSet : %d\r\n", blockSizeSet);
+        LOG("blockSizeSet : %d\r\n", blockSizeSet);
 
 
         uint16_t zhengshu = blockSize / 8;
-        printf("zhengshu : %d\r\n", zhengshu);
+        LOG("zhengshu : %d\r\n", zhengshu);
 
 
         uint16_t yushu = blockSize % 8;
-        printf("yushu : %d\r\n", yushu);
+        LOG("yushu : %d\r\n", yushu);
         //发送第一帧
         memset(&CanMes_1, 0 , sizeof(CAN_MESSAGE));
         CanMes_1.Extended = 1;
@@ -105,7 +105,7 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
     	else
     	{
     		//发送失败
-    		printf("First frame data send failed");
+    		LOG("First frame data send failed");
     		independentStatus.ErrorReg = 3;
             fclose(rfile);
             return 1;
@@ -125,7 +125,7 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
             TStatus = Drv_bcu_can_send(&CanMes);
 			// printf("TStatus = %d\r\n",TStatus);
             if (TStatus != 0) {
-            	printf("zhengshu data send failed");
+            	LOG("zhengshu data send failed");
             	independentStatus.ErrorReg = 4;
                 fclose(rfile);
                 return 1;
@@ -152,7 +152,7 @@ signed char  AcpDcUpgradesend(const char *filename,FILE *rfile)
        	printf(" CanMes.Data[7]:%02x\r\n",CanMes.Data[7]);
             TStatus = Drv_bcu_can_send(&CanMes);
             if (TStatus != 0) {
-            	printf("yushu data send failed");
+            	LOG("yushu data send failed");
             	independentStatus.ErrorReg = 5;
                 fclose(rfile);
                 return 1;
