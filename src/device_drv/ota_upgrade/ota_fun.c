@@ -257,6 +257,9 @@ static int handler(void* user, const char* section, const char* name,
                    const char* value) {
     (void)user;
 
+    global_max_index = -1;
+    memset(&g_max_upgrade, 0, sizeof(g_max_upgrade));//重置全剧变量，避免污染
+
     int idx = extract_index(section);
     if (idx < 0) {
         return 1; // 忽略非 upgradeX 的 section
@@ -367,6 +370,8 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
     LOG("[OTA] Found file: %s\n", file_path);
 
     // 步骤6: 解析conf文件,赋值给max_upgrade
+    // =========== 添加这行 ===========
+
     int err = ini_parse(conf_path, handler, NULL);
     if (err < 0) {
         LOG("Unable to read configuration file 'upgrade.conf'\n");

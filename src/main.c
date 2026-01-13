@@ -109,7 +109,7 @@ int main(int argc, char **argv)
      int index1 = 0;
     /*teste*/
 
-    while (1)
+    while(1)
     {
         // can_do_stop("can2");
         // printf("DAqX_FaultCode1 = %d\r\n", DAqX_FaultCode1[0]);//一级故障

@@ -111,7 +111,7 @@ void *lwip_data_TASK(void *param)
 								packidoverflownum++;//循环次数
 							}
 							packno = tcp_server_recvbuf[1] + packidoverflownum * 255;//总包数
-							LOG("[Xmodem] recv packnum = %d \r\n",packno);
+							// printf("[Xmodem] recv packnum = %d \r\n",packno);
 							if(packno != xmodempacknum)
 							{
 								readdatanum = 128;//每次读取128字节
