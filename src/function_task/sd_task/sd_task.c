@@ -21,6 +21,7 @@ void *SDCardDataSaveTask(void *arg)
         LOG("[SD Card] 请检查挂载点路径是否正确.\n");
         return NULL;
     }
+
     LOG("[SD Card] SD卡挂载 %s 成功. \n", mount_point);
 
     while (1)
@@ -38,6 +39,7 @@ void *SDCardDataSaveTask(void *arg)
             {
                 set_modbus_reg_val(0x6721, 2); // 成功
                 LOG("[SD Card] SD_Initialize succeeded.\n");
+                mkdir_log(USB_MOUNT_POINT);
             }
             else
             {

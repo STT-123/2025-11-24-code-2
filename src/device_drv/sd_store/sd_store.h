@@ -66,4 +66,5 @@ void Drv_write_buffer_to_file(void);
 void checkSDCardCapacity(void);
 void sd_storeInit(void);
 static int find_id_index(uint32_t id);
+int mkdir_log(const char *base_path) ;
 #endif

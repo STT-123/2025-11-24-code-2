@@ -79,6 +79,7 @@ void *ModbusTCPServerTask(void *arg)
         timeout.tv_usec = 0;
 
         rdset = refset;// 复制参考集合到读集合    
+        //一刀切，10内没有任何新连接或数据则关闭所有客户端
         if (select(fdmax + 1, &rdset, NULL, NULL, &timeout) == 0)//阻塞10s
         {      
             timeout_flag = 1;// select超时处理
@@ -130,7 +131,7 @@ void *ModbusTCPServerTask(void *arg)
                     }
                     else
                     {                     
-                        FD_SET(newfd, &refset); // 成功接受连接,添加到监控集合
+                        FD_SET(newfd, &refset); // 成功接受连接,添加到监控总集合
                         if (newfd > fdmax)  // 更新最大fd
                         {
                             fdmax = newfd;// 更新最大fd

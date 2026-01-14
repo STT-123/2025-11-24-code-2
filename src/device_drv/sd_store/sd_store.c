@@ -335,7 +335,7 @@ static int AscFileWriteTimeHeader(FILE *file, struct tm *timeinfo)
 // 查找指定CAN ID的历史消息，并与当前消息对比
 static int Drv_check_and_update_message(const CAN_FD_MESSAGE *msg)
 {
-    static old_BMSWorkMode_value = 0;
+    static unsigned int old_BMSWorkMode_value = 0;
     for (int i = 0; i < CAN_ID_HISTORY_SIZE; i++)
     {
         if (can_msg_cache[i].ID == msg->ID)
@@ -348,14 +348,15 @@ static int Drv_check_and_update_message(const CAN_FD_MESSAGE *msg)
                 */
                 if ( get_BCU_SystemWorkModeValue() != old_BMSWorkMode_value)
                 {
-                    LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n", old_BMSWorkMode_value, msg->Data[6]);                 
+                    //只要CANFD.DBC 的工作模式位置有变化，这个Dta[]就要变
+                    LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n", old_BMSWorkMode_value, msg->Data[0]);                 
                     memset(frame_count_per_id, 0, sizeof(frame_count_per_id));
-                    
                     clock_gettime(CLOCK_MONOTONIC, &trigger_store_time);
                     clock_gettime(CLOCK_MONOTONIC, &last_store_time);  // ← 关键：同时重置常规存储时间
                     LOG("[CAN Trigger] Both trigger and normal storage timers reset\n");
                     trigger_store_flag = 1;// 触发存储，重置计数器
                     old_BMSWorkMode_value = get_BCU_SystemWorkModeValue();
+                    LOG("WorkMode Changed Time:%d:%d:%d\r\n",get_BCU_TimeHourValue(),get_BCU_TimeMinuteValue(),get_BCU_TimeSencondValue());
                 }  
             }
 
@@ -641,6 +642,80 @@ int ensure_mount_point(const char *path)
     }
     return 0;
 }
+
+int mkdir_log(const char *base_path) {
+    // 参数检查
+    if (base_path == NULL || strlen(base_path) == 0) {
+        LOG("[SD Card] Error: base_path is NULL or empty\n");
+        return -1;
+    }
+    
+    // 检查路径长度是否安全
+    if (strlen(base_path) > 200) {
+        LOG("[SD Card] Error: base_path too long\n");
+        return -2;
+    }
+    
+    char log_dir[256];
+    char file1_path[256];
+    char file2_path[256];
+    int ret = 0;
+    int files_created = 0;
+    
+    // 构建log目录路径
+    int len = snprintf(log_dir, sizeof(log_dir), "%s/log", base_path);
+    if (len >= sizeof(log_dir)) {
+        LOG("[SD Card] Error: log_dir path too long\n");
+        return -3;
+    }
+    
+    // 创建log目录
+    if (ensure_mount_point(log_dir) != 0) {
+        LOG("[SD Card] Failed to create directory %s\n", log_dir);
+        return -4;
+    }
+    
+    LOG("[SD Card] Directory %s created/ensured successfully\n", log_dir);
+    
+    // 创建第一个日志文件
+    len = snprintf(file1_path, sizeof(file1_path), "%s/bat_ecu_exe.log", log_dir);
+    if (len < sizeof(file1_path)) {
+        FILE *fp1 = fopen(file1_path, "w");
+        if (fp1 != NULL) {
+            fclose(fp1);
+            LOG("[SD Card] Created %s\n", file1_path);
+            files_created++;
+        } else {
+            LOG("[SD Card] Failed to create %s: %s\n", file1_path, strerror(errno));
+            ret = -5;
+        }
+    }
+    
+    // 创建第二个日志文件
+    len = snprintf(file2_path, sizeof(file2_path), "%s/auto_install.log", log_dir);
+    if (len < sizeof(file2_path)) {
+        FILE *fp2 = fopen(file2_path, "w");
+        if (fp2 != NULL) {
+            fclose(fp2);
+            LOG("[SD Card] Created %s\n", file2_path);
+            files_created++;
+        } else {
+            LOG("[SD Card] Failed to create %s: %s\n", file2_path, strerror(errno));
+            ret = -6;
+        }
+    }
+    
+    if (files_created == 2) {
+        LOG("[SD Card] All log files created successfully\n");
+    } else if (files_created == 1) {
+        LOG("[SD Card] Warning: Only 1 of 2 log files created\n");
+    } else {
+        LOG("[SD Card] Error: No log files created\n");
+    }
+    
+    return (files_created == 2) ? 0 : ret;
+}
+
 /**
  * 初始化缓存
 */

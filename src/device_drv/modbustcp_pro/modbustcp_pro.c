@@ -30,34 +30,45 @@ extern unsigned short g_ota_flag;
             // 开关机操作
             if ((address == 0x6700) && (get_ota_OTAStart() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
             {
+				static unsigned char last_data_power = 0xFF;
+				if(data != last_data_power){
+					LOG("[ModbusTcp] last_data_power = %d\r\n",data);
+					last_data_power = data;
+				}
                 if (data == 0)
                 {
 					set_TCU_PowerUpCmd(BMS_POWER_ON);
-					// printf("1get_TCU_PowerUpCmd(BMS_POWER_ON) = %d\r\n",(int)get_TCU_PowerUpCmd());
                 }
                 else if (data == 1)
                 {
                     set_TCU_PowerUpCmd(BMS_POWER_OFF);
-                   // printf("2get_TCU_PowerUpCmd(BMS_POWER_ON) = %d\r\n",(int)get_TCU_PowerUpCmd());
                 }
             }
             // RTC时间设置
             else if (address >= 0x6705 && address <= 0x670A)
             {
                 rtc_Modbus_Deal(address, data);
+
             }
             // 设置ip
             else if (address == 0x6711 || address == 0x6712)
             {
                 save_ip_to_conffile(address, data);
+				LOG("[ModbusTcp] Set IP %d\r\n",data);
             }
             // 重启
             else if ((address == 0x6720) && (data == 1))
             {
+				LOG("[ModbusTcp] Set Reboot %d\r\n",data);
                 set_ems_bms_reboot();
             }
             else if ((address == 0x6718))//节能模式使能控制
             {
+				static unsigned char last_data_ecomode = 0xFF;
+				if(data != last_data_ecomode){
+					LOG("[ModbusTcp] last_data_ecomode = %d\r\n",data);
+					last_data_ecomode = data;
+				}
                 if (data == 0)
                 {
                     set_modbus_reg_val(0x3418, 0);
@@ -75,16 +86,11 @@ extern unsigned short g_ota_flag;
             }
             else if ((address == 0x6714) || (address == 0x6715) ||(address == 0x6736))//SOHCmd,SOCMinCmd,SOCMaxCmd,RelayCtl
             {
+				LOG("[ModbusTcp] address: 0x%x,data: 0x%x\r\n",address,data);
 				for(sencount = 0;sencount < 10;sencount++){
 					BatteryCalibration_ModBus_Deal(address, data);
 					usleep(5*1000);
 				}
-                
-            }
-            else if (address == 0x6719)//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
-            {
-                set_modbus_reg_val(address, data);
-                set_TCU_FcnStopSet(data);
             }
             else if (address == 0x6721)//SD卡格式化
             {
@@ -311,6 +317,11 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 	static uint16_t HighVoltValue = 0;
 	if (address == 0x6719)//离网屏蔽
 	{
+		static unsigned char last_data_offgrid = 0xFF;
+		if(data != last_data_offgrid){
+			LOG("[ModbusTcp] last_data_offgrid = %d\r\n",data);
+			last_data_offgrid = data;
+		}
 		Offgridstate = data;
 		set_TCU_FcnStopSet((real_T)Offgridstate);//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
 	}
@@ -318,11 +329,13 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 	{
 		HighVoltType = data;
 		set_TCU_HighVoltType((real_T)HighVoltType);//电压校准模式
+		LOG("[ModbusTcp] HighVoltType %d\r\n",data);
 	}
 	else if (address == 0x6735)//电压校准数值
 	{
 		HighVoltValue = data;
 		set_TCU_HighVoltValue((real_T)HighVoltValue);//电压校准数值
+		LOG("[ModbusTcp] HighVoltValue %d\r\n",data);
 	}	
 }
 
