@@ -57,13 +57,13 @@ signed char XCPCANOTAMSGParse(struct can_frame *pCANMsg, XCPStatus *pXCPStatus)
 	else if(pCANMsg->can_dlc == 6)//步骤2
 	{
 		unsigned char cmpbuf[6] ={0xFF, 0x00, 0x10, 0x00, 0x00, 0x00};
-        LOG("[OTA] pCANMsg->Data[0]: %x\n",pCANMsg->data[0]);
-        LOG("[OTA] pCANMsg->Data[1]: %x\n",pCANMsg->data[1]);
-        LOG("[OTA] pCANMsg->Data[2]: %x\n",pCANMsg->data[2]);
-        LOG("[OTA] pCANMsg->Data[3]: %x\n",pCANMsg->data[3]);
-        LOG("[OTA] pCANMsg->Data[4]: %x\n",pCANMsg->data[4]);
-        LOG("[OTA] pCANMsg->Data[5]: %x\n",pCANMsg->data[5]);
-        LOG("[OTA] pCANMsg->Data[6]: %x\n",pCANMsg->data[6]);
+        LOG("[OTA] pCANMsg->Data[0]: %x\r",pCANMsg->data[0]);
+        LOG("[OTA] pCANMsg->Data[1]: %x\r",pCANMsg->data[1]);
+        LOG("[OTA] pCANMsg->Data[2]: %x\r",pCANMsg->data[2]);
+        LOG("[OTA] pCANMsg->Data[3]: %x\r",pCANMsg->data[3]);
+        LOG("[OTA] pCANMsg->Data[4]: %x\r",pCANMsg->data[4]);
+        LOG("[OTA] pCANMsg->Data[5]: %x\r",pCANMsg->data[5]);
+        LOG("[OTA] pCANMsg->Data[6]: %x\r",pCANMsg->data[6]);
 
 		if(memcmp(cmpbuf, pCANMsg->data, 6) == 0)
 		{
@@ -80,14 +80,14 @@ signed char XCPCANOTAMSGParse(struct can_frame *pCANMsg, XCPStatus *pXCPStatus)
 		if(pCANMsg->data[0] == 0xFF && pCANMsg->data[1] == 0x10)//步骤1
 		{
 			//xxflag = 1;
-            LOG("[OTA] pCANMsg->Data[0]: %x\n",pCANMsg->data[0]);
-            LOG("[OTA] pCANMsg->Data[1]: %x\n",pCANMsg->data[1]);
-            LOG("[OTA] pCANMsg->Data[2]: %x\n",pCANMsg->data[2]);
-            LOG("[OTA] pCANMsg->Data[3]: %x\n",pCANMsg->data[3]);
-            LOG("[OTA] pCANMsg->Data[4]: %x\n",pCANMsg->data[4]);
-            LOG("[OTA] pCANMsg->Data[5]: %x\n",pCANMsg->data[5]);
-            LOG("[OTA] pCANMsg->Data[6]: %x\n",pCANMsg->data[6]);
-            LOG("[OTA] pCANMsg->Data[7]: %x\n",pCANMsg->data[7]);
+            LOG("[OTA] pCANMsg->Data[0]: %x\r",pCANMsg->data[0]);
+            LOG("[OTA] pCANMsg->Data[1]: %x\r",pCANMsg->data[1]);
+            LOG("[OTA] pCANMsg->Data[2]: %x\r",pCANMsg->data[2]);
+            LOG("[OTA] pCANMsg->Data[3]: %x\r",pCANMsg->data[3]);
+            LOG("[OTA] pCANMsg->Data[4]: %x\r",pCANMsg->data[4]);
+            LOG("[OTA] pCANMsg->Data[5]: %x\r",pCANMsg->data[5]);
+            LOG("[OTA] pCANMsg->Data[6]: %x\r",pCANMsg->data[6]);
+            LOG("[OTA] pCANMsg->Data[7]: %x\r",pCANMsg->data[7]);
 			LOG("[OTA] xcpstatus.DeviceConnectedFlag -> 8\r\n");
             return 0;
 
@@ -219,8 +219,8 @@ signed char XcpSendProgramEndCMD(unsigned int id, unsigned char xcpobjectid)
 	CanMes.ID = id;
 	CanMes.Data[0] = 0xD0;
 	CanMes.Data[1] = 0x00;
-    LOG("[OTA] XcpSendProgramEndCMD CanMes.Data[0] = 0x%x\r\n",CanMes.Data[0]);
-    LOG("[OTA] XcpSendProgramEndCMD CanMes.Data[1] = 0x%x\r\n",CanMes.Data[1]);
+    LOG("[OTA] XcpSendProgramEndCMD CanMes.Data[0] = 0x%x\r",CanMes.Data[0]);
+    LOG("[OTA] XcpSendProgramEndCMD CanMes.Data[1] = 0x%x\r",CanMes.Data[1]);
 	if(xcpobjectid == 0)
 	{
 		return Drv_bmu_can_send(&CanMes);	

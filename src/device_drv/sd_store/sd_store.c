@@ -627,18 +627,18 @@ int ensure_mount_point(const char *path)
     {
         if (mkdir(path, 0777) == -1)
         {
-            perror("创建挂载目录失败");
-            LOG("[SD Card] 请检查挂载点路径是否正确\n");
+            perror("Failed to create directory\n");
+            LOG("[SD Card] Please check the mount point path\n");
             return -1;
         }
         else
         {
-            LOG("[SD Card] 创建挂载目录成功\n");
+            LOG("[SD Card] Succeed to create directory\n");
         }
     }
     else
     {
-        LOG("[SD Card] 挂载点已存在\n");
+        LOG("[SD Card] The mount point already exists\n");
     }
     return 0;
 }

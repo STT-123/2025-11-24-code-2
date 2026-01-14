@@ -34,12 +34,12 @@ void crash_handler(int sig) {
     // 区分信号类型
     if (sig == SIGINT || sig == SIGTERM) {
         // 正常退出信号
-        printf("\n程序正在退出... (信号: %d)\n", sig);
+        printf("\nProgram exit... (sign: %d)\n", sig);
         
         if (sig == SIGINT) {
-            printf("原因: Ctrl+C 用户中断\n");
+            printf("reason: Ctrl+C \n");
         } else {
-            printf("原因: 终止信号\n");
+            printf("reason: termination signal\n");
         }
         
         // 清理资源
@@ -49,27 +49,29 @@ void crash_handler(int sig) {
     }
     else {
         // 真正的崩溃信号
-        fprintf(stderr, "\n\n!!! 程序崩溃 !!!\n");
-        fprintf(stderr, "崩溃信号: %d\n", sig);
-        fprintf(stderr, "可能原因: ");
-        LOG("!!! 崩溃 !!!\r\n");
+        LOG("!!! Program crash !!!\r\n");
         switch(sig) {
-            case SIGSEGV: fprintf(stderr, "段错误 (空指针/内存越界)\n"); break;
-            case SIGABRT: fprintf(stderr, "程序中止 (assert/abort调用)\n"); break;
-            case SIGBUS:  fprintf(stderr, "总线错误 (内存对齐问题)\n"); break;
-            case SIGFPE:  fprintf(stderr, "算术异常 (除零等)\n"); break;
-            case SIGILL:  fprintf(stderr, "非法指令\n"); break;
-            default:      fprintf(stderr, "未知错误\n"); break;
+            case SIGSEGV: LOG("Segmentation fault (null pointer/memory overflow)\n"); break;
+            case SIGABRT: LOG("Program abort (assert/abort call)\n"); break;
+            case SIGBUS:  LOG("Bus error (memory alignment issue)\n"); break;
+            case SIGFPE:  LOG("Arithmetic exception (division by zero, etc.)\n"); break;
+            case SIGILL:  LOG("Illegal instruction\n"); break;
+            default:      LOG("Unknown error\n"); break;
         }
         
-        // 获取堆栈跟踪
-        fprintf(stderr, "\n崩溃堆栈跟踪:\n");
+        LOG("Crash stack trace:\n");// 获取堆栈跟踪
         size = backtrace(array, 20);
+        if(size >= 3){
+            for (size_t i = 0; i < size; i++) {
+                uintptr_t addr = (uintptr_t)array[i];
+                LOG("Error Addr[%d] = 0x%x\r",i,addr);
+            }
+        }
         backtrace_symbols_fd(array, size, STDERR_FILENO);
         
-        fprintf(stderr, "\n调试建议:\n");
-        fprintf(stderr, "1. 使用地址信息定位问题\n");
-        fprintf(stderr, "2. 检查 0x404198 附近的代码\n");
+        // fprintf(stderr, "\n调试建议:\n");
+        // fprintf(stderr, "1. 使用地址信息定位问题\n");
+        // fprintf(stderr, "2. 检查 0x404198 附近的代码\n");
         
         exit(1);  // 异常退出码
     }

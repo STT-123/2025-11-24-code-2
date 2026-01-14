@@ -18,11 +18,11 @@ void *SDCardDataSaveTask(void *arg)
     // 1. 检查挂载点
     if (ensure_mount_point(mount_point) != 0)
     {
-        LOG("[SD Card] 请检查挂载点路径是否正确.\n");
+        LOG("[SD Card] please check the mount point.\n");
         return NULL;
     }
 
-    LOG("[SD Card] SD卡挂载 %s 成功. \n", mount_point);
+    LOG("[SD Card] successed to create mount point: %s\n", mount_point);
 
     while (1)
     {
