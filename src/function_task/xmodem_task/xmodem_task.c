@@ -52,7 +52,7 @@ void *XmodemCommTask(void *arg)
         }
         else
         {
-            if ((curotaCtrregval != prvotaCtrregval) && (g_otactrl.OTAStart == 0))
+            if ((curotaCtrregval != prvotaCtrregval) && (get_ota_OTAStart() == 0))
             {
                 LOG("[Xmodem] ota curotaCtrregval 0x%x prvotaCtrregval 0x%x\n", curotaCtrregval, prvotaCtrregval);
 
@@ -199,7 +199,7 @@ void *XmodemCommTask(void *arg)
                 }
 
                 // 0x0000 -> !0x0001
-                if (prvotaCtrregval == 0 && step == 2 && curotaCtrregval != 0x0001)
+                if (prvotaCtrregval == 0 && step == 2 && curotaCtrregval != 0x0001)//检查curotaCtrregval没有按顺序变化
                 {
                     setXmodemServerEnd(1);
                     set_modbus_reg_val(OTASTATUSREGADDR, 0);

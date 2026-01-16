@@ -123,7 +123,7 @@ void *lwip_data_TASK(void *param)
 										otadeviceType = ECU;
 										set_ota_UpDating(1);//1130
 										LOG("[Xmodem] otadeviceType  %d\r\n", otadeviceType);
-									}//tst，我也不知道为什么51、52、53必须是0x420x430x55同理BMU （暂追不到原因）
+									}
 									else if(strstr(otafilenamestr, "BCU") != NULL)
 									{
 

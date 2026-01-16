@@ -94,7 +94,7 @@ extern unsigned short g_ota_flag;
             }
             else if (address == 0x6721)//SD卡格式化
             {
-                LOG("SDCardDataSaveTaskCreate\r\n");
+                LOG("SDCard Format.........\r\n");
                 set_modbus_reg_val(address, data);
             }
         }

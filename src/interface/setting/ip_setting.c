@@ -2,7 +2,7 @@
 #include "interface/log/log.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
-#define CONFIG_FILE_PATH "setting.conf"
+
 Setting_t g_ipsetting = {0};
 
 void static save_setting_to_file(const char *filepath, Setting_t *ipsetting)
@@ -19,7 +19,7 @@ void static save_setting_to_file(const char *filepath, Setting_t *ipsetting)
     }
 }
 
-int static load_setting_from_file(const char *filepath, Setting_t *ipsetting)
+int load_setting_from_file(const char *filepath, Setting_t *ipsetting)
 {
     FILE *fp = fopen(filepath, "rb");
     if (fp)

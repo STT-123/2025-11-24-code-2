@@ -569,7 +569,10 @@ int check_and_fix_ip(const char *if_name)
     int need_fix = 1;
     
     //LOG("[IP自动修复] 检查接口 %s 的IP状态\n", if_name);
-    
+
+
+	sprintf(expected_ip, "%d.%d.%d.%d", (g_ipsetting.ip >> 24) & 0xFF, (g_ipsetting.ip >> 16) & 0xFF, (g_ipsetting.ip >> 8) & 0xFF, g_ipsetting.ip & 0xFF);
+
     // 检测当前IP
     snprintf(command, sizeof(command), 
              "ip -4 addr show %s 2>/dev/null | grep -oE '([0-9]{1,3}\\.){3}[0-9]{1,3}/' | head -1 | sed 's|/||'", 
@@ -595,7 +598,6 @@ int check_and_fix_ip(const char *if_name)
     
     // 如果需要修复
     if (need_fix) {
-
 		// 打印当前不正确的IP
 		if (strlen(current_ip) > 0) {
 			LOG("[IP] The current IP address is incorrect: %s, Expected IP: %s\n", current_ip, expected_ip);
@@ -603,19 +605,12 @@ int check_and_fix_ip(const char *if_name)
 			LOG("[IP] Current IP not detected, expected IP: %s\n", expected_ip);
 		}
         LOG("[IP] IP incorrect, start modifying...\n");
+        
+        int ret = set_ip_address(if_name, expected_ip);// 调用set_ip_address函数修改IP
 
-        if (g_ipsetting.flag == 1 && g_ipsetting.ip != 0)// 创建modbus服务端
-		{
-			sprintf(expected_ip, "%d.%d.%d.%d", (g_ipsetting.ip >> 24) & 0xFF, (g_ipsetting.ip >> 16) & 0xFF, (g_ipsetting.ip >> 8) & 0xFF, g_ipsetting.ip & 0xFF);
-		}
-
-        // 调用set_ip_address函数修改IP
-        int ret = set_ip_address(if_name, expected_ip);
         if (ret == 0) {
             LOG("[IP] IP modification successful\n");
-            
-            // 修改后验证
-            sleep(2);
+            sleep(2);// 修改后验证
             memset(current_ip, 0, sizeof(current_ip));
             snprintf(command, sizeof(command), 
                      "ip -4 addr show %s 2>/dev/null | grep -oE '([0-9]{1,3}\\.){3}[0-9]{1,3}/' | head -1 | sed 's|/||'", 

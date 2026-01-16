@@ -788,16 +788,9 @@ void Drv_write_buffer_to_file(void)
     struct tm nowTimeInfo = {0};
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
 
-    
     GetNowTime(&nowTimeInfo);// 获取当前时间
-    // printf("nowTimeInfo 1= %d\r\n",nowTimeInfo.tm_year);
-    // printf("nowTimeInfo2 = %d\r\n",nowTimeInfo.tm_mon);
-    // printf("nowTimeInfo 3= %d\r\n",nowTimeInfo.tm_mday);
-    // printf("nowTimeInfo4 = %d\r\n",nowTimeInfo.tm_hour);
-    // printf("nowTimeInfo5 = %d\r\n",nowTimeInfo.tm_min);
-    // printf("nowTimeInfo 6= %d\r\n",nowTimeInfo.tm_sec);
-    // 交换当前使用的缓冲区
-    pthread_mutex_lock(&drb->switchMutex);
+
+    pthread_mutex_lock(&drb->switchMutex);// 交换当前使用的缓冲区
     drb->activeBuffer = 1 - drb->activeBuffer;
     pthread_mutex_unlock(&drb->switchMutex);
 
@@ -941,12 +934,9 @@ int SD_Initialize(void)
     char cmd[256];
 
     // 直接删除所有文件（假设设备已经挂载）
-    LOG("[SD Card] Cleaning all files...\n");
     snprintf(cmd, sizeof(cmd), "find %s -mindepth 1 -exec rm -rf {} + 2>/dev/null", mount_point);
     res = system(cmd);
-    
     LOG("[SD Card] Clean files completed\n");
-    
     usleep(100 * 1000);
     newFileNeeded = true;
     

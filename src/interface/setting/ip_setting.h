@@ -20,6 +20,7 @@
 
 #define MODBUS_ETH_NUM  "eth1"
 #define IP_ADDRESS  	"192.168.1.110"
+#define CONFIG_FILE_PATH "setting.conf"
 typedef struct
 {
 	uint8_t flag;
@@ -32,4 +33,5 @@ void settings_Init();
 void save_ip_to_conffile(uint16_t address, uint16_t data);
 void set_system_time_from_bcu(void);
 int set_ip_address(const char *if_name, const char *ip_addr);
+int load_setting_from_file(const char *filepath, Setting_t *ipsetting);
 #endif

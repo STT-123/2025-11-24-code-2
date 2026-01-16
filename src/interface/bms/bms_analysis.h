@@ -85,6 +85,10 @@ real_T get_TCU_TimeWeek(void);
 void set_TCU_TimeYear(real_T value);
 real_T get_TCU_TimeYear(void);
 
+void set_TCU_FcnStopSet(real_T value) ;
+void set_TCU_HighVoltType(real_T value) ;
+void set_TCU_HighVoltValue(real_T value) ;
+
 real_T get_BCU_TimeYearValue(void) ;
 real_T get_BCU_TimeMonthValue(void) ;
 real_T get_BCU_TimeDayValue(void) ;

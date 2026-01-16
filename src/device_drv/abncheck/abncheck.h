@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <sys/time.h>
 #include "interface/bms/bms_simulink/rtwtypes.h"
+#include "interface/setting/ip_setting.h"
 
 #define Emergencystop_output 32
 #define SET_ERROR 0
