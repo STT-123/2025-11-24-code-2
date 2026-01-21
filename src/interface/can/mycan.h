@@ -32,8 +32,6 @@
 #endif
 
 
-
-
 bool can_ifconfig_init(const char *device, int bitrate);
 bool can_band_init(const char *device, int *fd);
 
@@ -43,6 +41,5 @@ int HAL_canfd_read(int fd, struct canfd_frame *pFrame, unsigned int msTimeout);
 int HAL_can_read(int fd, struct can_frame *pFrame, unsigned int msTimeout);
 
 void HAL_can_closeEx(int *fd);
-int HAL_can_get_state(const char *name, int *state);
 
 #endif

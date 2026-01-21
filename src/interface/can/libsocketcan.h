@@ -57,7 +57,7 @@ int can_get_data_bittiming_const(const char *name, struct can_bittiming_const *d
 int can_get_berr_counter(const char *name, struct can_berr_counter *bc);
 int can_get_device_stats(const char *name, struct can_device_stats *cds);
 int can_get_link_stats(const char *name, struct rtnl_link_stats64 *rls);
-
+int get_can_interface_state(const char *ifname);
 #ifdef __cplusplus
 }
 #endif

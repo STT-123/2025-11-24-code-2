@@ -19,24 +19,24 @@ my_event_data_t bcuCanEventData = {
 extern my_event_data_t bmuCanEventData ;
 static pthread_mutex_t can_recover_mutex = PTHREAD_MUTEX_INITIALIZER; //恢复锁，当需要can复位的时候，避免两个任务都复位
 
-static int Drv_bcu_resetcan_device(const char *can_name)
-{
-    int canState = 0;
-    HAL_can_get_state(can_name, &canState);
-    if (canState != 0) {
-        LOG("[BCU]%s ERROR status is %0x\r\n", can_name, canState);
-        HAL_can_closeEx(&BCU_CAN_FD);
-        if (can_ifconfig_init(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE) == false){
-            LOG("[BCU]can_ifconfig_init 失败\n");
-            return false;
-        }
+// static int Drv_bcu_resetcan_device(const char *can_name)
+// {
+//     int canState = 0;
+//     HAL_can_get_state(can_name, &canState);
+//     if (canState != 0) {
+//         LOG("[BCU]%s ERROR status is %0x\r\n", can_name, canState);
+//         HAL_can_closeEx(&BCU_CAN_FD);
+//         if (can_ifconfig_init(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE) == false){
+//             LOG("[BCU]can_ifconfig_init 失败\n");
+//             return false;
+//         }
 
-        while (can_band_init(BCU_CAN_DEVICE_NAME, &BCU_CAN_FD) == false) {
-            sleep(1);
-        }
-    }
-    return 0;
-}
+//         while (can_band_init(BCU_CAN_DEVICE_NAME, &BCU_CAN_FD) == false) {
+//             sleep(1);
+//         }
+//     }
+//     return 0;
+// }
 
 static void bcu_can_epoll_msg_transmit(void *arg)
 {
@@ -113,7 +113,7 @@ int Drv_bcu_can_send(CAN_MESSAGE *pFrame)
     while (retryCount < maxRetries)
     {
         if(BCU_CAN_FD <0){
-            return;
+            return -1;
         }
         if (HAL_can_write(BCU_CAN_FD, &can_frame))
         {
@@ -125,8 +125,6 @@ int Drv_bcu_can_send(CAN_MESSAGE *pFrame)
     if (retryCount >= maxRetries)//软件层面发送失败，系统的can底层有问题了
     {
         // LOG("[BCU]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
-        // Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
-        // Drv_bcu_resetcan_device(BCU_CAN_DEVICE_NAME);
     }
 
     return -1;
@@ -145,7 +143,7 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
     while (retryCount < maxRetries)
     {
         if(BCU_CAN_FD <0){
-            return;
+            return -1;
         }
         if (HAL_canfd_write(BCU_CAN_FD, &canfd_frame))
         {
@@ -156,8 +154,6 @@ int Drv_bcu_canfd_send(CAN_FD_MESSAGE_BUS *pFrame)
     if (retryCount >= maxRetries)
     {
         // LOG("[BCUFD]%s retryCount error\r\n", BCU_CAN_DEVICE_NAME);
-        //Drv_can_auto_recover(BCU_CAN_DEVICE_NAME, BCU_CAN_BITRATE,&BCU_CAN_FD, bcu_can_epoll_msg_transmit);
-        // Drv_bcu_resetcan_device(BCU_CAN_DEVICE_NAME);
     }
     return -1;
 }
@@ -270,28 +266,6 @@ int Drv_can_auto_recover(const char *can_name, int bitrate, int *can_fd_ptr,
         LOG("[CAN]%s physical link is DOWN, need rebind\n", can_name);
         need_rebind = true;
     }
-    // 2. 检查CAN控制器状态
-    // else if (HAL_can_get_state(can_name, &canState) == 0) 
-    // {
-    //     if (canState != 0) 
-    //     {
-    //         /**  canState
-    //          *  case 0x00: printf("状态: ERROR_ACTIVE (正常)\n"); break;
-    //             case 0x01: printf("状态: ERROR_WARNING (警告)\n"); break;
-    //             case 0x02: printf("状态: ERROR_PASSIVE (错误被动)\n"); break;//拔掉can总线0x02，不排除其他错误也会造成这个
-    //             case 0x03: printf("状态: BUS_OFF (总线关闭)\n"); break;
-    //             case 0x04: printf("状态: STOPPED (停止)\n"); break;
-    //             case 0x05: printf("状态: SLEEPING (睡眠)\n"); break;
-    //         */
-    //         LOG("[CAN]%s controller state is abnormal: 0x%02X, need rebind\n", can_name, canState);
-    //         need_rebind = true;
-    //     } 
-    //     else 
-    //     {
-    //         ret = 0;
-    //         goto unlock; // 使用goto确保锁被释放
-    //     }
-    // }
     else 
     {
         // printf("[CAN]%s physical link is UP, not need rebind\n", can_name);

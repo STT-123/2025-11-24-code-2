@@ -108,39 +108,13 @@ int main(int argc, char **argv)
     abnormalDetectionTaskCreate(); // 异常监测任务
     // ocppCommunicationTaskCreate(); //ocpp通信任务
     FtpServiceThreadCreate();
-     int index1 = 0;
+    int index1 = 0;
     int counter = 0;
-    /*teste*/
-	// CAN_MESSAGE CanMes;
-	// memset(&CanMes, 0 , sizeof(CAN_MESSAGE));
-	// CanMes.Extended = 1;
-	// CanMes.Length = 1;
-	// CanMes.ID = 111;
-	// CanMes.Data[0] = 0xCF;
+
     while(1)
     {
-        // 测试堆内存泄漏
-        // size_t size = 2 * 1024 * sizeof(int);  // 8KB
-        // int* ptr = malloc(size);
-        
-        // if (ptr != NULL) {
-        //     // 关键：写入数据，强制分配物理内存
-        //     memset(ptr, 0xFF, size);  // 填充数据
-        //     // 记录分配信息（可选）
-        //     ptr[0] = counter++;
-        // }
-
-        // // 测试句柄无限增长 
-        // FILE *rfile = NULL;
-        // rfile = fopen("/mnt/sda/xx.txt", "rb");  // "rb" = 只读，二进制
-        // if (rfile == NULL)
-        // {
-        //     printf("xxx\r\n");
-        // }else{
-        //     printf("ok\r\n");
-        // }
-        // Drv_bcu_can_send(&CanMes);
-        // can_do_stop("can2");
+        sleep(4);
+        // main_test();
         // printf("DAqX_FaultCode1 = %d\r\n", DAqX_FaultCode1[0]);//一级故障
         // printf("data.get_usBatMaxTempCellIndex = %ld\n", get_usBatMaxTempCellIndex());
         // printf("data. get_usBatCellTempMax( = %d\n",  get_usBatCellTempMax());
@@ -151,12 +125,12 @@ int main(int argc, char **argv)
         // printf("data.get_usBatCellVoltMax = %ld\n", get_usBatCellVoltMax());
         // printf("data.get_usBatMinVoltCellIndex = %ld\n", get_usBatMinVoltCellIndex());
         // printf("data.get_usBatCellVoltMin = %ld\n", get_usBatCellVoltMin());
-        sleep(1);
+
         // printf("get_ota_UpDating(): %d\r\n",get_ota_UpDating());
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");
-        // index1 = 0x4B5C - 0x3000;
-        // printf("Mobud[0x4B5C] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
+        // index1 = 0x6003 - 0x3000;
+        // printf("Mobud[0x6003] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
         // index1 = 0x4B5D - 0x3000;
         // printf("Mobud[0x4B5D] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
         // printf("BCU_SystemWorkMode = %x\r\n",BCU_SystemWorkMode);//ota上载寄存器判断
@@ -165,3 +139,38 @@ int main(int argc, char **argv)
     }
 }
 
+void main_test(void){
+
+    CAN_MESSAGE CanMes;
+	memset(&CanMes, 0 , sizeof(CAN_MESSAGE));
+	CanMes.Extended = 1;
+	CanMes.Length = 1;
+	CanMes.ID = 111;
+	CanMes.Data[0] = 0xCF;
+
+    // 测试堆内存泄漏
+    // size_t size = 2 * 1024 * sizeof(int);  // 8KB
+    // int* ptr = malloc(size);
+    
+    // if (ptr != NULL) {
+    //     // 关键：写入数据，强制分配物理内存
+    //     memset(ptr, 0xFF, size);  // 填充数据
+    //     // 记录分配信息（可选）
+    //     ptr[0] = counter++;
+    // }
+
+    // // 测试句柄无限增长 
+    // FILE *rfile = NULL;
+    // rfile = fopen("/mnt/sda/xx.txt", "rb");  // "rb" = 只读，二进制
+    // if (rfile == NULL)
+    // {
+    //     printf("xxx\r\n");
+    // }else{
+    //     printf("ok\r\n");
+    // }
+
+    while(1){
+        // Drv_bmu_can_send(&CanMes);
+        sleep(1); 
+    }
+}

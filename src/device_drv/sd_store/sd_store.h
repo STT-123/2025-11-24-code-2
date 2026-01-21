@@ -67,4 +67,5 @@ void checkSDCardCapacity(void);
 void sd_storeInit(void);
 static int find_id_index(uint32_t id);
 int mkdir_log(const char *base_path) ;
+bool clean_directory(const char *mount_point);
 #endif

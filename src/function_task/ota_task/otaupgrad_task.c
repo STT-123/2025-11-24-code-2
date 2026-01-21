@@ -24,6 +24,7 @@ void *ota_Upgrade_Task(void *arg)
     unsigned char DCDCOtaFlag = 0;
     unsigned char ACOtaFlag = 0;
     unsigned char BCUOtaFlag = 0;
+    unsigned char BMUOtaFlag = 0;
     unsigned char ReOtaFlag = 0;
     char matched_filename[256] = {0};
 
@@ -58,7 +59,7 @@ void *ota_Upgrade_Task(void *arg)
             {
                 LOG("[OTA] get_ota_deviceType(): %u\r\n", get_ota_deviceType());
                 set_modbus_reg_val(OTAPPROGRESSREGADDR, 0); // 0124
-
+                ECUOtaFlag = 0;
                 while(ECUOtaFlag <3)
                 {
                      set_ota_OTAStart(1);
@@ -72,8 +73,12 @@ void *ota_Upgrade_Task(void *arg)
                      {
                         ECUOtaFlag++;
                         LOG("[OTA] CAN ID 0x%x BCU OTA failed, retry count: %d\r\n", get_ota_deviceID(), ECUOtaFlag);
-                        set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
                      }
+
+                }
+                if(ECUOtaFlag >= 3){
+                    set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
+                    sleep(5);//这个延时不能删除，不然上位机不显示升级失败，直接变为升级完成
                 }
                 FinshhECUOtaAndCleanup();
             }
@@ -185,7 +190,7 @@ void *ota_Upgrade_Task(void *arg)
                 {
                     for (unsigned int i = 0; i < 5; i++){
                         set_OTA_XCPConnect((real_T)255);//设置跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
-                        LOG("[OTA] 111\r\n");
+                        LOG("[OTA] set_OTA_XCPConnect\r\n");
                         CANFDSendFcn_BCU_step();
                         usleep(200*1000);
                     }                 
@@ -210,18 +215,24 @@ void *ota_Upgrade_Task(void *arg)
                             queue_destroy(&Queue_BCURevData);
                             queue_init(&Queue_BCURevData);//情况缓存消息队列
 
-                            XCP_OTA(0);
+                            XCP_OTA(BCUOtaFlag);
                             if (xcpstatus.ErrorReg == 0)
                             {
                                 LOG("[OTA] CAN ID 0x%x BCU OTA success!\r\n", get_ota_deviceID());
+                                set_modbus_reg_val(OTAPPROGRESSREGADDR, 100);//0124,升级进度
+                                set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
                                 break;
                             }
                             else
                             {
                                 BCUOtaFlag++;
                                 LOG("[OTA] CAN ID 0x%x BCU OTA failed, retry count: %d\r\n", get_ota_deviceID(), BCUOtaFlag);
-                                set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
                             }
+                        }
+                        if(BCUOtaFlag >= 3){
+                            set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
+                            sleep(5);//这个延时不能删除，不然上位机不显示升级失败，直接变为升级完成
+                            LOG("[OTA] CAN ID 0x%x BCU OTA Failed \r\n");
                         }
                     }else{
                         LOG("[OTA] CAN2 is not ready\r\n");
@@ -246,18 +257,19 @@ void *ota_Upgrade_Task(void *arg)
                     }
                     if (is_bmu_can_ready())
                     {
+                        BMUOtaFlag = 0;
+                        unsigned int percentage = 0;
                         for (int i = 0; i < BMUMAXNUM; i++)//BMUMAXNUM
                         {
-                            LOG("[OTA] BMU OTA start! i : ,ReOtaFlag = %d %d\r\n", i,ReOtaFlag);
                             ReOtaFlag = 0;
-                            
+                            LOG("[OTA] BMU OTA start! i:%d, ReOtaFlag:%d ,BMUOtaFlag: %d\r\n", i,ReOtaFlag,BMUOtaFlag);
                             while (ReOtaFlag < 3)
                             {
                                 CurrentOTADeviceCanID = (0x1821D << 12) | ((i + 1) << 8) | 0x10;
                                 set_ota_deviceID(CurrentOTADeviceCanID);
-                                LOG("[OTA] Start OTA try %d, CAN ID 0x%x BMU %d\r\n", ReOtaFlag + 1, CurrentOTADeviceCanID, i);
+                                LOG("[OTA] Start OTA try %d, CAN ID 0x%x BMU %d\r\n", ReOtaFlag + 1, get_ota_deviceID());
                                 LOG("[OTA] get_ota_deviceID() ==  : %x\r\n", get_ota_deviceID());                  
-                                XCP_OTA(i);
+                                XCP_OTA(BMUOtaFlag);
 
                                 if (xcpstatus.ErrorReg == 0)
                                 {
@@ -267,6 +279,7 @@ void *ota_Upgrade_Task(void *arg)
                                 else
                                 {
                                     ReOtaFlag++;
+                                    BMUOtaFlag++;
                                     LOG("[OTA] CAN ID 0x%x BMU OTA failed, retry count: %d\r\n", get_ota_deviceID(), ReOtaFlag);
                                     continue;
                                 }
@@ -275,16 +288,21 @@ void *ota_Upgrade_Task(void *arg)
                             {
                                 sleep(2);
                                 //这段代码是，一共15个BMU，每ota完一个增加7%的进度
-                                unsigned int percentage = start_percent + (end_percent - start_percent) * i / (total_steps - 1);
+                                percentage = start_percent + (end_percent - start_percent) * i / (total_steps - 1);
                                 set_modbus_reg_val(OTAPPROGRESSREGADDR, percentage); // 0124, upgrade progress,BCU直接写升级进度，BMU 由于有15个，不在这里写进度
-                                if(percentage == 100){
-                                    set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
-                                }
                                 LOG("[OTA] STEP %2d: %3d%%\n", i, percentage);
                             }else{
                                 LOG("[OTA] CAN ID 0x%x BMU OTA failed\r\n", get_ota_deviceID());
-                                set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
                             }       
+                        }
+                        if((percentage == 100) && (BMUOtaFlag < 3)){
+                            LOG("[OTA] BMU OTA SUCCEDD\r\n");
+                            set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
+                        }else{
+                            set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
+                            sleep(5);//这个延时不能删除，不然上位机不显示升级失败，直接变为升级完成
+                            LOG("[OTA] BMU failed number > 1,BMUOtaFlag = %d \r\n",BMUOtaFlag);
+
                         }
                     }else{
                         LOG("[OTA] CAN3 is not ready\r\n");

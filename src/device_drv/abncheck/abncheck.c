@@ -1,4 +1,5 @@
 #include <time.h>
+#include <netdb.h>  
 #include <features.h>
 #include "interface/log/log.h"
 #include "interface/bms/bms_analysis.h"
@@ -380,8 +381,8 @@ int can_monitor_fun(void) {
         static time_t last_restart_time_can2 = 0;
         time_t now = time(NULL);
         
-        // 避免频繁重启（至少间隔30秒）
-        if (now - last_restart_time_can2 > 10) 
+        // 避免频繁重启（至少间隔5秒）
+        if (now - last_restart_time_can2 > 5) 
         {          
             LOG("[CHECK] Restarting can2...\n");
             restart_can_interface_enhanced(BCU_CAN_DEVICE_NAME);
@@ -391,7 +392,7 @@ int can_monitor_fun(void) {
             g_bcu_can_ready = 0;
         } else {
             LOG("[CHECK] can2 abnormal but restart cooldown (%lds)\n",
-                10 - (now - last_restart_time_can2));
+                5 - (now - last_restart_time_can2));
         }
     } 
     else 
@@ -412,8 +413,8 @@ int can_monitor_fun(void) {
         static time_t last_restart_time_can3 = 0;
         time_t now = time(NULL);
         
-        // 避免频繁重启（至少间隔30秒）
-        if (now - last_restart_time_can3 > 10) 
+        // 避免频繁重启（至少间隔5秒）
+        if (now - last_restart_time_can3 > 5) 
         {           
             LOG("[CHECK] Restarting can3...\n");
             restart_can_interface_enhanced(BMU_CAN_DEVICE_NAME);
@@ -423,7 +424,7 @@ int can_monitor_fun(void) {
             g_bmu_can_ready = 0;
         } else {
             LOG("[CHECK] can3 abnormal but restart cooldown (%lds)\n",
-                10 - (now - last_restart_time_can3));
+                5 - (now - last_restart_time_can3));
         }
     } 
     else 
@@ -436,41 +437,36 @@ int can_monitor_fun(void) {
     }
 }
 static void restart_can_interface_enhanced(const char* can_if) {
-    char cmd[256];
-    
-    // 1. 先彻底关闭
-    snprintf(cmd, sizeof(cmd), "sudo /bin/ip link set %s down", can_if);
-    system(cmd);
-    usleep(200000);  // 200ms，确保完全关闭
-    
-    // 2. 重置错误计数器（通过重新配置）
-    snprintf(cmd, sizeof(cmd), 
-             "sudo /bin/ip link set %s type can bitrate 500000 "
-             "dbitrate 500000 fd on restart-ms 1000", can_if);
-    system(cmd);
-    usleep(100000);
-    
-    // 3. 重新启用
-    snprintf(cmd, sizeof(cmd), "sudo /bin/ip link set %s up", can_if);
-    system(cmd);
-    usleep(500000);  // 等待500ms
-    
-    // 4. 验证恢复
-    LOG("[CHECK] Verifying %s recovery...\n", can_if);
-    snprintf(cmd, sizeof(cmd), 
-             "/bin/ip -details link show %s 2>/dev/null | "
-             "grep -E 'state|berr-counter'", can_if);
-    system(cmd);
-    
+    can_do_stop(can_if);
+    struct can_ctrlmode cm = {0};
+    // 1. 先获取当前 ctrlmode
+    if (can_get_ctrlmode(can_if, &cm) != 0) {
+        LOG("can_get_ctrlmode failed");
+        return false;
+    }
+
+    // 2. 如果还没开 FD，才去开
+    if (!(cm.flags & CAN_CTRLMODE_FD)) {
+        cm.mask = CAN_CTRLMODE_FD;
+        cm.flags |= CAN_CTRLMODE_FD;  // 开启
+        if (can_set_ctrlmode(can_if, &cm) != 0) {
+            LOG("Failed to enable CAN FD");
+            return false;
+        }
+    }
+
+    can_set_canfd_bitrates_samplepoint(can_if, 500000, 0, 500000, 0);
+    can_do_start(can_if); 
 }
 
 int check_can_state_detailed(const char* can_if) {
  
-    int state = 0;  
-
-    can_get_state(can_if,&state);
-    if((state == CAN_STATE_BUS_OFF )|| (state == CAN_STATE_STOPPED)){
-        LOG("[CHECK] %s is in ERROR state\n", can_if);
+    int can_state = 0;  
+	int can_up = 0; 
+    can_get_state(can_if,&can_state);
+	can_up = get_can_interface_state(can_if);
+    if((can_state == CAN_STATE_BUS_OFF )|| (can_state == CAN_STATE_STOPPED) || (can_up == 0)){
+        LOG("[CHECK] %s is in ERROR , can_state= %d, can_up= %d\n", can_if,can_state,can_up);
         return -2;  // 特殊返回码表示BUS-OFF
     }  
     return 1;
@@ -536,27 +532,33 @@ void get_BCU_FaultInfo(uint32_T faultValue_4H, uint32_T faultValue_3H,uint32_T f
  * @return 1: 可ping通, 0: 不可ping通, -1: 执行错误
  */
 int can_ping_host(const char *hostname, int timeout_sec) {
-    if (!hostname || strlen(hostname) == 0) {
-        fprintf(stderr, "Error: Invalid hostname\n");
-        return -1;
-    }
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) return -1;
     
-    char cmd[256];
-    // 使用-c参数指定ping次数，-W参数指定超时时间
-    snprintf(cmd, sizeof(cmd), "ping -c 1 -W %d %s > /dev/null 2>&1", 
-             timeout_sec, hostname);
+    struct sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(80);  // HTTP端口
     
-    LOG("[Network] Testing connectivity to %s...\n", hostname);
-    
-    int ret = system(cmd);
-    
-    if (ret == 0) {
-        LOG("[Network] %s is reachable\n", hostname);
-        return 1;
-    } else {
-        LOG("[Network] %s is NOT reachable (exit code: %d)\n", hostname, WEXITSTATUS(ret));
+    // 解析主机名
+    struct hostent *server = gethostbyname(hostname);
+    if (!server) {
+        close(sockfd);
         return 0;
     }
+    memcpy(&addr.sin_addr.s_addr, server->h_addr_list, server->h_length);
+    
+    // 设置超时
+    struct timeval tv;
+    tv.tv_sec = timeout_sec;
+    tv.tv_usec = 0;
+    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+    setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+    
+    // 尝试连接
+    int result = connect(sockfd, (struct sockaddr*)&addr, sizeof(addr));
+    close(sockfd);
+    
+    return (result == 0) ? 1 : 0;
 }
 int check_and_fix_ip(const char *if_name)
 {

@@ -126,23 +126,15 @@ void *lwip_data_TASK(void *param)
 									}
 									else if(strstr(otafilenamestr, "BCU") != NULL)
 									{
-
 										otadeviceType = BCU;
 										set_ota_UpDating(1);//1130g_otactrl.UpDating
 										LOG("[Xmodem] otadeviceType  %d\r\n", otadeviceType);
-										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 									}
 									else if(strstr(otafilenamestr, "BMU") != NULL)
 									{
-
 										otadeviceType = BMU;
 										set_ota_UpDating(1);//1130
 										LOG("[Xmodem] otadeviceType  %d\r\n", otadeviceType);
-										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-										LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 									}
 									else if( sblfilenumber == 1)//AC
 									{
@@ -429,16 +421,10 @@ void *lwip_data_TASK(void *param)
 								else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x43 && tcp_server_recvbuf[53]==0x55)
 								{
 									otadeviceType = BCU;
-									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 								}
 								else if(tcp_server_recvbuf[51]==0x42 && tcp_server_recvbuf[52]==0x4d && tcp_server_recvbuf[53]==0x55)
 								{
 									otadeviceType = BMU;
-									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[51]);
-									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[52]);
-									LOG("[Xmodem] As hexadecimal10: 0x%X\n", tcp_server_recvbuf[53]);
 								}
 								else
 								{

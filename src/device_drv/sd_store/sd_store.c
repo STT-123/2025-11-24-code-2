@@ -5,7 +5,7 @@
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
 #include <time.h>
-
+#include <ftw.h>
 
 
 /*===*/
@@ -934,63 +934,45 @@ int SD_Initialize(void)
     char cmd[256];
 
     // 直接删除所有文件（假设设备已经挂载）
-    snprintf(cmd, sizeof(cmd), "find %s -mindepth 1 -exec rm -rf {} + 2>/dev/null", mount_point);
-    res = system(cmd);
+    if(clean_directory(USB_MOUNT_POINT) <= 0){
+        LOG("[SD Card] Clean files ERROR\n");       
+    }
     LOG("[SD Card] Clean files completed\n");
     usleep(100 * 1000);
     newFileNeeded = true;
-    
-    #if 0 //因为映翰通没有格式化工具，只能删除所有文件
-    int res;
-    const char *device = USB_DEVICE;
-    const char *mount_point = USB_MOUNT_POINT;
-
-    res = system(UNMOUNT_POINT);
-
-    if (res != 0)
-    {
-        LOG("[SD Card] umount failed (maybe not mounted):%d\n", res);
-        return res;
-    }
-    else
-    {
-        LOG("[SD Card] umount success\n");
-    }
-
-    char cmd[256];
-
-    // 使用 FAT32 而不是 NTFS
-    snprintf(cmd, sizeof(cmd), "mkfs.vfat -F 32 %s", device);
-
-    res = system(cmd);
-    if (res != 0)
-    {
-        LOG("[SD Card] Format failed: %d\n", res);
-        return res;
-    }
-    else
-    {
-        LOG("[SD Card] Format (FAT32) success\n");
-    }
-
-    snprintf(cmd, sizeof(cmd), "mount %s %s", device, mount_point);
-    res = system(cmd);
-    if (res != 0)
-    {
-        LOG("[SD Card] Mount failed: %d\n", res);
-        return res;
-    }
-    else
-    {
-        LOG("[SD Card] Mount success\n");
-    }
-
-    usleep(100 * 1000);
-    newFileNeeded = true;
-#endif
     return 0;
 }
 
+// 回调函数：删除每个文件/目录
+static int remove_cb(const char *fpath, const struct stat *sb,
+                     int typeflag, struct FTW *ftwbuf)
+{
+    // 注意：nftw 默认是后序遍历（FTW_DEPTH），所以先删子目录内容，再删目录本身
+    if (remove(fpath) != 0) {
+        // 可选：记录错误，但不要中断整个删除（返回 0 继续）
+        perror(fpath);
+    }
+    return 0; // 继续遍历
+}
+bool clean_directory(const char *directory)
+{
+    // 确保路径非空且不是根目录（安全防护）
+    if (!directory || strlen(directory) < 2) {
+        return false;
+    }
+
+    // 使用 nftw 递归删除
+    // FTW_DEPTH: 后序遍历（先删子项，再删目录）
+    // FTW_PHYS: 不跟随符号链接（避免误删）
+    // 64: 文件描述符上限（通常足够）
+    int ret = nftw(directory, remove_cb, 64, FTW_DEPTH | FTW_PHYS);
+    
+    if (ret == -1) {
+        perror("nftw");
+        return false;
+    }
+    return true;
+}
 
 // 检查SD卡容量并删除旧文件夹的线程任务
 void checkSDCardCapacity(void)

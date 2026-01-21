@@ -103,4 +103,5 @@ static int extract_index(const char* section) ;
 static int find_ota_files_simple(const char *extract_dir,file_type_t file_type, char *conf_path, size_t conf_len,char *deb_path, size_t deb_len);
 static int compute_file_md5(const char *filepath, char *out_md5) ;
 static int handler(void* user, const char* section, const char* name,const char* value);
+int copy_file(const char *src, const char *dst);
 #endif

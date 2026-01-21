@@ -715,7 +715,7 @@ signed char XcpProgramResetHandler(XCPStatus *xcpstatus)
         }
     }
 }
-void XCP_OTA(int bmucount)
+void XCP_OTA(int count)
 {
     int ret = 0;
     if (!get_ota_OTAStart()) return;
@@ -725,7 +725,7 @@ void XCP_OTA(int bmucount)
         FILE *rfile = NULL;
         LOG("[OTA] OTAing.....................\r\n");
         OTA_RecvPacketCount = 0;//接收包计数为0
-        if(bmucount == 0){//BMU 不用每次都解压
+        if(count == 0){//BMU 不用每次都解压
             ret = unzipfile(USB_MOUNT_POINT,(unsigned int *)&xcpstatus.ErrorReg,FILE_TYPE_BIN);
             if(ret < 0){
                 goto xcpcleanup;
@@ -747,7 +747,7 @@ void XCP_OTA(int bmucount)
             snprintf(otafilenamestr1, sizeof(otafilenamestr1), "%s/%s", USB_MOUNT_POINT, filenametmp);
             
             LOG("[OTA] otafilenamestr1 %s\r\n", otafilenamestr1);
-            LOG("[OTA] OTAStart:%d,deviceID:%d,OTAFilename:%s,OTAFileType:%d,deviceType:%d\n", get_ota_OTAStart(), get_ota_deviceID(), filenametmp, get_ota_OTAFileType(), get_ota_deviceType());
+            LOG("[OTA] OTAStart:%d, deviceID:0x%x, OTAFilename:%s, OTAFileType:%d, deviceType:%d\r\n", get_ota_OTAStart(), get_ota_deviceID(), filenametmp, get_ota_OTAFileType(), get_ota_deviceType());
             rfile = fopen(otafilenamestr1, "rb");  // "rb" = 只读，二进制
             if (rfile == NULL)
             {
@@ -828,21 +828,21 @@ void XCP_OTA(int bmucount)
              goto xcpcleanup;
         }
 
-        if(xcpstatus.ErrorReg == 0)
-        {
-            LOG("[OTA] can id 0x%x device ota success!\r\n", get_ota_deviceID());
-            xcpstatus.DeviceProgramOkFlag = 1;
-            if(get_ota_deviceType() == BCU)
-            {
-                set_modbus_reg_val(OTAPPROGRESSREGADDR, 100);//0124,升级进度
-                set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
-            }
-        }
-        else
-        {
-            LOG("[OTA] can id 0x%x device ota failed, error register val 0x%x!\r\n", get_ota_deviceID(), xcpstatus.ErrorReg);
-            set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
-        }
+        // if(xcpstatus.ErrorReg == 0)
+        // {
+        //     LOG("[OTA] can id 0x%x device ota success!\r\n", get_ota_deviceID());
+        //     xcpstatus.DeviceProgramOkFlag = 1;
+        //     if(get_ota_deviceType() == BCU)
+        //     {
+        //         set_modbus_reg_val(OTAPPROGRESSREGADDR, 100);//0124,升级进度
+        //         set_modbus_reg_val(OTASTATUSREGADDR, OTASUCCESS);
+        //     }
+        // }
+        // else
+        // {
+        //     LOG("[OTA] can id 0x%x device ota failed, error register val 0x%x!\r\n", get_ota_deviceID(), xcpstatus.ErrorReg);
+        //     set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
+        // }
 xcpcleanup:
         if(rfile != NULL)
         {

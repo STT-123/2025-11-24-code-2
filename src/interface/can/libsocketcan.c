@@ -1386,3 +1386,111 @@ int can_get_link_stats(const char *name, struct rtnl_link_stats64 *rls)
 {
 	return get_link(name, GET_LINK_STATS, rls);
 }
+
+int get_can_interface_state(const char *ifname)
+{
+	int sock;
+	struct sockaddr_nl sa;
+	struct nlmsghdr *nlh;
+	struct ifinfomsg *ifi;
+	char buffer[4096];
+	struct rtattr *rta;
+	int len;
+
+	// 创建 netlink socket
+	sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+	if (sock < 0)
+	{
+		perror("socket");
+		return -1;
+	}
+
+	memset(&sa, 0, sizeof(sa));
+	sa.nl_family = AF_NETLINK;
+
+	// 构造 RTM_GETLINK 请求
+	nlh = (struct nlmsghdr *)buffer;
+	nlh->nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
+	nlh->nlmsg_pid = getpid();
+	nlh->nlmsg_flags = NLM_F_REQUEST;
+	nlh->nlmsg_type = RTM_GETLINK;
+
+	ifi = (struct ifinfomsg *)NLMSG_DATA(nlh);
+	ifi->ifi_family = AF_UNSPEC;
+	ifi->ifi_index = if_nametoindex(ifname); // 获取接口索引
+
+	if (ifi->ifi_index == 0)
+	{
+		fprintf(stderr, "Interface %s not found\n", ifname);
+		close(sock);
+		return -1;
+	}
+
+	// 发送请求
+	if (send(sock, nlh, nlh->nlmsg_len, 0) < 0)
+	{
+		perror("send");
+		close(sock);
+		return -1;
+	}
+
+	// 接收响应
+	if ((len = recv(sock, buffer, sizeof(buffer), 0)) < 0)
+	{
+		perror("recv");
+		close(sock);
+		return -1;
+	}
+
+	close(sock);
+
+	// 解析响应
+	nlh = (struct nlmsghdr *)buffer;
+	if (nlh->nlmsg_type == NLMSG_ERROR)
+	{
+		fprintf(stderr, "Netlink error\n");
+		return -1;
+	}
+
+	ifi = (struct ifinfomsg *)NLMSG_DATA(nlh);
+
+	// 检查 IFF_UP 标志：表示接口是否启用（administratively up）
+	// 注意：这对应 `ip link show` 中的 "state UP/DOWN"
+	if (ifi->ifi_flags & IFF_UP)
+	{
+		// printf("%s is administratively UP\n", ifname);
+		return 1;
+	}
+	else
+	{
+		// printf("%s is administratively DOWN\n", ifname);
+		return 0;
+	}
+
+	// 可选：检查 operstate（操作状态，更接近物理层）
+	// rta = IFLA_RTA(ifi);
+	// len = IFLA_PAYLOAD(nlh);
+	// unsigned char  operstate = 0;
+	// while (RTA_OK(rta, len))
+	// {
+	// 	if (rta->rta_type == IFLA_OPERSTATE)
+	// 	{
+	// 		operstate = *(unsigned char *)RTA_DATA(rta);
+
+	// 		return operstate;
+	// 		const char *state_str[] = {"UNKNOWN", "NOTPRESENT", "DOWN", "LOWERLAYERDOWN", "TESTING", "DORMANT", "UP"};
+
+	// 		// if (operstate == 6)
+	// 		// {
+	// 		// 	printf("%s is physically UP\n", ifname);
+	// 		// }
+	// 		// else
+	// 		// {
+	// 		// 	printf("%s is physically DOWN\n", ifname);
+	// 		// }
+	// 	}
+	// 	rta = RTA_NEXT(rta, len);
+	// }
+
+	// return operstate;
+}

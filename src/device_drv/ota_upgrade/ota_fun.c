@@ -1,8 +1,17 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 #include "ota_fun.h"
 #include "sd_store.h"
 #include "ota_ecu_update.h"
 #include "ota_other_update.h"
 #include "interface/log/log.h"
+
+#define COPY_BUFFER_SIZE (10*1024 * 1024)  // 10MB buffer
+
 extern ECUStatus ecustatus;
 OTAObject g_otactrl ={0};
 
@@ -256,10 +265,6 @@ static int compute_file_md5(const char *filepath, char *out_md5) {
 static int handler(void* user, const char* section, const char* name,
                    const char* value) {
     (void)user;
-
-    global_max_index = -1;
-    memset(&g_max_upgrade, 0, sizeof(g_max_upgrade));//重置全剧变量，避免污染
-
     int idx = extract_index(section);
     if (idx < 0) {
         return 1; // 忽略非 upgradeX 的 section
@@ -304,7 +309,7 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
         LOG("Source file path: %s\n", sd_source_file);
         // 检查源文件是否存在
         if (access(sd_source_file, F_OK) != 0) {
-            LOG("OTA source file does not exist: %s\n", sd_source_file);
+            LOG("[OTA] source file does not exist: %s\n", sd_source_file);
             *error_status |= 1 << 2;
             goto upcelanup;
         }         
@@ -315,10 +320,10 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
     snprintf(extract_dir, sizeof(extract_dir), "/tmp/ota_extract_%d", (int)getpid());
 
     if (access(extract_dir, F_OK) == 0) { // 清理已存在的目录
-        char rm_cmd[512];
-        snprintf(rm_cmd, sizeof(rm_cmd), "rm -rf \"%s\"", extract_dir);
-        LOG("[OTA] Cleaning existing directory: %s\n", rm_cmd);
-        system(rm_cmd);
+        LOG("[OTA] Cleaning existing directory: %s\n", extract_dir);
+        if (!clean_directory(extract_dir)) {
+            LOG("[OTA] Warning: Failed to fully clean directory\n");
+        }
     }
 
     if (mkdir(extract_dir, 0755) != 0 && errno != EEXIST) {
@@ -354,14 +359,7 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
 
     if (!find_ota_files_simple(extract_dir, file_type, conf_path, sizeof(conf_path), 
                             file_path, sizeof(file_path))) {
-        LOG("[OTA] Could not find required files in extracted archive\n");
-        
-        // 列出所有文件用于调试
-        char ls_cmd[1024];
-        snprintf(ls_cmd, sizeof(ls_cmd), "find \"%s\" -type f | sort", extract_dir);
-        LOG("[OTA] All files in extract dir:\n");
-        system(ls_cmd);
-        
+        LOG("[OTA] Could not find required files in extracted archive\n");  
         *error_status |= 1 << 4;
         goto upcelanup;
     }
@@ -371,6 +369,8 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
 
     // 步骤6: 解析conf文件,赋值给max_upgrade
     // =========== 添加这行 ===========
+    global_max_index = -1;
+    memset(&g_max_upgrade, 0, sizeof(g_max_upgrade));//重置全剧变量，避免污染
 
     int err = ini_parse(conf_path, handler, NULL);
     if (err < 0) {
@@ -426,19 +426,15 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
         }
         // 4. 比较通过,复制文件到/cp_filepath
         LOG("[OTA] MD5 verification passed.\n");
-        char cp_cmd[512];
-        memset(cp_cmd, 0, sizeof(cp_cmd));
-        snprintf(cp_cmd, sizeof(cp_cmd), "cp \"%s\" \"%s\"", file_path, target_file);
-        LOG("[OTA] Copy command: %s\n", cp_cmd);
-        
-        int ret = system(cp_cmd);
-        if (ret == 0) {
-            LOG("[OTA] File copy to successful: %s\n", file_path);
-        } else {
-            LOG("[OTA] File copy to failed\n");
-            *error_status |= 1 << 2;
+
+        if (!copy_file(file_path, target_file)) {
+            LOG("[OTA] File copy failed!\n");
+            *error_status |= 1 << 1; // 自定义错误位
             goto upcelanup;
+        }else{
+            LOG("[OTA] File copy successful!\n");
         }
+        
     }else{
         goto upcelanup;
     }
@@ -447,4 +443,72 @@ int unzipfile(char * cp_filepath,unsigned int *error_status, file_type_t file_ty
 
 upcelanup:
     return -1;
+}
+
+int copy_file(const char *src, const char *dst)
+{
+    int fd_in = -1, fd_out = -1;
+    char *buffer = NULL;
+    bool success = false;
+
+    // 打开源文件（只读）
+    fd_in = open(src, O_RDONLY);
+    if (fd_in == -1) {
+        LOG("[OTA] Failed to open source file %s: %s\n", src, strerror(errno));
+        goto cleanup;
+    }
+
+    // 创建目标文件（写入，权限 0644）
+    fd_out = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd_out == -1) {
+        LOG("[OTA] Failed to create target file %s: %s\n", dst, strerror(errno));
+        goto cleanup;
+    }
+
+    // 分配缓冲区
+    buffer = malloc(COPY_BUFFER_SIZE);
+    if (!buffer) {
+        LOG("[OTA] Out of memory\n");
+        goto cleanup;
+    }
+
+    // 循环读写
+    ssize_t bytes_read;
+    while ((bytes_read = read(fd_in, buffer, COPY_BUFFER_SIZE)) > 0) {
+        ssize_t written = 0;
+        while (written < bytes_read) {
+            ssize_t n = write(fd_out, buffer + written, bytes_read - written);
+            if (n <= 0) {
+                if (errno == EINTR) continue; // 被信号中断，重试
+                LOG("[OTA] Write failed: %s\n", strerror(errno));
+                goto cleanup;
+            }
+            written += n;
+        }
+    }
+
+    if (bytes_read == -1) {
+        LOG("[OTA] Read failed: %s\n", strerror(errno));
+        goto cleanup;
+    }
+
+    // 同步到磁盘（可选，提高可靠性）
+    if (fsync(fd_out) != 0) {
+        LOG("[OTA] fsync failed: %s\n", strerror(errno));
+        // 可选择是否视为失败
+    }
+
+    success = true;
+
+cleanup:
+    if (buffer) free(buffer);
+    if (fd_in != -1) close(fd_in);
+    if (fd_out != -1) close(fd_out);
+
+    if (!success && dst) {
+        // 复制失败时删除不完整的文件
+        unlink(dst);
+    }
+
+    return success;
 }

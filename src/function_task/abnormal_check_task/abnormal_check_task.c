@@ -24,7 +24,7 @@ void *AbnormalDetection(void *arg)
         ECUfault_process(); // 各种故障检测
         can_monitor_fun();//CAN 通道 通道检测
         log_eror_csv();  //存储
-        // int result = can_ping_host("ocpp.xcharger.net", 5);
+        // int result = can_ping_host("192.168.1.77", 5);
         // if (result == 1) {
         //     LOG("can   ping ocpp.xcharger.net \r\n");
         // } else if (result == 0) {
