@@ -48,83 +48,6 @@ static const fault_mapping_t fault_map_2H[] = {
 };
 
 
-void log_eror_csv(void)
-{
-	unsigned char log_flag = 0;
-	static unsigned int BCU_FaultInfoLv1_LAST = 0;
-	static unsigned int BCU_FaultInfoLv2_LAST = 0;
-	static unsigned int BCU_FaultInfoLv3_LAST = 0;
-	static unsigned int BCU_FaultInfoLv4_LAST = 0;
-	static unsigned short BCU_SystemWorkMode_LAST = 0;
-
-	if (ecu_fault_last.emcu_fault0 != ecu_fault.emcu_fault0)
-	{
-		log_flag = 1;
-		ecu_fault_last.emcu_fault0 = ecu_fault.emcu_fault0;
-	}
-	if (ecu_fault_last.emcu_fault1 != ecu_fault.emcu_fault1)
-	{
-		log_flag = 1;
-		ecu_fault_last.emcu_fault1 = ecu_fault.emcu_fault1;
-	}
-	if (ecu_fault_last.emcu_fault2 != ecu_fault.emcu_fault2)
-	{
-		log_flag = 1;
-		ecu_fault_last.emcu_fault2 = ecu_fault.emcu_fault2;
-	}
-
-	if (ecu_fault_last.emcu_fault_state != ecu_fault.emcu_fault_state)
-	{
-		log_flag = 1;
-		ecu_fault_last.emcu_fault_state = ecu_fault.emcu_fault_state;
-	}
-	if (BCU_SystemWorkMode_LAST != get_BCU_SystemWorkModeValue())
-	{
-		log_flag = 1;
-		BCU_SystemWorkMode_LAST = get_BCU_SystemWorkModeValue();
-	}
-
-	if (BCU_FaultInfoLv1_LAST != get_BCU_FaultInfoLv1Value())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv1_LAST = get_BCU_FaultInfoLv1Value();
-	}
-
-	if (BCU_FaultInfoLv2_LAST != get_BCU_FaultInfoLv2Value())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv2_LAST = get_BCU_FaultInfoLv2Value();
-	}
-
-	if (BCU_FaultInfoLv3_LAST != get_BCU_FaultInfoLv3Value())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv3_LAST = get_BCU_FaultInfoLv3Value();
-	}
-
-	if (BCU_FaultInfoLv4_LAST != get_BCU_FaultInfoLv4Value())
-	{
-		log_flag = 1;
-		BCU_FaultInfoLv4_LAST = get_BCU_FaultInfoLv4Value();
-	}
-
-	if (log_flag == 1)
-	{
-		LOG_CSV("[LOG_CSV] = %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x",
-			ecu_fault.emcu_fault0,
-			ecu_fault.emcu_fault1,
-			ecu_fault.emcu_fault2,
-			ecu_fault.emcu_fault3,
-			get_BCU_FaultInfoLv1Value(),
-			get_BCU_FaultInfoLv2Value(),
-			get_BCU_FaultInfoLv3Value(),
-			get_BCU_FaultInfoLv4Value(),
-			get_BCU_SOCValue(),
-			get_BCU_SystemWorkModeValue());
-	}
-}
-
-
 int CheckSinglePHYStatus(const char *ifname)
 {
 	FILE *fp;
@@ -437,26 +360,28 @@ int can_monitor_fun(void) {
     }
 }
 static void restart_can_interface_enhanced(const char* can_if) {
-    can_do_stop(can_if);
     struct can_ctrlmode cm = {0};
-    // 1. 先获取当前 ctrlmode
+    
+    // 0. 先停止接口
+    can_do_stop(can_if);
+    
+    // 1. 尝试设置CAN FD模式（在接口DOWN状态下）
     if (can_get_ctrlmode(can_if, &cm) != 0) {
         LOG("can_get_ctrlmode failed");
-        return false;
+        return;
     }
 
-    // 2. 如果还没开 FD，才去开
-    if (!(cm.flags & CAN_CTRLMODE_FD)) {
-        cm.mask = CAN_CTRLMODE_FD;
-        cm.flags |= CAN_CTRLMODE_FD;  // 开启
-        if (can_set_ctrlmode(can_if, &cm) != 0) {
-            LOG("Failed to enable CAN FD");
-            return false;
-        }
+    // 2. 设置比特率和采样点
+    if (can_set_canfd_bitrates_samplepoint(can_if, 500000, 0, 500000, 0) != 0) {
+        LOG("Failed to set CAN FD bitrates");
+        return;
     }
-
-    can_set_canfd_bitrates_samplepoint(can_if, 500000, 0, 500000, 0);
-    can_do_start(can_if); 
+    
+    // 3. 启动接口
+    if (can_do_start(can_if) != 0) {
+        LOG("Failed to start CAN interface");
+        return;
+    }
 }
 
 int check_can_state_detailed(const char* can_if) {

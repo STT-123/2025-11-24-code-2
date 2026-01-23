@@ -68,4 +68,5 @@ void sd_storeInit(void);
 static int find_id_index(uint32_t id);
 int mkdir_log(const char *base_path) ;
 bool clean_directory(const char *mount_point);
+void log_eror_csv(const CAN_FD_MESSAGE *msg);
 #endif

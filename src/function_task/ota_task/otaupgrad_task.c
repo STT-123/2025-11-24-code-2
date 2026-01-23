@@ -189,7 +189,7 @@ void *ota_Upgrade_Task(void *arg)
                 if (get_ota_deviceType() == BCU)
                 {
                     for (unsigned int i = 0; i < 5; i++){
-                        set_OTA_XCPConnect((real_T)255);//设置跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
+                        set_OTA_XCPConnect(255);//设置跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
                         LOG("[OTA] set_OTA_XCPConnect\r\n");
                         CANFDSendFcn_BCU_step();
                         usleep(200*1000);

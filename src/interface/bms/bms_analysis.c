@@ -242,78 +242,78 @@ void Set_BCU_NegativeEnergy(float energy_wh)
     set_modbus_reg_val(MDBUS_ADDR_N_ENERGY + 1, energy_mwh >> 16);
 }
 
-void set_OTA_XCPConnect(real_T value) { OTA_XCPConnect = value; }
-real_T get_OTA_XCPConnect(void) { return OTA_XCPConnect; }
+void set_OTA_XCPConnect(uint8_T value) { OTA_XCPConnect = value; }
+uint8_T get_OTA_XCPConnect(void) { return OTA_XCPConnect; }
 
-void set_TCU_ACMuteSet(real_T value) { TCU_ACMuteSet = value; }
-real_T get_TCU_ACMuteSet(void) { return TCU_ACMuteSet; }
+void set_TCU_ACMuteSet(uint8_T value) { TCU_ACMuteSet = value; }
+uint8_T get_TCU_ACMuteSet(void) { return TCU_ACMuteSet; }
 
-void set_TCU_BCUEINSet(real_T value) { TCU_BCUEINSet = value; }
-real_T get_TCU_BCUEINSet(void) { return TCU_BCUEINSet; }
+void set_TCU_BCUEINSet(uint32_T value) { TCU_BCUEINSet = value; }
+uint32_T get_TCU_BCUEINSet(void) { return TCU_BCUEINSet; }
 
-void set_TCU_ChargerWorkSts(real_T value) { TCU_ChargerWorkSts = value; }
-real_T get_TCU_ChargerWorkSts(void) { return TCU_ChargerWorkSts; }
-
-
-void set_TCU_ECOMode(real_T value) { TCU_ECOMode = value; }
-real_T get_TCU_ECOMode(void) { return TCU_ECOMode; }
+void set_TCU_ChargerWorkSts(uint8_T value) { TCU_ChargerWorkSts = value; }
+uint8_T get_TCU_ChargerWorkSts(void) { return TCU_ChargerWorkSts; }
 
 
-void set_TCU_LifeCounter(real_T value) { TCU_LifeCounter = value; }
-real_T get_TCU_LifeCounter(void) { return TCU_LifeCounter; }
-
-void set_TCU_PowerUpCmd(real_T value) { TCU_PowerUpCmd = value; }
-real_T get_TCU_PowerUpCmd(void) { return TCU_PowerUpCmd; }
-
-void set_TCU_TimeCalFlg(real_T value) { TCU_TimeCalFlg = value; }
-real_T get_TCU_TimeCalFlg(void) { return TCU_TimeCalFlg; }
-
-void set_TCU_TimeDay(real_T value) { TCU_TimeDay = value; }
-real_T get_TCU_TimeDay(void) { return TCU_TimeDay; }
-
-void set_TCU_TimeHour(real_T value) { TCU_TimeHour = value; }
-real_T get_TCU_TimeHour(void) { return TCU_TimeHour; }
-
-void set_TCU_TimeMinute(real_T value) { TCU_TimeMinute = value; }
-real_T get_TCU_TimeMinute(void) { return TCU_TimeMinute; }
-
-void set_TCU_TimeMonth(real_T value) { TCU_TimeMonth = value; }
-real_T get_TCU_TimeMonth(void) { return TCU_TimeMonth; }
-
-void set_TCU_TimeSecond(real_T value) { TCU_TimeSecond = value; }
-real_T get_TCU_TimeSecond(void) { return TCU_TimeSecond; }
-
-void set_TCU_TimeWeek(real_T value) { TCU_TimeWeek = value; }
-real_T get_TCU_TimeWeek(void) { return TCU_TimeWeek; }
-
-void set_TCU_TimeYear(real_T value) { TCU_TimeYear = value; }
-real_T get_TCU_TimeYear(void) { return TCU_TimeYear; }
-
-void set_TCU_FcnStopSet(real_T value) { TCU_FcnStopSet = value; }
-real_T get_TCU_FcnStopSet(void) { return TCU_FcnStopSet; }
-
-void set_TCU_HighVoltType(real_T value) { TCU_HighVoltType = value; }
-real_T get_TCU_HighVoltType(void) { return TCU_HighVoltType; }
-
-void set_TCU_HighVoltValue(real_T value) { TCU_HighVoltValue = value; }
-real_T get_TCU_HighVoltValue(void) { return TCU_HighVoltValue; }
+void set_TCU_ECOMode(uint8_T value) { TCU_ECOMode = value; }
+uint8_T get_TCU_ECOMode(void) { return TCU_ECOMode; }
 
 
-real_T get_BCU_TimeYearValue(void) { return BCU_TimeYear; }
-real_T get_BCU_TimeMonthValue(void) { return BCU_TimeMonth; }
-real_T get_BCU_TimeDayValue(void) { return BCU_TimeDay; }
-real_T get_BCU_TimeHourValue(void) { return BCU_TimeHour; }
-real_T get_BCU_TimeMinuteValue(void) { return BCU_TimeMinute; }
-real_T get_BCU_TimeSencondValue(void) { return BCU_TimeSencond; }
+void set_TCU_LifeCounter(uint8_T value) { TCU_LifeCounter = value; }
+uint8_T get_TCU_LifeCounter(void) { return TCU_LifeCounter; }
+
+void set_TCU_PowerUpCmd(uint8_T value) { TCU_PowerUpCmd = value; }
+uint8_T get_TCU_PowerUpCmd(void) { return TCU_PowerUpCmd; }
+
+void set_TCU_TimeCalFlg(uint8_T value) { TCU_TimeCalFlg = value; }
+uint8_T get_TCU_TimeCalFlg(void) { return TCU_TimeCalFlg; }
+
+void set_TCU_TimeDay(uint8_T value) { TCU_TimeDay = value; }
+uint8_T get_TCU_TimeDay(void) { return TCU_TimeDay; }
+
+void set_TCU_TimeHour(uint8_T value) { TCU_TimeHour = value; }
+uint8_T get_TCU_TimeHour(void) { return TCU_TimeHour; }
+
+void set_TCU_TimeMinute(uint8_T value) { TCU_TimeMinute = value; }
+uint8_T get_TCU_TimeMinute(void) { return TCU_TimeMinute; }
+
+void set_TCU_TimeMonth(uint8_T value) { TCU_TimeMonth = value; }
+uint8_T get_TCU_TimeMonth(void) { return TCU_TimeMonth; }
+
+void set_TCU_TimeSecond(uint8_T value) { TCU_TimeSecond = value; }
+uint8_T get_TCU_TimeSecond(void) { return TCU_TimeSecond; }
+
+void set_TCU_TimeWeek(uint8_T value) { TCU_TimeWeek = value; }
+uint8_T get_TCU_TimeWeek(void) { return TCU_TimeWeek; }
+
+void set_TCU_TimeYear(uint8_T value) { TCU_TimeYear = value; }
+uint8_T get_TCU_TimeYear(void) { return TCU_TimeYear; }
+
+void set_TCU_FcnStopSet(uint8_T value) { TCU_FcnStopSet = value; }
+uint8_T get_TCU_FcnStopSet(void) { return TCU_FcnStopSet; }
+
+void set_TCU_HighVoltType(uint8_T value) { TCU_HighVoltType = value; }
+uint8_T get_TCU_HighVoltType(void) { return TCU_HighVoltType; }
+
+void set_TCU_HighVoltValue(uint16_T value) { TCU_HighVoltValue = value; }
+uint16_T get_TCU_HighVoltValue(void) { return TCU_HighVoltValue; }
+
+
+uint8_T get_BCU_TimeYearValue(void) { return BCU_TimeYear; }
+uint8_T get_BCU_TimeMonthValue(void) { return BCU_TimeMonth; }
+uint8_T get_BCU_TimeDayValue(void) { return BCU_TimeDay; }
+uint8_T get_BCU_TimeHourValue(void) { return BCU_TimeHour; }
+uint8_T get_BCU_TimeMinuteValue(void) { return BCU_TimeMinute; }
+uint8_T get_BCU_TimeSencondValue(void) { return BCU_TimeSencond; }
 
 
 
-real_T get_BCU_FaultInfoLv1Value(void) { return BCU_FaultInfoLv1; }
-real_T get_BCU_FaultInfoLv2Value(void) { return BCU_FaultInfoLv2; }
-real_T get_BCU_FaultInfoLv3Value(void) { return BCU_FaultInfoLv3; }
-real_T get_BCU_FaultInfoLv4Value(void) { return BCU_FaultInfoLv4; }
-real_T get_BCU_SOCValue(void) { return BCU_SOC; }
-real_T get_BCU_SystemWorkModeValue(void) { return BCU_SystemWorkMode; }
+uint32_T get_BCU_FaultInfoLv1Value(void) { return BCU_FaultInfoLv1; }
+uint32_T get_BCU_FaultInfoLv2Value(void) { return BCU_FaultInfoLv2; }
+uint32_T get_BCU_FaultInfoLv3Value(void) { return BCU_FaultInfoLv3; }
+uint32_T get_BCU_FaultInfoLv4Value(void) { return BCU_FaultInfoLv4; }
+uint16_T get_BCU_SOCValue(void) { return BCU_SOC; }
+uint16_T get_BCU_SystemWorkModeValue(void) { return BCU_SystemWorkMode; }
 
 
 uint16_T *get_BCU_usSingleBatVal(void) {

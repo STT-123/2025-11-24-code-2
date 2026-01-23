@@ -323,18 +323,18 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 			last_data_offgrid = data;
 		}
 		Offgridstate = data;
-		set_TCU_FcnStopSet((real_T)Offgridstate);//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
+		set_TCU_FcnStopSet(Offgridstate);//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
 	}
 	else if (address == 0x6734) //电压校准模式
 	{
 		HighVoltType = data;
-		set_TCU_HighVoltType((real_T)HighVoltType);//电压校准模式
+		set_TCU_HighVoltType(HighVoltType);//电压校准模式
 		LOG("[ModbusTcp] HighVoltType %d\r\n",data);
 	}
 	else if (address == 0x6735)//电压校准数值
 	{
 		HighVoltValue = data;
-		set_TCU_HighVoltValue((real_T)HighVoltValue);//电压校准数值
+		set_TCU_HighVoltValue(HighVoltValue);//电压校准数值
 		LOG("[ModbusTcp] HighVoltValue %d\r\n",data);
 	}	
 }

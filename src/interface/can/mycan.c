@@ -18,28 +18,29 @@ enum CANFrameType
 bool can_ifconfig_init(const char *device, int bitrate)
 {
 	// ========== 使用 libsocketcan API ==========
-	can_do_stop(device);
     struct can_ctrlmode cm = {0};
-    // 1. 先获取当前 ctrlmode
+    
+    // 0. 先停止接口
+    can_do_stop(device);
+    
+    // 1. 尝试设置CAN FD模式（在接口DOWN状态下）
     if (can_get_ctrlmode(device, &cm) != 0) {
         LOG("can_get_ctrlmode failed");
         return false;
     }
-
-    // 2. 如果还没开 FD，才去开
-    if (!(cm.flags & CAN_CTRLMODE_FD)) {
-        cm.mask = CAN_CTRLMODE_FD;
-        cm.flags |= CAN_CTRLMODE_FD;  // 开启
-        if (can_set_ctrlmode(device, &cm) != 0) {
-            LOG("Failed to enable CAN FD");
-            return false;
-        }
+    
+    // 2. 设置比特率和采样点
+    if (can_set_canfd_bitrates_samplepoint(device, bitrate, 0, bitrate, 0) != 0) {
+        LOG("Failed to set CAN FD bitrates");
+        return false;
     }
-
-    can_set_canfd_bitrates_samplepoint(device, bitrate, 0, bitrate, 0);
-    can_do_start(device); 
+    
+    // 3. 启动接口
+    if (can_do_start(device) != 0) {
+        LOG("Failed to start CAN interface");
+        return false;
+    }
 	return true;
-   
 }
 
 bool can_band_init(const char *device, int *fd)

@@ -34,74 +34,74 @@ void Set_BCU_PositiveEnergy(float energy_wh);
 
 void Set_BCU_NegativeEnergy(float energy_wh);
 
-void set_OTA_XCPConnect(real_T value);
-real_T get_OTA_XCPConnect(void);
+void set_OTA_XCPConnect(uint8_T value);
+uint8_T get_OTA_XCPConnect(void);
 
-void set_TCU_ACMuteSet(real_T value);
-real_T get_TCU_ACMuteSet(void);
+void set_TCU_ACMuteSet(uint8_T value);
+uint8_T get_TCU_ACMuteSet(void);
 
-void set_TCU_BCUEINSet(real_T value);
-real_T get_TCU_BCUEINSet(void);
+void set_TCU_BCUEINSet(uint32_T value);
+uint32_T get_TCU_BCUEINSet(void);
 
-void set_TCU_ChargerWorkSts(real_T value);
-real_T get_TCU_ChargerWorkSts(void);
+void set_TCU_ChargerWorkSts(uint8_T value);
+uint8_T get_TCU_ChargerWorkSts(void);
 
 // void set_TCU_ClearFault(real_T value);
 // real_T get_TCU_ClearFault(void);
 
-void set_TCU_ECOMode(real_T value);
-real_T get_TCU_ECOMode(void);
+void set_TCU_ECOMode(uint8_T value);
+uint8_T get_TCU_ECOMode(void);
 
 // void set_TCU_GetTime(real_T value);
 // real_T get_TCU_GetTime(void);
 
-void set_TCU_LifeCounter(real_T value);
-real_T get_TCU_LifeCounter(void);
+void set_TCU_LifeCounter(uint8_T value);
+uint8_T get_TCU_LifeCounter(void);
 
-void set_TCU_PowerUpCmd(real_T value);
-real_T get_TCU_PowerUpCmd(void);
+void set_TCU_PowerUpCmd(uint8_T value);
+uint8_T get_TCU_PowerUpCmd(void);
 
-void set_TCU_TimeCalFlg(real_T value);
-real_T get_TCU_TimeCalFlg(void);
+void set_TCU_TimeCalFlg(uint8_T value);
+uint8_T get_TCU_TimeCalFlg(void);
 
-void set_TCU_TimeDay(real_T value);
-real_T get_TCU_TimeDay(void);
+void set_TCU_TimeDay(uint8_T value);
+uint8_T get_TCU_TimeDay(void);
 
-void set_TCU_TimeHour(real_T value);
-real_T get_TCU_TimeHour(void);
+void set_TCU_TimeHour(uint8_T value);
+uint8_T get_TCU_TimeHour(void);
 
-void set_TCU_TimeMinute(real_T value);
-real_T get_TCU_TimeMinute(void);
+void set_TCU_TimeMinute(uint8_T value);
+uint8_T get_TCU_TimeMinute(void);
 
-void set_TCU_TimeMonth(real_T value);
-real_T get_TCU_TimeMonth(void);
+void set_TCU_TimeMonth(uint8_T value);
+uint8_T get_TCU_TimeMonth(void);
 
-void set_TCU_TimeSecond(real_T value);
-real_T get_TCU_TimeSecond(void);
+void set_TCU_TimeSecond(uint8_T value);
+uint8_T get_TCU_TimeSecond(void);
 
-void set_TCU_TimeWeek(real_T value);
-real_T get_TCU_TimeWeek(void);
+void set_TCU_TimeWeek(uint8_T value);
+uint8_T get_TCU_TimeWeek(void);
 
-void set_TCU_TimeYear(real_T value);
-real_T get_TCU_TimeYear(void);
+void set_TCU_TimeYear(uint8_T value);
+uint8_T get_TCU_TimeYear(void);
 
-void set_TCU_FcnStopSet(real_T value) ;
-void set_TCU_HighVoltType(real_T value) ;
-void set_TCU_HighVoltValue(real_T value) ;
+void set_TCU_FcnStopSet(uint8_T value) ;
+void set_TCU_HighVoltType(uint8_T value) ;
+void set_TCU_HighVoltValue(uint16_T value) ;
 
-real_T get_BCU_TimeYearValue(void) ;
-real_T get_BCU_TimeMonthValue(void) ;
-real_T get_BCU_TimeDayValue(void) ;
-real_T get_BCU_TimeHourValue(void) ;
-real_T get_BCU_TimeMinuteValue(void) ;
-real_T get_BCU_TimeSencondValue(void) ;
+uint8_T get_BCU_TimeYearValue(void) ;
+uint8_T get_BCU_TimeMonthValue(void) ;
+uint8_T get_BCU_TimeDayValue(void) ;
+uint8_T get_BCU_TimeHourValue(void) ;
+uint8_T get_BCU_TimeMinuteValue(void) ;
+uint8_T get_BCU_TimeSencondValue(void) ;
 
-real_T get_BCU_FaultInfoLv1Value(void) ;
-real_T get_BCU_FaultInfoLv2Value(void) ;
-real_T get_BCU_FaultInfoLv3Value(void) ;
-real_T get_BCU_FaultInfoLv4Value(void) ;
-real_T get_BCU_SOCValue(void) ;
-real_T get_BCU_SystemWorkModeValue(void) ;
+uint32_T get_BCU_FaultInfoLv1Value(void) ;
+uint32_T get_BCU_FaultInfoLv2Value(void) ;
+uint32_T get_BCU_FaultInfoLv3Value(void) ;
+uint32_T get_BCU_FaultInfoLv4Value(void) ;
+uint16_T get_BCU_SOCValue(void) ;
+uint16_T get_BCU_SystemWorkModeValue(void) ;
 
 void ConvertCANFDToBus(struct canfd_frame *frame, CAN_FD_MESSAGE_BUS *msg);
 void ConvertCANToBus(const struct can_frame *frame, CAN_FD_MESSAGE_BUS *msg);

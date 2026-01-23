@@ -349,7 +349,7 @@ static int Drv_check_and_update_message(const CAN_FD_MESSAGE *msg)
                 if ( get_BCU_SystemWorkModeValue() != old_BMSWorkMode_value)
                 {
                     //只要CANFD.DBC 的工作模式位置有变化，这个Dta[]就要变
-                    LOG("[CAN Trigger] ID=0x180110E4 byte4 changed: 0x%02X -> 0x%02X, triggering storage\n", old_BMSWorkMode_value, msg->Data[0]);                 
+                    LOG("[CAN Trigger] ID=0x180110E4 Mode changed: 0x%02X -> 0x%02X, triggering storage\n", old_BMSWorkMode_value, msg->Data[0]);                 
                     memset(frame_count_per_id, 0, sizeof(frame_count_per_id));
                     clock_gettime(CLOCK_MONOTONIC, &trigger_store_time);
                     clock_gettime(CLOCK_MONOTONIC, &last_store_time);  // ← 关键：同时重置常规存储时间
@@ -720,11 +720,97 @@ int mkdir_log(const char *base_path) {
  * 初始化缓存
 */
 
+void log_eror_csv(const CAN_FD_MESSAGE *msg)
+{
+	unsigned char log_flag = 0;
+	static unsigned int BCU_FaultInfoLv1_LAST = 0;
+	static unsigned int BCU_FaultInfoLv2_LAST = 0;
+	static unsigned int BCU_FaultInfoLv3_LAST = 0;
+	static unsigned int BCU_FaultInfoLv4_LAST = 0;
+	static unsigned short BCU_SystemWorkMode_LAST = 0;
+
+	static unsigned int BCU_AirState_LAST = 0;
+	static unsigned int BCU_AirErrorfaultCode_LAST = 0;
+
+    if(msg->ID == 0x18FFC13A){
+        if (BCU_AirState_LAST != get_BCU_usAirState()){
+            log_flag = 1;
+            LOG("[RECORD] AirState: %d -> %d \r",BCU_AirState_LAST,get_BCU_usAirState());
+            BCU_AirState_LAST = get_BCU_usAirState();
+        }
+        if(BCU_AirErrorfaultCode_LAST != get_BCU_uiAirErrorfaultCode()){
+            log_flag = 1;
+            LOG("[RECORD] AirErrorfaultCode: [0x%x] -> [0x%x] \r",BCU_AirErrorfaultCode_LAST,get_BCU_uiAirErrorfaultCode());
+            BCU_AirErrorfaultCode_LAST = get_BCU_uiAirErrorfaultCode();
+        }
+
+        if (log_flag == 1){
+            if (msg == NULL) {
+                return;
+            }
+            char data_str[100] = {0};
+            int offset = 0;
+            
+            for (int i = 0; i < 8; i++) {
+                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
+                                "%02X%s", msg->Data[i], (i < 8) ? " " : "");
+            }
+            LOG_CSV("[RECORD] msg.ID:0x%X, CAN_Data = %s\r\n", msg->ID, data_str);
+        }
+    }
+
+    if(msg->ID == 0x180110E4){
+        if (BCU_SystemWorkMode_LAST != get_BCU_SystemWorkModeValue()){
+            log_flag = 1;
+            LOG("[RECORD] SystemWorkMode: %d -> %d \r",BCU_SystemWorkMode_LAST,get_BCU_SystemWorkModeValue());
+            BCU_SystemWorkMode_LAST = get_BCU_SystemWorkModeValue();
+        }
+
+        if (BCU_FaultInfoLv1_LAST != get_BCU_FaultInfoLv1Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv1: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv1_LAST,get_BCU_FaultInfoLv1Value());
+            BCU_FaultInfoLv1_LAST = get_BCU_FaultInfoLv1Value();
+        }
+
+        if (BCU_FaultInfoLv2_LAST != get_BCU_FaultInfoLv2Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv2: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv2_LAST,get_BCU_FaultInfoLv2Value());
+            BCU_FaultInfoLv2_LAST = get_BCU_FaultInfoLv2Value();
+        }
+
+        if (BCU_FaultInfoLv3_LAST != get_BCU_FaultInfoLv3Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv3: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv3_LAST,get_BCU_FaultInfoLv3Value());
+            BCU_FaultInfoLv3_LAST = get_BCU_FaultInfoLv3Value();
+        }
+
+        if (BCU_FaultInfoLv4_LAST != get_BCU_FaultInfoLv4Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv4: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv4_LAST,get_BCU_FaultInfoLv4Value());
+            BCU_FaultInfoLv4_LAST = get_BCU_FaultInfoLv4Value();
+        }
+
+        if (log_flag == 1){
+            if (msg == NULL) {
+                return;
+            }
+            char data_str[200] = {0};
+            int offset = 0;
+            
+            for (int i = 0; i < 64; i++) {
+                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
+                                "%02X%s", msg->Data[i], (i < 63) ? " " : "");
+            }
+            LOG_CSV("[RECORD] msg.ID:0x%X, CAN_Data = %s\r\n", msg->ID, data_str);
+        }
+    }
+}
+/*===================================================================================*/
 void Drv_write_to_active_buffer(const CAN_FD_MESSAGE *msg, uint8_t channel)
 {
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
     uint8_t ret = 0;
- 
+    log_eror_csv(msg);
     if (((msg->ID == 0x1cb0e410) && (msg->Data[0] == 0xC9)) ||
         (msg->ID == 0x1cb010e4) || (msg->ID == 0x1823E410) || (msg->ID == 0))
     {

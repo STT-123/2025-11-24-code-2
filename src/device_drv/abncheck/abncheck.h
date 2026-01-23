@@ -60,7 +60,6 @@ extern ecu_fault_t ecu_fault_last;
 
 
 void PHYlinktate();
-void log_eror_csv(void);
 void ECUfault_process();
 void check_bcu_rx_timeout(void);
 void set_emcu_fault(unsigned char parameter, unsigned char status);

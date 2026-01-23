@@ -14,7 +14,7 @@ void *AbnormalDetection(void *arg)
     /**
      * 目前检测的故障只有、CAN0通道、SD卡
     */
-   sleep(5);
+   sleep(2);
     while (1)
     {
         /* code */
@@ -23,7 +23,6 @@ void *AbnormalDetection(void *arg)
         get_BCU_FaultInfo(get_BCU_FaultInfoLv4Value(),get_BCU_FaultInfoLv3Value(),get_BCU_FaultInfoLv2Value());
         ECUfault_process(); // 各种故障检测
         can_monitor_fun();//CAN 通道 通道检测
-        log_eror_csv();  //存储
         // int result = can_ping_host("192.168.1.77", 5);
         // if (result == 1) {
         //     LOG("can   ping ocpp.xcharger.net \r\n");
@@ -31,7 +30,7 @@ void *AbnormalDetection(void *arg)
         //     LOG("can't ping ocpp.xcharger.net \r\n");
         // }
         check_and_fix_ip(MODBUS_ETH_NUM);//检测ip地址是否被修改并自动更正
-        usleep(1000 * 1000);
+        sleep(1);
     }
 }
 
