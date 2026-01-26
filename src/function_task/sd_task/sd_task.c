@@ -29,7 +29,7 @@ void *SDCardDataSaveTask(void *arg)
         usleep(3000 * 1000);
 
         // 获取sd卡初始化标识
-        get_modbus_reg_val(0x6721, &SD_INIT_flag);//接收上位机指令
+        get_modbus_reg_val(MDBUS_SD_FROMAT, &SD_INIT_flag);//接收上位机指令
         
         // 如果sd卡未初始化 则初始化sd卡
         if (SD_INIT_flag == 1)
@@ -37,13 +37,13 @@ void *SDCardDataSaveTask(void *arg)
             int result = SD_Initialize();
             if (result == 0)
             {
-                set_modbus_reg_val(0x6721, 2); // 成功
+                set_modbus_reg_val(MDBUS_SD_FROMAT, 2); // 成功
                 LOG("[SD Card] SD_Initialize succeeded.\n");
                 mkdir_log(USB_MOUNT_POINT);
             }
             else
             {
-                set_modbus_reg_val(0x6721, 3); // 失败
+                set_modbus_reg_val(MDBUS_SD_FROMAT, 3); // 失败
                 LOG("[SD Card] SD_Initialize error code: %d \n", result);
             }
         }

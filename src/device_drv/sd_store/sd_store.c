@@ -124,9 +124,16 @@ static int GetNowTime(struct tm *nowTime)
     struct tm timeinfo = {0};
     static time_t last_update_time = 0;
     time_t current_time = time(NULL);
+    
     // 检查时间
     if (get_BCU_TimeYearValue() != 0) // bcu发来时间了
     {
+        // 获取当前本地时间用于比较
+        time_t local_now = time(NULL);
+        struct tm *local_tm = localtime(&local_now);
+        struct tm local_timeinfo = *local_tm;
+        mktime(&local_timeinfo);
+        
         // 填充外部时间变量到 tm 结构体
         timeinfo.tm_year = get_BCU_TimeYearValue() + 100;
         timeinfo.tm_mon = get_BCU_TimeMonthValue() - 1;
@@ -135,21 +142,57 @@ static int GetNowTime(struct tm *nowTime)
         timeinfo.tm_min = get_BCU_TimeMinuteValue();
         timeinfo.tm_sec = get_BCU_TimeSencondValue();
         timeinfo.tm_isdst = -1;
-        if (mktime(&timeinfo) == (time_t)-1) {
+        
+        // 转换为time_t用于比较
+        time_t bcu_time_t = mktime(&timeinfo);
+        if (bcu_time_t == (time_t)-1) {
             LOG("[SD Card] WARNING: mktime failed for BCU time\n");
-            // 设置一个默认的星期几
             timeinfo.tm_wday = 0; // 星期日
         }
-        //如果是第一次更新或者距离上次更新超过1分钟
-        if (last_update_time == 0 || (current_time - last_update_time) >= 60) // 60秒 = 1分钟
-        {
-            // 执行实际的时间更新操作
-            set_system_time_from_bcu();
-            LOG("[SD Card] update time\r\n");
-            // 更新最后更新时间
-            last_update_time = current_time;
+        
+        // 判断是否需要更新时间
+        int need_update = 0;
+        
+        // 比较年月日时分是否相同
+        int same_time = 
+            (timeinfo.tm_year == local_timeinfo.tm_year) &&
+            (timeinfo.tm_mon == local_timeinfo.tm_mon) &&
+            (timeinfo.tm_mday == local_timeinfo.tm_mday) &&
+            (timeinfo.tm_hour == local_timeinfo.tm_hour) &&
+            (timeinfo.tm_min == local_timeinfo.tm_min);
+
+            // printf("[SD Card] ECU from BCU Now Time: %d-%02d-%02d %02d:%02d:%02d\r\n", 
+            // timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
+            // timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+
+            // printf("[SD Card] ECU from Local Now Time: %d-%02d-%02d %02d:%02d:%02d\r\n", 
+            // local_timeinfo.tm_year + 1900, local_timeinfo.tm_mon + 1, local_timeinfo.tm_mday,
+            // local_timeinfo.tm_hour, local_timeinfo.tm_min, local_timeinfo.tm_sec);
+
+        if (same_time) {
+            // 年月日时分相同，检查秒差
+            int second_diff = abs(timeinfo.tm_sec - local_timeinfo.tm_sec);
+            if (second_diff > 10) {
+                // 秒差超过5秒，需要更新
+                need_update = 1;
+                LOG("[SD Card] Second difference %d > 10, need update", second_diff);
+            } else {
+                // 秒差在5秒内，不需要更新
+                //LOG("[SD Card] Second difference %d <= 10, skip update", second_diff);
+            }
+        } else {
+            need_update = 1;// 年月日时分不同，需要更新
+            LOG("[SD Card] Time (year/month/day/hour/minute) different, need update");
         }
-        // LOG("[SD Card] [SD Card] Time Source From Bcu");
+
+        
+        // 如果需要更新，执行时间更新操作
+        if (need_update) {
+            set_system_time_from_bcu();
+            LOG("[SD Card] Update system time from BCU");
+        } else {
+            // do nothing
+        }
     }
     else // bcu没发过来时间 用自己本地的时间
     {
@@ -157,12 +200,12 @@ static int GetNowTime(struct tm *nowTime)
         struct tm *tm_info = localtime(&now);
         timeinfo = *tm_info;
         mktime(&timeinfo);
-        // LOG("[SD Card] [SD Card] Time Source From Local");
+        LOG("[SD Card] ECU from Local Now Time: %d-%02d-%02d %02d:%02d:%02d", 
+             timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
+             timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
     }
-
-    // 得到当前时间
-    *nowTime = timeinfo;
-    // LOG("[SD Card] [SD Card] Now Time: %d-%d-%d %d:%d:%d. ", timeinfo.tm_year, timeinfo.tm_mon, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    *nowTime = timeinfo;// 得到当前时间
+    
     return 0;
 }
 /**

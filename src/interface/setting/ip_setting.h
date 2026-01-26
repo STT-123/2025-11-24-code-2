@@ -12,6 +12,7 @@
 #include <sys/stat.h> // stat()
 #include <sys/socket.h>
 #include <sys/ioctl.h>
+// #include <linux/if.h>     
 #include <net/if.h>          // 这个头文件包含 struct ifreq 的定义
 #include <arpa/inet.h> // for inet_ntoa etc.
 #include <netinet/in.h>

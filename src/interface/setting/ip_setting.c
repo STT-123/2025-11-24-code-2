@@ -2,7 +2,7 @@
 #include "interface/log/log.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
-
+#include "modbus_defines.h"
 Setting_t g_ipsetting = {0};
 
 void static save_setting_to_file(const char *filepath, Setting_t *ipsetting)
@@ -61,13 +61,13 @@ void settings_Init()
 void save_ip_to_conffile(uint16_t address, uint16_t data)
 {
     static uint32_t ip_addr = 0;
-    if (address == 0x6711) // 高 16 位
+    if (address == MDBUS_IPSET_HIGH) // 高 16 位
     {
         ip_addr &= 0x0000ffff;
         ip_addr |= ((uint32_t)data) << 16;
         return;
     }
-    else if (address == 0x6712) // 低 16 位
+    else if (address == MDBUS_IPSET_LOW) // 低 16 位
     {
         ip_addr &= 0xffff0000;
         ip_addr |= data & 0xFFFF;

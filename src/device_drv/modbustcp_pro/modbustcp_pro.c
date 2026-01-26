@@ -4,6 +4,7 @@
 #include "device_drv/sd_store/sd_store.h"
 #include "interface/log/log.h"
 #include "device_drv/ota_upgrade/ota_fun.h"
+#include "modbus_defines.h"
 extern unsigned short g_ota_flag;
 
 // modbus接收数据处理，只处理06的写入操作
@@ -28,7 +29,7 @@ extern unsigned short g_ota_flag;
         if ((address >= REGISTERS_START_ADDRESS) && (address < (REGISTERS_START_ADDRESS + REGISTERS_NB)))
         {
             // 开关机操作
-            if ((address == 0x6700) && (get_ota_OTAStart() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
+            if ((address == MDBUS_BATTERY_CTL) && (get_ota_OTAStart() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
             {
 				static unsigned char last_data_power = 0xFF;
 				if(data != last_data_power){
@@ -45,24 +46,24 @@ extern unsigned short g_ota_flag;
                 }
             }
             // RTC时间设置
-            else if (address >= 0x6705 && address <= 0x670A)
+            else if (address >= MDBUS_RTC_YEAR && address <= MDBUS_RTC_SECOND)
             {
                 rtc_Modbus_Deal(address, data);
 
             }
             // 设置ip
-            else if (address == 0x6711 || address == 0x6712)
+            else if (address == MDBUS_IPSET_HIGH || address == MDBUS_IPSET_LOW)
             {
                 save_ip_to_conffile(address, data);
 				LOG("[ModbusTcp] Set IP %d\r\n",data);
             }
             // 重启
-            else if ((address == 0x6720) && (data == 1))
+            else if ((address == MDBUS_ECU_REBOOT) && (data == 1))
             {
 				LOG("[ModbusTcp] Set Reboot %d\r\n",data);
                 set_ems_bms_reboot();
             }
-            else if ((address == 0x6718))//节能模式使能控制
+            else if ((address == MDBUS_ENESAV_CTL))//节能模式使能控制
             {
 				static unsigned char last_data_ecomode = 0xFF;
 				if(data != last_data_ecomode){
@@ -71,20 +72,20 @@ extern unsigned short g_ota_flag;
 				}
                 if (data == 0)
                 {
-                    set_modbus_reg_val(0x3418, 0);
+                    set_modbus_reg_val(MDBUS_ENESAV_STA, 0);
                     set_TCU_ECOMode(0);
                 }
                 else if (data == 1)
                 {
-                    set_modbus_reg_val(0x3418, 1);
+                    set_modbus_reg_val(MDBUS_ENESAV_STA, 1);
                     set_TCU_ECOMode(1);
                 }
             }
-            else if ((address == 0x6719) || (address == 0x6734) || (address == 0x6735))//离网、屏蔽、电压校准
+            else if ((address == MDBUS_OFFGRID_STA) || (address == MDBUS_VOLCAL_MODE) || (address == MDBUS_VOLCAL_VALUE))//离网、屏蔽、电压校准
             {
                 VoltageCalibration_ModBus_Deal(address, data);
             }
-            else if ((address == 0x6714) || (address == 0x6715) ||(address == 0x6736))//SOHCmd,SOCMinCmd,SOCMaxCmd,RelayCtl
+            else if ((address == MDBUS_SET_SOH) || (address == MDBUS_SET_SOC) ||(address == MDBUS_REALY_CTL))//SOHCmd,SOCMinCmd,SOCMaxCmd,RelayCtl
             {
 				LOG("[ModbusTcp] address: 0x%x,data: 0x%x\r\n",address,data);
 				for(sencount = 0;sencount < 10;sencount++){
@@ -92,7 +93,7 @@ extern unsigned short g_ota_flag;
 					usleep(5*1000);
 				}
             }
-            else if (address == 0x6721)//SD卡格式化
+            else if (address == MDBUS_SD_FROMAT)//SD卡格式化
             {
                 LOG("SDCard Format.........\r\n");
                 set_modbus_reg_val(address, data);
@@ -204,32 +205,32 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 {
 	static Rtc_Ip_TimedateType TmData = {0};
 
-	if (address == 0x6705) // 年
+	if (address == MDBUS_RTC_YEAR) // 年
 	{
 		TmData.year = data;
 		return 0; // 成功
 	}
-	else if (address == 0x6706) // 月
+	else if (address == MDBUS_RTC_MONTH) // 月
 	{
 		TmData.month = data;
 		return 0; // 成功
 	}
-	else if (address == 0x6707) // 日
+	else if (address == MDBUS_RTC_DAY) // 日
 	{
 		TmData.day = data;
 		return 0; // 成功
 	}
-	else if (address == 0x6708) // 时
+	else if (address == MDBUS_RTC_HOUR) // 时
 	{
 		TmData.hour = data;
 		return 0; // 成功
 	}
-	else if (address == 0x6709) // 分
+	else if (address == MDBUS_RTC_MINUTE) // 分
 	{
 		TmData.minutes = data;
 		return 0; // 成功
 	}
-	else if (address == 0x670A) // 秒
+	else if (address == MDBUS_RTC_SECOND) // 秒
 	{
 		static uint8_t rtccount = 0;
 		TmData.seconds = (uint8_t)data;
@@ -285,13 +286,13 @@ static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
         // Data 数组默认为0，后续逐步填充
     }
 
-	if (address == 0x6714)
+	if (address == MDBUS_SET_SOH)
 	{
 		SOHCmd = (data >> 8);
 
 		bms_calibration_msg.Data[9] = SOHCmd;
 	}
-	else if (address == 0x6715)
+	else if (address == MDBUS_SET_SOC)
 	{
 		SOCMaxCmd = (data >> 8);
 		SOCMinCmd = (data & 0xff);
@@ -299,7 +300,7 @@ static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 		bms_calibration_msg.Data[6] = SOCMaxCmd;
 		bms_calibration_msg.Data[7] = SOCMinCmd;
 	}
-	else if (address == 0x6736)
+	else if (address == MDBUS_REALY_CTL)
 	{
 		relayCtl = data;
 		// 清除 Data[0] 的 bit2~5（共4位），保留其他位
@@ -315,7 +316,7 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 	static uint8_t HighVoltType, Offgridstate = 0;
 
 	static uint16_t HighVoltValue = 0;
-	if (address == 0x6719)//离网屏蔽
+	if (address == MDBUS_OFFGRID_STA)//离网屏蔽
 	{
 		static unsigned char last_data_offgrid = 0xFF;
 		if(data != last_data_offgrid){
@@ -325,13 +326,13 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 		Offgridstate = data;
 		set_TCU_FcnStopSet(Offgridstate);//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
 	}
-	else if (address == 0x6734) //电压校准模式
+	else if (address == MDBUS_VOLCAL_MODE) //电压校准模式
 	{
 		HighVoltType = data;
 		set_TCU_HighVoltType(HighVoltType);//电压校准模式
 		LOG("[ModbusTcp] HighVoltType %d\r\n",data);
 	}
-	else if (address == 0x6735)//电压校准数值
+	else if (address == MDBUS_VOLCAL_VALUE)//电压校准数值
 	{
 		HighVoltValue = data;
 		set_TCU_HighVoltValue(HighVoltValue);//电压校准数值

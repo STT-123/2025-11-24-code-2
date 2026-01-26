@@ -386,7 +386,7 @@ uint16_T get_usBmuLightMaxIndex(){
 
 uint16_T get_usAirEnergyMode(){
     uint16_t value = 0;  // 分配实际内存
-    get_modbus_reg_val(0x3418, &value);
+    get_modbus_reg_val(MDBUS_ENESAV_STA, &value);
     return value;  /* xxxxxxxxxxx 待定*/
 }
 

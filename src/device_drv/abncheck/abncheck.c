@@ -10,7 +10,7 @@
 #include "interface/setting/ip_setting.h"
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
-
+#include "modbus_defines.h"
 #define _POSIX_C_SOURCE 199309L
 #define RECOVER_REPORT_TIME 5000
 #define FAULT_REPORT_TIME 3000

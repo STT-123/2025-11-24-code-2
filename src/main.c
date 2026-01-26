@@ -115,7 +115,6 @@ int main(int argc, char **argv)
     {
         sleep(1);
         // main_test();
-        // printf("get_BCU_FaultInfoLv1Value() =%x\r\n",get_BCU_FaultInfoLv1Value());
         // printf("DAqX_FaultCode1 = %d\r\n", DAqX_FaultCode1[0]);//一级故障
         // printf("data.get_usBatMaxTempCellIndex = %ld\n", get_usBatMaxTempCellIndex());
         // printf("data. get_usBatCellTempMax( = %d\n",  get_usBatCellTempMax());

@@ -16,11 +16,6 @@
 #define ECU_VERSION 0x11B //  表示v1.01 格式xx。yy xx 高八位yy低八位
 #define REGISTERS_NB 0x4000 // 寄存器数量
 
-#define MDBUS_ADDR_BECU_FAULT0 0x3440
-#define MDBUS_ADDR_BECU_FAULT1 0x3441
-#define MDBUS_ADDR_BECU_FAULT2 0x3442
-#define MDBUS_ADDR_BECU_FAULT3 0x3443
-
 
 typedef struct
 {
