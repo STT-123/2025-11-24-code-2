@@ -6,7 +6,7 @@
 #include "device_drv/ota_upgrade/ota_fun.h"
 #include "modbus_defines.h"
 extern unsigned short g_ota_flag;
-
+pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBuff寄存器的时候都会调用加锁
 // modbus接收数据处理，只处理06的写入操作
  void modbus_write_reg_deal(modbus_t *ctx, const uint8_t *query, int req_length)
 {
@@ -116,7 +116,9 @@ int get_modbus_reg_val(uint16_t addr, uint16_t *get_val)
 	}
 	if ((addr >= REGISTERS_START_ADDRESS) && (addr < (REGISTERS_START_ADDRESS + REGISTERS_NB)))
 	{
+		pthread_mutex_lock(&modbus_reg_mutex);
 		*get_val = modbusBuff[addr - REGISTERS_START_ADDRESS];
+		pthread_mutex_unlock(&modbus_reg_mutex);
 		return 0;
 	}
 	else
@@ -140,7 +142,9 @@ int set_modbus_reg_val(uint16_t addr, uint16_t set_val)
 	}
 	if ((addr >= REGISTERS_START_ADDRESS) && (addr < (REGISTERS_START_ADDRESS + REGISTERS_NB)))
 	{
+		pthread_mutex_lock(&modbus_reg_mutex);
 		modbusBuff[addr - REGISTERS_START_ADDRESS] = set_val;
+		pthread_mutex_unlock(&modbus_reg_mutex);
 		return 0;
 	}
 	else

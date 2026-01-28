@@ -72,47 +72,47 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason,
 {
     switch (reason)
     {
-    case LWS_CALLBACK_CLIENT_ESTABLISHED:
-        pthread_mutex_lock(&wsi_lock);
-        global_wsi = wsi;
-        pthread_mutex_unlock(&wsi_lock);
-        lwsl_user("WebSocket connected\n");
-        lws_callback_on_writable(wsi);
-        break;
-    case LWS_CALLBACK_CLIENT_WRITEABLE:
-        handle_writeable(wsi);
-        break;
-    case LWS_CALLBACK_CLIENT_RECEIVE:
-        // printf("Received: %.*s\n", (int)len, (char *)in);
-        process_ocpp_message(wsi, (char *)in);
-        break;
-    case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
-        if (in)
-        {          
-            lwsl_err("WebSocket connection error: %s\n", (char *)in);// 打印出连接错误的具体信息
-        }
-        else
-        {
-            lwsl_err("WebSocket connection error: Unknown error\n");
-        }
-        pthread_mutex_lock(&wsi_lock);
-        if (global_wsi == wsi) {
-            global_wsi = NULL;
-        }
-        pthread_mutex_unlock(&wsi_lock);
-        LOG("[Ocpp]Connection  LWS_CALLBACK_CLIENT_CONNECTION_ERROR");
-        break;
-    case LWS_CALLBACK_CLIENT_CLOSED:
-        lwsl_err("WebSocket closed, reason: %s\n", in ? (char *)in : "Unknown reason");
-        LOG("[Ocpp]Connection  LWS_CALLBACK_CLIENT_CLOSED");
-        pthread_mutex_lock(&wsi_lock);
-        if (global_wsi == wsi) {
-            global_wsi = NULL;
-        }
-        pthread_mutex_unlock(&wsi_lock);
-        break;
-    default:
-        break;
+        case LWS_CALLBACK_CLIENT_ESTABLISHED:
+            pthread_mutex_lock(&wsi_lock);
+            global_wsi = wsi;
+            pthread_mutex_unlock(&wsi_lock);
+            lwsl_user("WebSocket connected\n");
+            lws_callback_on_writable(wsi);
+            break;
+        case LWS_CALLBACK_CLIENT_WRITEABLE:
+            handle_writeable(wsi);
+            break;
+        case LWS_CALLBACK_CLIENT_RECEIVE:
+            // printf("Received: %.*s\n", (int)len, (char *)in);
+            process_ocpp_message(wsi, (char *)in);
+            break;
+        case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
+            if (in)
+            {          
+                lwsl_err("WebSocket connection error: %s\n", (char *)in);// 打印出连接错误的具体信息
+            }
+            else
+            {
+                lwsl_err("WebSocket connection error: Unknown error\n");
+            }
+            pthread_mutex_lock(&wsi_lock);
+            if (global_wsi == wsi) {
+                global_wsi = NULL;
+            }
+            pthread_mutex_unlock(&wsi_lock);
+            LOG("[Ocpp]Connection  LWS_CALLBACK_CLIENT_CONNECTION_ERROR");
+            break;
+        case LWS_CALLBACK_CLIENT_CLOSED:
+            lwsl_err("WebSocket closed, reason: %s\n", in ? (char *)in : "Unknown reason");
+            LOG("[Ocpp]Connection  LWS_CALLBACK_CLIENT_CLOSED");
+            pthread_mutex_lock(&wsi_lock);
+            if (global_wsi == wsi) {
+                global_wsi = NULL;
+            }
+            pthread_mutex_unlock(&wsi_lock);
+            break;
+        default:
+            break;
     }
     return 0;
 }

@@ -109,7 +109,6 @@ int main(int argc, char **argv)
     // ocppCommunicationTaskCreate(); //ocpp通信任务
     FtpServiceThreadCreate();
     int index1 = 0;
-    int counter = 0;
 
     while(1)
     {
@@ -129,8 +128,9 @@ int main(int argc, char **argv)
         // printf("get_ota_UpDating(): %d\r\n",get_ota_UpDating());
         // printf("get_BCUFD() = %d\r\n",get_BCU_CAN_FD());
         // printf("main printf sleep(1) \r\n");
-        // index1 = 0x6003 - 0x3000;
-        // printf("Mobud[0x6003] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
+        // set_emcu_fault(PHY_LINK_FAULT, SET_ERROR);
+        // index1 = 0x3443 - 0x3000;
+        // printf("Mobud[0x3443] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
         // index1 = 0x4B5D - 0x3000;
         // printf("Mobud[0x4B5D] = %x\r\n",modbusBuff[index1]);//ota上载寄存器判断
         // printf("BCU_SystemWorkMode = %x\r\n",BCU_SystemWorkMode);//ota上载寄存器判断
@@ -147,7 +147,7 @@ void main_test(void){
 	CanMes.Length = 1;
 	CanMes.ID = 111;
 	CanMes.Data[0] = 0xCF;
-
+    int counter = 0;
     // 测试堆内存泄漏
     // size_t size = 2 * 1024 * sizeof(int);  // 8KB
     // int* ptr = malloc(size);

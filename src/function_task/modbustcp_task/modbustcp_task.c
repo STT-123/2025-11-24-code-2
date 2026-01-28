@@ -17,6 +17,8 @@ uint16_t *modbusBuff = NULL;
 pthread_t NetConfig_TASKHandle = 0;
 pthread_t NetConfig_TASKHandle_TEST = 0;
 static int timeout_flag = 0;
+extern pthread_mutex_t modbus_reg_mutex;
+
 int get_timeout_flag(void)
 {
     return timeout_flag;
@@ -149,7 +151,9 @@ void *ModbusTCPServerTask(void *arg)
                     if (rc != -1)
                     {
                         modbus_write_reg_deal(ctx, query, rc); // 写寄存器处理
+                        pthread_mutex_lock(&modbus_reg_mutex);
                         modbus_reply(ctx, query, rc, g_mb_mapping); // 回复寄存器
+                        pthread_mutex_unlock(&modbus_reg_mutex);
                     }
                     else
                     {

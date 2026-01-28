@@ -23,7 +23,7 @@
 
 
 char matched_filename[256] = {0};
-#define TCU_LOG_FILENAME       "/opt/xcharge/log/App_project.log"   /*LOG文件名*/
+#define TCU_LOG_FILENAME       "/mnt/sda/log/app_project.log"   /*LOG文件名*/
 
 pthread_mutex_t 				Log_DebugOut_mutex_lock;
 

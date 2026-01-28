@@ -125,7 +125,7 @@ void PHYlinktate()
 	int eth1_status = 0;
 
 	// 检查eth1
-	eth1_status = CheckSinglePHYStatus(NET_ETH_1);//检测网线是否物理连接上
+	eth1_status = CheckSinglePHYStatus(NET_ETH_1);//检测网线口十分有数据流量活动，代码只支持eth0和eth1检测，其他不支持。
 
 	// LOG("TTTTTTTTTTTTTTTTT eth0_status = %d,  eth1_status=%d ", eth0_status, eth1_status);
 	// eth1_status = 1;

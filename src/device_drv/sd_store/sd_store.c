@@ -592,7 +592,10 @@ static void Func_DeleteOldestFolder(void)
     if (folderCount > 0)
     {
         qsort(folders, folderCount, sizeof(char *), CompareFolderNames);
-
+        for (int i = 0; i < folderCount; i++)
+        {
+            LOG("[SD Card] Folder Sorder: %s\r", folders[i]);
+        }
         char path[512];
         snprintf(path, sizeof(path), "%s/%s", USB_MOUNT_POINT, folders[0]);
 
@@ -1127,6 +1130,7 @@ void checkSDCardCapacity(void)
 
     if (usage_percent >= SDMAXCAPACITY)
     {
+        LOG("[SD Card] SD Card usage_percent:%.2f%% > %d\r\n", usage_percent,SDMAXCAPACITY);
         Func_DeleteOldestFolder();
     }
     usleep(1000*1000);

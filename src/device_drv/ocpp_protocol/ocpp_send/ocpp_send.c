@@ -229,13 +229,16 @@ void *websocket_send_thread(void *arg)
             int ids[REPORT_COUNT];
             int count = 0;
             send_ocpp_message(compress_detail_data(db, ids, &count));
+            //if (send_ocpp_message(json)) {
+            // delete_data_by_ids(db, ids, count);//发送成功应该删除调db数据
+            // }
             LOG("SEND BAT DATA \r\n");
             dbcounter = 0;
         }
         
         // 处理诊断状态标志
         if (g_ocppupload_flag == 1) {
-            send_ocpp_message(DiagnosticsStatusNotification(Uploading));;
+            send_ocpp_message(DiagnosticsStatusNotification(Uploading));
         }
         
         // 处理固件状态标志
