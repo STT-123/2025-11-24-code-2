@@ -15,7 +15,7 @@ unsigned char XmodemSendCFlag = 0;
 volatile unsigned long prvmsgtimer = 0;
 pthread_t *pLwIPTCPDataTaskHandle = NULL;
 pthread_t *pLwIPTCPListenTaskHandle = NULL;
-
+extern unsigned short log_tcu_flag ;
 
 void *XmodemCommTask(void *arg)
 {
@@ -33,7 +33,8 @@ void *XmodemCommTask(void *arg)
     {
         if (get_ota_UpDating() == 1)
         {
-            set_TCU_PowerUpCmd(BMS_POWER_UPDATING);
+            set_TCU_PowerUpCmd(BMS_POWER_UPDATING);//打印太频繁
+            // log_tcu_flag = 1;
         }
         if (g_otactrl.OTAStart == 0 && (sblfilenumber != 0) && ((GetTimeDifference_ms(AC_OTA_lastCheckTick)) >= 30000))
         {

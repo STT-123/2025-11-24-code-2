@@ -7,6 +7,7 @@
 #include "modbus_defines.h"
 extern unsigned short g_ota_flag;
 pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBuff寄存器的时候都会调用加锁
+unsigned short log_tcu_flag = 0;
 // modbus接收数据处理，只处理06的写入操作
  void modbus_write_reg_deal(modbus_t *ctx, const uint8_t *query, int req_length)
 {
@@ -14,7 +15,10 @@ pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBu
     unsigned short data = 0;
 	unsigned char sencount = 0;
     unsigned short address = 0;
-  
+
+  	static unsigned char last_data_power = 0xFF;
+	static unsigned char last_data_ecomode = 0xFF;
+
     header_length = modbus_get_header_length(ctx); // 获取数据长度
 
     if (query[header_length] == 0x06) // 功能码
@@ -31,19 +35,22 @@ pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBu
             // 开关机操作
             if ((address == MDBUS_BATTERY_CTL) && (get_ota_OTAStart() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
             {
-				static unsigned char last_data_power = 0xFF;
-				if(data != last_data_power){
-					LOG("[ModbusTcp] last_data_power = %d\r\n",data);
-					last_data_power = data;
-				}
                 if (data == 0)
                 {
 					set_TCU_PowerUpCmd(BMS_POWER_ON);
+
                 }
                 else if (data == 1)
                 {
                     set_TCU_PowerUpCmd(BMS_POWER_OFF);
                 }
+
+				if(data != last_data_power){
+					LOG("[ModbusTcp] last_data_power = %d\r\n",data);
+					log_tcu_flag = 1;
+					last_data_power = data;
+				}
+				
             }
             // RTC时间设置
             else if (address >= MDBUS_RTC_YEAR && address <= MDBUS_RTC_SECOND)
@@ -65,11 +72,6 @@ pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBu
             }
             else if ((address == MDBUS_ENESAV_CTL))//节能模式使能控制
             {
-				static unsigned char last_data_ecomode = 0xFF;
-				if(data != last_data_ecomode){
-					LOG("[ModbusTcp] last_data_ecomode = %d\r\n",data);
-					last_data_ecomode = data;
-				}
                 if (data == 0)
                 {
                     set_modbus_reg_val(MDBUS_ENESAV_STA, 0);
@@ -80,6 +82,12 @@ pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBu
                     set_modbus_reg_val(MDBUS_ENESAV_STA, 1);
                     set_TCU_ECOMode(1);
                 }
+
+				if(data != last_data_ecomode){
+					LOG("[ModbusTcp] last_data_ecomode = %d\r\n",data);
+					last_data_ecomode = data;
+					log_tcu_flag = 1;
+				}
             }
             else if ((address == MDBUS_OFFGRID_STA) || (address == MDBUS_VOLCAL_MODE) || (address == MDBUS_VOLCAL_VALUE))//离网、屏蔽、电压校准
             {
@@ -88,7 +96,7 @@ pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBu
             else if ((address == MDBUS_SET_SOH) || (address == MDBUS_SET_SOC) ||(address == MDBUS_REALY_CTL))//SOHCmd,SOCMinCmd,SOCMaxCmd,RelayCtl
             {
 				LOG("[ModbusTcp] address: 0x%x,data: 0x%x\r\n",address,data);
-				for(sencount = 0;sencount < 10;sencount++){
+				for(sencount = 0;sencount < 5;sencount++){
 					BatteryCalibration_ModBus_Deal(address, data);
 					usleep(5*1000);
 				}
@@ -256,7 +264,7 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 			usleep(1 * 1000);
 		}
 		set_TCU_TimeCalFlg(0); // RTC设置完毕标志位为0
-
+		log_tcu_flag = 1;
 		return 1; // 完成
 	}
 	else
@@ -313,40 +321,53 @@ static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 		bms_calibration_msg.Data[0] |= shifted;// 写入到 Data[0]
 	}
 	Drv_bcu_canfd_send(&bms_calibration_msg);
+
+	char data_str[256] = {0}; // 64 字节 → 最多 "XX " * 64 + '\0' ≈ 192 字节
+    int offset = 0;
+    for (int i = 0; i < 64; i++) {
+        offset += snprintf(data_str + offset, sizeof(data_str) - offset,
+                          "%02X%s", bms_calibration_msg.Data[i], (i < 64 - 1) ? " " : "");
+    }
+
+    LOG("[RECORD] TesterRly_Data, ID = 0x%x ,Data = %s\r\n", bms_calibration_msg.ID, data_str);
 }
 
 static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 {
 	static uint8_t HighVoltType, Offgridstate = 0;
-
+	static unsigned char last_data_offgrid = 0xFF;
 	static uint16_t HighVoltValue = 0;
 	if (address == MDBUS_OFFGRID_STA)//离网屏蔽
 	{
-		static unsigned char last_data_offgrid = 0xFF;
+		Offgridstate = data;
+		set_TCU_FcnStopSet(Offgridstate);//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
+
 		if(data != last_data_offgrid){
 			LOG("[ModbusTcp] last_data_offgrid = %d\r\n",data);
 			last_data_offgrid = data;
+			log_tcu_flag = 1;
 		}
-		Offgridstate = data;
-		set_TCU_FcnStopSet(Offgridstate);//bit0：屏蔽故障，支持开关离网,bit1：屏蔽绝缘故障，但是计算绝缘值,bit2：屏蔽绝缘功能，不计算绝缘值
 	}
 	else if (address == MDBUS_VOLCAL_MODE) //电压校准模式
 	{
 		HighVoltType = data;
 		set_TCU_HighVoltType(HighVoltType);//电压校准模式
 		LOG("[ModbusTcp] HighVoltType %d\r\n",data);
+		log_tcu_flag = 1;
 	}
 	else if (address == MDBUS_VOLCAL_VALUE)//电压校准数值
 	{
 		HighVoltValue = data;
 		set_TCU_HighVoltValue(HighVoltValue);//电压校准数值
 		LOG("[ModbusTcp] HighVoltValue %d\r\n",data);
+		log_tcu_flag = 1;
 	}	
 }
 
 static void set_ems_bms_reboot()
 {
 	set_OTA_XCPConnect(170);
+	log_tcu_flag = 1;
 	CANFDSendFcn_BCU_step();
 	usleep(250 * 1000);
 	LOG("\r\n\r\n  ******* ECU cmd Reset  *******  r\n\r\n");

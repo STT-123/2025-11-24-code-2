@@ -6,7 +6,9 @@
 #include "interface/bms/bms_simulink/CANFDRcvFcn_BCU.h"
 #include "interface/bms/bms_simulink/CANRcvFcn_BMU.h"
 #include "interface/log/log.h"
-
+#include <stdatomic.h>
+extern CAN_FD_MESSAGE_BUS CANSendMsg;    
+static atomic_int log_interrupt_count = ATOMIC_VAR_INIT(0);  
 void my_modbus_set_float_badc(float f, uint16_t *dest)
 {
     uint32_t i;
@@ -433,4 +435,116 @@ uint16_T get_usBatCellTempMax(){
 }
 uint16_T get_usBatCellTempMin(){
     return BCU_VoltMinCellValue;
+}
+
+void Log_TCU_Data(void)
+{
+    char data_str[256] = {0}; // 64 字节 → 最多 "XX " * 64 + '\0' ≈ 192 字节
+    int offset = 0;
+
+    for (int i = 0; i < 64; i++) {
+        offset += snprintf(data_str + offset, sizeof(data_str) - offset,
+                          "%02X%s", CANSendMsg.Data[i], (i < 64 - 1) ? " " : "");
+    }
+
+    LOG("[RECORD] TCU_Data : %s\r\n", data_str);
+    atomic_fetch_add(&log_interrupt_count, 10); // ✅ 原子加10
+}
+
+void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
+{
+	unsigned char log_flag = 0;
+	static unsigned int BCU_FaultInfoLv1_LAST = 0;
+	static unsigned int BCU_FaultInfoLv2_LAST = 0;
+	static unsigned int BCU_FaultInfoLv3_LAST = 0;
+	static unsigned int BCU_FaultInfoLv4_LAST = 0;
+	static unsigned short BCU_SystemWorkMode_LAST = 0;
+
+	static unsigned int BCU_AirState_LAST = 0;
+	static unsigned int BCU_AirErrorfaultCode_LAST = 0;
+
+    if (!msg) return;
+
+    if(msg->ID == 0x18FFC13A){
+        if (BCU_AirState_LAST != get_BCU_usAirState()){
+            log_flag = 1;
+            LOG("[RECORD] AirState: %d -> %d \r",BCU_AirState_LAST,get_BCU_usAirState());
+            BCU_AirState_LAST = get_BCU_usAirState();
+        }
+        if(BCU_AirErrorfaultCode_LAST != get_BCU_uiAirErrorfaultCode()){
+            log_flag = 1;
+            LOG("[RECORD] AirErrorfaultCode: [0x%x] -> [0x%x] \r",BCU_AirErrorfaultCode_LAST,get_BCU_uiAirErrorfaultCode());
+            BCU_AirErrorfaultCode_LAST = get_BCU_uiAirErrorfaultCode();
+        }
+
+        if (log_flag == 1){
+            char data_str[100] = {0};
+            int offset = 0;
+            
+            for (int i = 0; i < 8; i++) {
+                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
+                                "%02X%s", msg->Data[i], (i < 8) ? " " : "");
+            }
+            LOG("[RECORD] BCU_Air_Data: msg.ID=0x%X, CAN_Data = %s\r\n", msg->ID, data_str);
+        }
+        return;
+    }
+
+    if(msg->ID == 0x180110E4){
+        if (BCU_SystemWorkMode_LAST != get_BCU_SystemWorkModeValue()){
+            log_flag = 1;
+            LOG("[RECORD] SystemWorkMode: %d -> %d \r",BCU_SystemWorkMode_LAST,get_BCU_SystemWorkModeValue());
+            BCU_SystemWorkMode_LAST = get_BCU_SystemWorkModeValue();
+        }
+
+        if (BCU_FaultInfoLv1_LAST != get_BCU_FaultInfoLv1Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv1: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv1_LAST,get_BCU_FaultInfoLv1Value());
+            BCU_FaultInfoLv1_LAST = get_BCU_FaultInfoLv1Value();
+        }
+
+        if (BCU_FaultInfoLv2_LAST != get_BCU_FaultInfoLv2Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv2: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv2_LAST,get_BCU_FaultInfoLv2Value());
+            BCU_FaultInfoLv2_LAST = get_BCU_FaultInfoLv2Value();
+        }
+
+        if (BCU_FaultInfoLv3_LAST != get_BCU_FaultInfoLv3Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv3: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv3_LAST,get_BCU_FaultInfoLv3Value());
+            BCU_FaultInfoLv3_LAST = get_BCU_FaultInfoLv3Value();
+        }
+
+        if (BCU_FaultInfoLv4_LAST != get_BCU_FaultInfoLv4Value()){
+            log_flag = 1;
+            LOG("[RECORD] FaultInfoLv4: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv4_LAST,get_BCU_FaultInfoLv4Value());
+            BCU_FaultInfoLv4_LAST = get_BCU_FaultInfoLv4Value();
+        }
+
+        // 2. 检查是否需要强制打印（仅针对此 ID）
+        int should_force_log = 0;
+        int current = atomic_load(&log_interrupt_count);
+        if (current > 0) {
+            int prev = atomic_fetch_sub(&log_interrupt_count, 1);
+            if (prev > 0) {
+                should_force_log = 1;
+                // printf("force log 0x180110E4\r\n"); // 调试用
+            } else {
+                // 补偿：其他线程已减到0，我们加回来
+                atomic_fetch_add(&log_interrupt_count, 1);
+            }
+        }
+
+        if (log_flag || should_force_log) {
+
+            char data_str[200] = {0};
+            int offset = 0;
+            
+            for (int i = 0; i < 64; i++) {
+                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
+                                "%02X%s", msg->Data[i], (i < 63) ? " " : "");
+            }
+            LOG("[RECORD] BCU_Data: msg.ID=%X, CAN_Data = %s\r\n", msg->ID, data_str);
+        }
+    }
 }

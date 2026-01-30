@@ -113,6 +113,7 @@ void update_bat_data(sqlite3 *db)
     // data.uiTimeStamp = (unsigned int)t;
     
     // printf("Unix时间戳: %u (十进制), 0x%08x (十六进制)\n", (unsigned int)t, (unsigned int)t);
+    //data.uiTimeStamp 代表从 1970-01-01 00:00:00 UTC 到该时刻所经过的秒数
     data.uiTimeStamp = (unsigned int)time(NULL); //如果时间比ocpp网页的小，则网页不更新数据，所以不要错误的给网页一个过大的时间戳
     convert_tBatData_to_big_endian(&data_be, &data);
     insert_data(db, &data_be);

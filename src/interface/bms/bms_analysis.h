@@ -150,5 +150,6 @@ uint16_T get_usBatCellVoltMax();
 uint16_T get_usBatCellVoltMin();
 uint16_T get_usBatCellTempMax();
 uint16_T get_usBatCellTempMin();
-
+void Log_TCU_Data(void);
+void Log_Bcu_Data(const CAN_FD_MESSAGE *msg);
 #endif

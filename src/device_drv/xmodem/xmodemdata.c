@@ -14,7 +14,7 @@
 unsigned char tcp_server_recvbuf[2048] = {0};
 unsigned char tcp_server_Txbuf[256] = {0};
 volatile unsigned long curmsgtimer =0 ;
-
+extern unsigned short log_tcu_flag;//打印tcu标志位
 const unsigned int crc_table[256] = {
     0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
     0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
@@ -184,6 +184,7 @@ void *lwip_data_TASK(void *param)
 									setXmodemServerReceiveFileEnd(1);
 									set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
 									set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+									log_tcu_flag = 1;
 								}
 							}
 							else//最后1包
@@ -210,6 +211,7 @@ void *lwip_data_TASK(void *param)
 									setXmodemServerReceiveFileEnd(1);
 									set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
 									set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+								    log_tcu_flag = 1;
 								}
 								setXmodemServerReceiveFileEnd(1);//考虑后移动
 								LOG("[Xmodem] get_ota_UpDating(): %d\r\n",get_ota_UpDating());
@@ -453,6 +455,7 @@ void *lwip_data_TASK(void *param)
 								setXmodemServerReceiveFileEnd(1);
 								set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
 								set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+							    log_tcu_flag = 1;
 							}
 						}
 						else
@@ -480,6 +483,7 @@ void *lwip_data_TASK(void *param)
 								setXmodemServerReceiveFileEnd(1);
 								set_modbus_reg_val(OTASTATUSREGADDR, OTAFAILED);
 								set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+							    log_tcu_flag = 1;
 							}
 							setXmodemServerReceiveFileEnd(1);
 

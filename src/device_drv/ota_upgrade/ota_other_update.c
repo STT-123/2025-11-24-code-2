@@ -7,6 +7,7 @@
 #include "device_drv/sd_store/sd_store.h"
 #define ACPDC_BLOCK_SIZE 120
 IndependentStatus independentStatus = {0};
+extern unsigned short log_tcu_flag;//打印tcu标志位
 
 void printBuffer(uint8_t *buffer, size_t size) {
     for (size_t i = 0; i < size; i++) {
@@ -410,6 +411,7 @@ void FinishACPOtaAndCleanup(void)
     independentStatus.CANStartOTA = 0;
     set_ota_UpDating(0);               // 升级结束标志
 	set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+	log_tcu_flag = 1;
     set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE); // 设置状态寄存器为 IDLE
 	CANFDSendFcn_BCU_step();//发送TCU 信息
 }
@@ -423,6 +425,7 @@ void FinishDCDCOtaAndCleanup(void)
     independentStatus.CANStartOTA = 0;
     set_ota_UpDating(0);               // 升级结束标志
 	set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+	log_tcu_flag = 1;
     set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE); // 设置状态寄存器为 IDLE
 	CANFDSendFcn_BCU_step();
 }

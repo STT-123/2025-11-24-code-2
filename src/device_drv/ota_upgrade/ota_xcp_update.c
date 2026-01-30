@@ -10,6 +10,7 @@
 
 XCPStatus xcpstatus = {0};
 unsigned int OTA_RecvPacketCount = 0;
+extern unsigned short log_tcu_flag ;
 signed char XcpSendConnectCMD(unsigned int id, unsigned char xcpobjectid)
 {
 	CAN_MESSAGE CanMes;
@@ -188,6 +189,15 @@ static int XCPCANOTAMSGParseMult(XCPStatus *xcpstatus)
         }
 	    if (xStatus == 0)
 	    {
+            // printf("canmsg->data[0] :%02X\r\n ", canmsg.data[0]);
+            // printf("canmsg->data[1] :%02X \r\n", canmsg.data[1]);
+            // printf("canmsg.data[2] :%02X\r\n ", canmsg.data[2]);
+            // printf("canmsg.data[3] :%02X \r\n", canmsg.data[3]);
+            // printf("canmsg.data[4] :%02X \r\n", canmsg.data[4]);
+            // printf("rame.data[5] :%02X \r\n", canmsg.data[5]);
+            // printf("rame.data[6] :%02X \r\n", canmsg.data[6]);
+            // printf("rame.data[7] :%02X\r\n ", canmsg.data[7]);
+            // printf("rame.data[8] :%02X \r\n", canmsg.data[8]);
 	    	int res = XCPCANOTAMSGParse(&canmsg, xcpstatus);
             
 	        if (res == 0)
@@ -263,35 +273,40 @@ static int XcpTryConnectDevice(XCPStatus *xcpstatus)
             return -1;
 
         signed char res = -1;
-
-        if (get_ota_deviceType() == BMU)
+        int Connectcount = 10;
+        while(Connectcount > 0)
         {
-            res = XcpSendConnectCMD(get_ota_deviceID(), 0);
-            LOG("[OTA] XcpSendConnectCMD_res:%d\r\n",res);
-        }
-        else
-        {
-            res = XcpSendConnectCMD(get_ota_deviceID(), 1);//发送0xFF
-            LOG("[OTA] XcpSendConnectCMD_end res:%d\r\n",res);
+            if (get_ota_deviceType() == BMU)
+            {
+                res = XcpSendConnectCMD(get_ota_deviceID(), 0);
+                LOG("[OTA] XcpSendConnectCMD_res:%d\r\n",res);
+            }
+            else
+            {
+                res = XcpSendConnectCMD(get_ota_deviceID(), 1);//发送0xFF
+                LOG("[OTA] XcpSendConnectCMD_end res:%d\r\n",res);
+            }
+
+            int result = XCPCANOTAMSGParseMult(xcpstatus);
+            if (result == 0) {
+                return 0;
+            }
+            else
+            {
+                LOG("Connectcount Connectcount =%d \r",Connectcount--);
+                continue;
+            }
+            usleep(50*1000);
         }
 
-        int result = XCPCANOTAMSGParseMult(xcpstatus);
-        if (result == 0) {
-            return 0;
-        }
-        else
-        {
-            memset(xcpstatus, 0, sizeof(XCPStatus));
-            xcpstatus->ErrorReg |= 1 << 15;
-            xcpstatus->ErrorDeviceID = get_ota_deviceID();
-
-            return -2; // 超时错误
-        }
+        memset(xcpstatus, 0, sizeof(XCPStatus));
+        xcpstatus->ErrorReg |= 1 << 15;
+        xcpstatus->ErrorDeviceID = get_ota_deviceID();
+        return -2; // 超时错误
     }  
 }
 
-
-
+#if 1
 static int XcpTryQueryStatusOnce(XCPStatus *xcpstatus)
 {
     if(xcpstatus->ErrorReg == 0)
@@ -302,43 +317,49 @@ static int XcpTryQueryStatusOnce(XCPStatus *xcpstatus)
         unsigned char tmp = 0;
         unsigned int times = 0;
         signed char res = -1;
-
-        if (get_ota_deviceType() == BMU)
+        int Querycount = 10;
+        while(Querycount > 0)
         {
-            res = XcpSendQueryStatusCMD(get_ota_deviceID(), 0);
-        }
-        else
-        {
-            LOG("[OTA] XcpSendQueryStatusCMD\r\n");
-            xcpstatus->CANStartOTA = 1;
-            res = XcpSendQueryStatusCMD(get_ota_deviceID(), 1);
-            LOG("[OTA] XcpSendQueryStatusCMD res :%d\r\n",res);
+            if (get_ota_deviceType() == BMU)
+            {
+                res = XcpSendQueryStatusCMD(get_ota_deviceID(), 0);
+            }
+            else
+            {
+                LOG("[OTA] XcpSendQueryStatusCMD\r\n");
+                xcpstatus->CANStartOTA = 1;
+                res = XcpSendQueryStatusCMD(get_ota_deviceID(), 1);
+                LOG("[OTA] XcpSendQueryStatusCMD res :%d\r\n",res);
+            }
+
+            if (res < 0)
+            {
+                LOG("[OTA] XCP SendQueryStatusCMD error, Error code %d\r\n", res);
+                xcpstatus->ErrorReg |= 1 << 4;
+                xcpstatus->ErrorDeviceID = get_ota_deviceID();
+                return -1;
+            }
+            LOG("[OTA] xQueueReceive_ing\r\n");
+
+            int result = XCPCANOTAMSGParseMult(xcpstatus);
+            if (result == 0) {
+                return 0;
+            }
+            else
+            { 
+                LOG("Query Querycount =%d \r",Querycount--);
+                continue;
+            }
+            usleep(50*1000);
         }
 
-        if (res < 0)
-        {
-            LOG("[OTA] XCP SendQueryStatusCMD error, Error code %d\r\n", res);
-            xcpstatus->ErrorReg |= 1 << 4;
-            xcpstatus->ErrorDeviceID = get_ota_deviceID();
-            return -1;
-        }
-        LOG("[OTA] xQueueReceive_ing\r\n");
-
-        int result = XCPCANOTAMSGParseMult(xcpstatus);
-        if (result == 0) {
-            return 0;
-        }
-        else
-        {
-            memset(xcpstatus, 0, sizeof(XCPStatus));
-            xcpstatus->ErrorReg |= 1 << 15;
-            xcpstatus->ErrorDeviceID = get_ota_deviceID();
-
-            return -2; // 超时错误
-        }
+        memset(xcpstatus, 0, sizeof(XCPStatus));
+        xcpstatus->ErrorReg |= 1 << 15;
+        xcpstatus->ErrorDeviceID = get_ota_deviceID();
+        return -2; // 超时错误
     }
 }
-   
+   #endif
 /**
 @brief 
 @param rfile 
@@ -619,34 +640,41 @@ static int SendXcpProgramEndCommand(XCPStatus *xcpstatus) {
     signed char res = -1;
     xcpstatus->XCPCMDResponseFlag = 0;
     unsigned int times = 0;
+    unsigned int ProgramCount = 10;
 
-    if (get_ota_deviceType() == BMU) {
-        res = XcpSendProgramEndCMD(get_ota_deviceID(), 0);
-    } else {
-        xcpstatus->CANStartOTA = 1; // 1126
-        res = XcpSendProgramEndCMD(get_ota_deviceID(), 1);
-    }
-
-    if (res != 0) {
-        LOG("[OTA]  XCP XcpSendProgramEndCMD error, Error code %d\r\n", res);
-        memset(xcpstatus, 0, sizeof(XCPStatus));
-        xcpstatus->ErrorReg |= 1 << 14;
-        xcpstatus->ErrorDeviceID = get_ota_deviceID();
-        return -1; // 返回错误代码
-    }
-    
-    int result = XCPCANOTAMSGParseMult(xcpstatus);
-    if (result == 0) {
-        return 0;
-    }
-    else
+    while(ProgramCount>0)
     {
-        memset(xcpstatus, 0, sizeof(XCPStatus));
-        xcpstatus->ErrorReg |= 1 << 15;
-        xcpstatus->ErrorDeviceID = get_ota_deviceID();
+        if (get_ota_deviceType() == BMU) {
+            res = XcpSendProgramEndCMD(get_ota_deviceID(), 0);
+        } else {
+            xcpstatus->CANStartOTA = 1; // 1126
+            res = XcpSendProgramEndCMD(get_ota_deviceID(), 1);
+        }
 
-        return -2; // 超时错误
+        if (res != 0) {
+            LOG("[OTA]  XCP XcpSendProgramEndCMD error, Error code %d\r\n", res);
+            memset(xcpstatus, 0, sizeof(XCPStatus));
+            xcpstatus->ErrorReg |= 1 << 14;
+            xcpstatus->ErrorDeviceID = get_ota_deviceID();
+            return -1; // 返回错误代码
+        }
+        
+        int result = XCPCANOTAMSGParseMult(xcpstatus);
+        if (result == 0) {
+            return 0;
+        }
+        else
+        {
+            LOG("ProgramCount ProgramCount: %d\n", ProgramCount);
+            continue;
+        }
+        usleep(50*1000);
     }
+    memset(xcpstatus, 0, sizeof(XCPStatus));
+    xcpstatus->ErrorReg |= 1 << 15;
+    xcpstatus->ErrorDeviceID = get_ota_deviceID();
+
+    return -2; // 超时错误
 }
 
 static int HandleXcpCommunication( XCPStatus *xcpstatus) {
@@ -682,37 +710,45 @@ signed char XcpProgramResetHandler(XCPStatus *xcpstatus)
         int xStatus;
         int err;
         signed char res = -1;
+        unsigned int ResetCount = 10;
 
-        if (get_ota_deviceType() == BMU)
+        while(ResetCount > 0)
         {
-            res = XcpSendProgramResetCMD(get_ota_deviceID(), 0);
-        }
-        else
-        {
-            xcpstatus->CANStartOTA = 1; // 1126
-            res = XcpSendProgramResetCMD(get_ota_deviceID(), 1);
-        }
+            if (get_ota_deviceType() == BMU)
+            {
+                res = XcpSendProgramResetCMD(get_ota_deviceID(), 0);
+            }
+            else
+            {
+                xcpstatus->CANStartOTA = 1; // 1126
+                res = XcpSendProgramResetCMD(get_ota_deviceID(), 1);
+            }
 
-        if (res != 0)
-        {
-            LOG("[OTA] XCP XcpSendProgramResetCMD error, Error code %d\r\n", res);
-            memset(xcpstatus, 0, sizeof(XCPStatus));
-            xcpstatus->ErrorReg |= (1 << 9);
-            xcpstatus->ErrorDeviceID = get_ota_deviceID();
-            return -1; // 发送失败
-        }
+            if (res != 0)
+            {
+                LOG("[OTA] XCP XcpSendProgramResetCMD error, Error code %d\r\n", res);
+                memset(xcpstatus, 0, sizeof(XCPStatus));
+                xcpstatus->ErrorReg |= (1 << 9);
+                xcpstatus->ErrorDeviceID = get_ota_deviceID();
+                return -1; // 发送失败
+            }
 
-        int result = XCPCANOTAMSGParseMult(xcpstatus);
-        if (result == 0) {
-            return 0;
+            int result = XCPCANOTAMSGParseMult(xcpstatus);
+            if (result == 0) {
+                return 0;
+            }
+            else
+            {
+                LOG("ResetCount ResetCount: %d\n", ResetCount);
+                continue;
+            }
+            usleep(50*1000);
         }
-        else
-        {
-            memset(xcpstatus, 0, sizeof(XCPStatus));
-            xcpstatus->ErrorReg |= (1 << 10);
-            xcpstatus->ErrorDeviceID = get_ota_deviceID();
-            return -2; // 超时错误
-        }
+        memset(xcpstatus, 0, sizeof(XCPStatus));
+        xcpstatus->ErrorReg |= (1 << 10);
+        xcpstatus->ErrorDeviceID = get_ota_deviceID();
+        return -2; // 超时错误
+     
     }
 }
 void XCP_OTA(int count)
@@ -866,6 +902,7 @@ void FinshhBCUBMUOtaAndCleanup(void)
 	memset(&xcpstatus,0,sizeof(xcpstatus));
     set_OTA_XCPConnect(0);//删除跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
+    log_tcu_flag = 1;
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
     CANFDSendFcn_BCU_step();
 }

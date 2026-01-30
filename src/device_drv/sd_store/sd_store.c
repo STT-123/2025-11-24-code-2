@@ -121,92 +121,97 @@ static void Drv_RTCGetTime(Rtc_Ip_TimedateType *rtcTime)
 
 static int GetNowTime(struct tm *nowTime)
 {
+    static struct tm last_bcu_time = {0}; // 记录上一次有效的BCU时间
+    static time_t last_bcu_update = 0;    // 上次BCU时间更新的时间戳（用于超时判断）
+    const int BCU_TIMEOUT_SEC = 300;      // 5分钟超时，可调整
+
     struct tm timeinfo = {0};
-    static time_t last_update_time = 0;
     time_t current_time = time(NULL);
-    
-    // 检查时间
-    if (get_BCU_TimeYearValue() != 0) // bcu发来时间了
+
+    if (get_BCU_TimeYearValue() != 0) 
     {
+        // 构造当前BCU时间
+        struct tm bcu_tm = {0};
+        bcu_tm.tm_year = get_BCU_TimeYearValue() + 100;
+        bcu_tm.tm_mon  = get_BCU_TimeMonthValue() - 1;
+        bcu_tm.tm_mday = get_BCU_TimeDayValue();
+        bcu_tm.tm_hour = get_BCU_TimeHourValue();
+        bcu_tm.tm_min  = get_BCU_TimeMinuteValue();
+        bcu_tm.tm_sec  = get_BCU_TimeSencondValue(); // 注意拼写 typo? 应为 Second
+        bcu_tm.tm_isdst = -1;
+
+        time_t bcu_time_t = mktime(&bcu_tm);
+        if (bcu_time_t == (time_t)-1) {
+            LOG("[SD Card] WARNING: mktime failed for BCU time\n");
+            goto use_local_time;
+        }
+
+        // 检查BCU时间是否与上次相同（防陈旧）
+        if (memcmp(&bcu_tm, &last_bcu_time, sizeof(struct tm)) == 0) {
+            // 时间没变，可能是旧数据
+            if (difftime(current_time, last_bcu_update) > BCU_TIMEOUT_SEC) {
+                LOG("[SD Card] BCU time unchanged for %d sec, treat as stale", BCU_TIMEOUT_SEC);
+                goto use_local_time;
+            } else {
+                // 时间没变，但在有效期内，继续使用（但不更新系统时间）
+                LOG("[SD Card] BCU time unchanged, skip update");
+                *nowTime = bcu_tm;
+                return 0;
+            }
+        }
+
+        // BCU时间更新了！
+        last_bcu_time = bcu_tm;
+        last_bcu_update = current_time;
+
         // 获取当前本地时间用于比较
         time_t local_now = time(NULL);
         struct tm *local_tm = localtime(&local_now);
         struct tm local_timeinfo = *local_tm;
-        mktime(&local_timeinfo);
-        
-        // 填充外部时间变量到 tm 结构体
-        timeinfo.tm_year = get_BCU_TimeYearValue() + 100;
-        timeinfo.tm_mon = get_BCU_TimeMonthValue() - 1;
-        timeinfo.tm_mday = get_BCU_TimeDayValue();
-        timeinfo.tm_hour = get_BCU_TimeHourValue();
-        timeinfo.tm_min = get_BCU_TimeMinuteValue();
-        timeinfo.tm_sec = get_BCU_TimeSencondValue();
-        timeinfo.tm_isdst = -1;
-        
-        // 转换为time_t用于比较
-        time_t bcu_time_t = mktime(&timeinfo);
-        if (bcu_time_t == (time_t)-1) {
-            LOG("[SD Card] WARNING: mktime failed for BCU time\n");
-            timeinfo.tm_wday = 0; // 星期日
-        }
-        
-        // 判断是否需要更新时间
+
+        // 判断是否需要同步到系统
         int need_update = 0;
-        
-        // 比较年月日时分是否相同
         int same_time = 
-            (timeinfo.tm_year == local_timeinfo.tm_year) &&
-            (timeinfo.tm_mon == local_timeinfo.tm_mon) &&
-            (timeinfo.tm_mday == local_timeinfo.tm_mday) &&
-            (timeinfo.tm_hour == local_timeinfo.tm_hour) &&
-            (timeinfo.tm_min == local_timeinfo.tm_min);
-
-            // printf("[SD Card] ECU from BCU Now Time: %d-%02d-%02d %02d:%02d:%02d\r\n", 
-            // timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
-            // timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
-
-            // printf("[SD Card] ECU from Local Now Time: %d-%02d-%02d %02d:%02d:%02d\r\n", 
-            // local_timeinfo.tm_year + 1900, local_timeinfo.tm_mon + 1, local_timeinfo.tm_mday,
-            // local_timeinfo.tm_hour, local_timeinfo.tm_min, local_timeinfo.tm_sec);
+            (bcu_tm.tm_year == local_timeinfo.tm_year) &&
+            (bcu_tm.tm_mon  == local_timeinfo.tm_mon)  &&
+            (bcu_tm.tm_mday == local_timeinfo.tm_mday) &&
+            (bcu_tm.tm_hour == local_timeinfo.tm_hour) &&
+            (bcu_tm.tm_min  == local_timeinfo.tm_min);
 
         if (same_time) {
-            // 年月日时分相同，检查秒差
-            int second_diff = abs(timeinfo.tm_sec - local_timeinfo.tm_sec);
+            int second_diff = abs(bcu_tm.tm_sec - local_timeinfo.tm_sec);
             if (second_diff > 10) {
-                // 秒差超过5秒，需要更新
                 need_update = 1;
                 LOG("[SD Card] Second difference %d > 10, need update", second_diff);
-            } else {
-                // 秒差在5秒内，不需要更新
-                //LOG("[SD Card] Second difference %d <= 10, skip update", second_diff);
             }
         } else {
-            need_update = 1;// 年月日时分不同，需要更新
-            LOG("[SD Card] Time (year/month/day/hour/minute) different, need update");
+            need_update = 1;
+            LOG("[SD Card] Time different, need update, BCUTime: %d-%02d-%02d %02d:%02d:%02d\r\n",
+                bcu_tm.tm_year + 1900, bcu_tm.tm_mon + 1, bcu_tm.tm_mday,
+                bcu_tm.tm_hour, bcu_tm.tm_min, bcu_tm.tm_sec);
         }
 
-        
-        // 如果需要更新，执行时间更新操作
         if (need_update) {
             set_system_time_from_bcu();
             LOG("[SD Card] Update system time from BCU");
-        } else {
-            // do nothing
         }
+
+        *nowTime = bcu_tm;
+        return 0;
     }
-    else // bcu没发过来时间 用自己本地的时间
+
+    use_local_time:
     {
+        // 使用本地时间
         time_t now = time(NULL);
         struct tm *tm_info = localtime(&now);
         timeinfo = *tm_info;
-        mktime(&timeinfo);
-        LOG("[SD Card] ECU from Local Now Time: %d-%02d-%02d %02d:%02d:%02d", 
-             timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
-             timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+        *nowTime = timeinfo;
+        LOG("[SD Card] Using local time: %d-%02d-%02d %02d:%02d:%02d",
+            timeinfo.tm_year + 1900, timeinfo.tm_mon + 1, timeinfo.tm_mday,
+            timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+        return 0;
     }
-    *nowTime = timeinfo;// 得到当前时间
-    
-    return 0;
 }
 /**
  * 
@@ -766,97 +771,13 @@ int mkdir_log(const char *base_path) {
  * 初始化缓存
 */
 
-void log_eror_csv(const CAN_FD_MESSAGE *msg)
-{
-	unsigned char log_flag = 0;
-	static unsigned int BCU_FaultInfoLv1_LAST = 0;
-	static unsigned int BCU_FaultInfoLv2_LAST = 0;
-	static unsigned int BCU_FaultInfoLv3_LAST = 0;
-	static unsigned int BCU_FaultInfoLv4_LAST = 0;
-	static unsigned short BCU_SystemWorkMode_LAST = 0;
 
-	static unsigned int BCU_AirState_LAST = 0;
-	static unsigned int BCU_AirErrorfaultCode_LAST = 0;
-
-    if(msg->ID == 0x18FFC13A){
-        if (BCU_AirState_LAST != get_BCU_usAirState()){
-            log_flag = 1;
-            LOG("[RECORD] AirState: %d -> %d \r",BCU_AirState_LAST,get_BCU_usAirState());
-            BCU_AirState_LAST = get_BCU_usAirState();
-        }
-        if(BCU_AirErrorfaultCode_LAST != get_BCU_uiAirErrorfaultCode()){
-            log_flag = 1;
-            LOG("[RECORD] AirErrorfaultCode: [0x%x] -> [0x%x] \r",BCU_AirErrorfaultCode_LAST,get_BCU_uiAirErrorfaultCode());
-            BCU_AirErrorfaultCode_LAST = get_BCU_uiAirErrorfaultCode();
-        }
-
-        if (log_flag == 1){
-            if (msg == NULL) {
-                return;
-            }
-            char data_str[100] = {0};
-            int offset = 0;
-            
-            for (int i = 0; i < 8; i++) {
-                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
-                                "%02X%s", msg->Data[i], (i < 8) ? " " : "");
-            }
-            LOG_CSV("[RECORD] msg.ID:0x%X, CAN_Data = %s\r\n", msg->ID, data_str);
-        }
-    }
-
-    if(msg->ID == 0x180110E4){
-        if (BCU_SystemWorkMode_LAST != get_BCU_SystemWorkModeValue()){
-            log_flag = 1;
-            LOG("[RECORD] SystemWorkMode: %d -> %d \r",BCU_SystemWorkMode_LAST,get_BCU_SystemWorkModeValue());
-            BCU_SystemWorkMode_LAST = get_BCU_SystemWorkModeValue();
-        }
-
-        if (BCU_FaultInfoLv1_LAST != get_BCU_FaultInfoLv1Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv1: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv1_LAST,get_BCU_FaultInfoLv1Value());
-            BCU_FaultInfoLv1_LAST = get_BCU_FaultInfoLv1Value();
-        }
-
-        if (BCU_FaultInfoLv2_LAST != get_BCU_FaultInfoLv2Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv2: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv2_LAST,get_BCU_FaultInfoLv2Value());
-            BCU_FaultInfoLv2_LAST = get_BCU_FaultInfoLv2Value();
-        }
-
-        if (BCU_FaultInfoLv3_LAST != get_BCU_FaultInfoLv3Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv3: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv3_LAST,get_BCU_FaultInfoLv3Value());
-            BCU_FaultInfoLv3_LAST = get_BCU_FaultInfoLv3Value();
-        }
-
-        if (BCU_FaultInfoLv4_LAST != get_BCU_FaultInfoLv4Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv4: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv4_LAST,get_BCU_FaultInfoLv4Value());
-            BCU_FaultInfoLv4_LAST = get_BCU_FaultInfoLv4Value();
-        }
-
-        if (log_flag == 1){
-            if (msg == NULL) {
-                return;
-            }
-            char data_str[200] = {0};
-            int offset = 0;
-            
-            for (int i = 0; i < 64; i++) {
-                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
-                                "%02X%s", msg->Data[i], (i < 63) ? " " : "");
-            }
-            LOG_CSV("[RECORD] msg.ID:0x%X, CAN_Data = %s\r\n", msg->ID, data_str);
-        }
-    }
-}
 /*===================================================================================*/
 void Drv_write_to_active_buffer(const CAN_FD_MESSAGE *msg, uint8_t channel)
 {
     DoubleRingBuffer *drb = &canDoubleRingBuffer;
     uint8_t ret = 0;
-    log_eror_csv(msg);
+    Log_Bcu_Data(msg);
     if (((msg->ID == 0x1cb0e410) && (msg->Data[0] == 0xC9)) ||
         (msg->ID == 0x1cb010e4) || (msg->ID == 0x1823E410) || (msg->ID == 0))
     {

@@ -14,7 +14,7 @@
 pthread_t OTAUpgrad_TASKHandle = 0;
 volatile unsigned int CurrentOTADeviceCanID = 0x1821FF10;
 unsigned short g_ota_flag = 0;
-
+extern unsigned short log_tcu_flag;
 
 void *ota_Upgrade_Task(void *arg)
 {
@@ -36,7 +36,7 @@ void *ota_Upgrade_Task(void *arg)
     // set_ota_deviceID(0x1821FF10) ;
 
     //BCU
-    set_ota_OTAFilename("XC_BCU_V526.tar");
+    set_ota_OTAFilename("XC_BCU_V502.tar");
     set_ota_deviceType(BCU);
     set_ota_deviceID(BCUOTACANID) ;//BCU
     //ECU
@@ -190,6 +190,7 @@ void *ota_Upgrade_Task(void *arg)
                 {
                     for (unsigned int i = 0; i < 5; i++){
                         set_OTA_XCPConnect(255);//设置跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
+                        log_tcu_flag = 1;
                         LOG("[OTA] set_OTA_XCPConnect\r\n");
                         CANFDSendFcn_BCU_step();
                         usleep(200*1000);
@@ -226,6 +227,7 @@ void *ota_Upgrade_Task(void *arg)
                             else
                             {
                                 BCUOtaFlag++;
+                                sleep(5);
                                 LOG("[OTA] CAN ID 0x%x BCU OTA failed, retry count: %d\r\n", get_ota_deviceID(), BCUOtaFlag);
                             }
                         }
@@ -280,6 +282,7 @@ void *ota_Upgrade_Task(void *arg)
                                 {
                                     ReOtaFlag++;
                                     BMUOtaFlag++;
+                                    sleep(5);
                                     LOG("[OTA] CAN ID 0x%x BMU OTA failed, retry count: %d\r\n", get_ota_deviceID(), ReOtaFlag);
                                     continue;
                                 }

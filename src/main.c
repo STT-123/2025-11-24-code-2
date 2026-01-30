@@ -113,6 +113,7 @@ int main(int argc, char **argv)
     while(1)
     {
         sleep(1);
+
         // main_test();
         // printf("DAqX_FaultCode1 = %d\r\n", DAqX_FaultCode1[0]);//一级故障
         // printf("data.get_usBatMaxTempCellIndex = %ld\n", get_usBatMaxTempCellIndex());
