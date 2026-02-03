@@ -22,7 +22,7 @@ void *bcu_DealTask(void *arg)
     clock_gettime(CLOCK_MONOTONIC, &start_tick); // 记录线程开始时间
 
     bcu_Init();// ecu 和 bcu通信can初始化（打开can口 绑定回调）
-
+    init_can_buffer();
     LOG("Func_thread_can0_dealwith is running\n");
     while (1)
     {

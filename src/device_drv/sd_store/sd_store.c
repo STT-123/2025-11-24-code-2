@@ -160,40 +160,20 @@ static int GetNowTime(struct tm *nowTime)
             }
         }
 
-        // BCU时间更新了！
+        // 更新记录
         last_bcu_time = bcu_tm;
         last_bcu_update = current_time;
 
-        // 获取当前本地时间用于比较
+        // 计算时间差
         time_t local_now = time(NULL);
-        struct tm *local_tm = localtime(&local_now);
-        struct tm local_timeinfo = *local_tm;
-
-        // 判断是否需要同步到系统
-        int need_update = 0;
-        int same_time = 
-            (bcu_tm.tm_year == local_timeinfo.tm_year) &&
-            (bcu_tm.tm_mon  == local_timeinfo.tm_mon)  &&
-            (bcu_tm.tm_mday == local_timeinfo.tm_mday) &&
-            (bcu_tm.tm_hour == local_timeinfo.tm_hour) &&
-            (bcu_tm.tm_min  == local_timeinfo.tm_min);
-
-        if (same_time) {
-            int second_diff = abs(bcu_tm.tm_sec - local_timeinfo.tm_sec);
-            if (second_diff > 10) {
-                need_update = 1;
-                LOG("[SD Card] Second difference %d > 10, need update", second_diff);
-            }
-        } else {
-            need_update = 1;
-            LOG("[SD Card] Time different, need update, BCUTime: %d-%02d-%02d %02d:%02d:%02d\r\n",
-                bcu_tm.tm_year + 1900, bcu_tm.tm_mon + 1, bcu_tm.tm_mday,
-                bcu_tm.tm_hour, bcu_tm.tm_min, bcu_tm.tm_sec);
-        }
-
-        if (need_update) {
+        double time_diff = difftime(bcu_time_t, local_now);
+        double abs_diff = fabs(time_diff);
+        
+        // 只打印超过阈值的情况
+        if (abs_diff > 10) {
+            LOG("[SD Card] Time difference %.1f > %d seconds, updating from BCU\r\n", 
+                abs_diff, 10);
             set_system_time_from_bcu();
-            LOG("[SD Card] Update system time from BCU");
         }
 
         *nowTime = bcu_tm;
