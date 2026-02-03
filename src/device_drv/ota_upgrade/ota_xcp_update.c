@@ -293,10 +293,11 @@ static int XcpTryConnectDevice(XCPStatus *xcpstatus)
             }
             else
             {
-                LOG("Connectcount Connectcount =%d \r",Connectcount--);
+                LOG("Connectcount Connectcount =%d \r",Connectcount);//LOG 会执行printf和log两个函数，所以会执行两遍计算
+                Connectcount--;
+                usleep(10*1000);
                 continue;
             }
-            usleep(50*1000);
         }
 
         memset(xcpstatus, 0, sizeof(XCPStatus));
@@ -347,10 +348,11 @@ static int XcpTryQueryStatusOnce(XCPStatus *xcpstatus)
             }
             else
             { 
-                LOG("Query Querycount =%d \r",Querycount--);
+                LOG("Query Querycount =%d \r",Querycount);
+                Querycount--;
+                usleep(10*1000);
                 continue;
             }
-            usleep(50*1000);
         }
 
         memset(xcpstatus, 0, sizeof(XCPStatus));
@@ -666,9 +668,10 @@ static int SendXcpProgramEndCommand(XCPStatus *xcpstatus) {
         else
         {
             LOG("ProgramCount ProgramCount: %d\n", ProgramCount);
+            ProgramCount--;
+            usleep(10*1000);
             continue;
         }
-        usleep(50*1000);
     }
     memset(xcpstatus, 0, sizeof(XCPStatus));
     xcpstatus->ErrorReg |= 1 << 15;
@@ -740,9 +743,10 @@ signed char XcpProgramResetHandler(XCPStatus *xcpstatus)
             else
             {
                 LOG("ResetCount ResetCount: %d\n", ResetCount);
+                ResetCount--;
+                usleep(10*1000);
                 continue;
             }
-            usleep(50*1000);
         }
         memset(xcpstatus, 0, sizeof(XCPStatus));
         xcpstatus->ErrorReg |= (1 << 10);

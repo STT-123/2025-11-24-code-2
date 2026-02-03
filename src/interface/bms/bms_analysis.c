@@ -447,7 +447,7 @@ void Log_TCU_Data(void)
                           "%02X%s", CANSendMsg.Data[i], (i < 64 - 1) ? " " : "");
     }
 
-    LOG("[RECORD] TCU_Data : %s\r\n", data_str);
+    LOG("[RECORD] TCU_Data : %s\r", data_str);
     atomic_fetch_add(&log_interrupt_count, 10); // ✅ 原子加10
 }
 
@@ -465,30 +465,30 @@ void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
 
     if (!msg) return;
 
-    if(msg->ID == 0x18FFC13A){
-        if (BCU_AirState_LAST != get_BCU_usAirState()){
-            log_flag = 1;
-            LOG("[RECORD] AirState: %d -> %d \r",BCU_AirState_LAST,get_BCU_usAirState());
-            BCU_AirState_LAST = get_BCU_usAirState();
-        }
-        if(BCU_AirErrorfaultCode_LAST != get_BCU_uiAirErrorfaultCode()){
-            log_flag = 1;
-            LOG("[RECORD] AirErrorfaultCode: [0x%x] -> [0x%x] \r",BCU_AirErrorfaultCode_LAST,get_BCU_uiAirErrorfaultCode());
-            BCU_AirErrorfaultCode_LAST = get_BCU_uiAirErrorfaultCode();
-        }
+    // if(msg->ID == 0x18FFC13A){
+    //     if (BCU_AirState_LAST != get_BCU_usAirState()){
+    //         log_flag = 1;
+    //         LOG("[RECORD] AirState: %d -> %d \r",BCU_AirState_LAST,get_BCU_usAirState());
+    //         BCU_AirState_LAST = get_BCU_usAirState();
+    //     }
+    //     if(BCU_AirErrorfaultCode_LAST != get_BCU_uiAirErrorfaultCode()){
+    //         log_flag = 1;
+    //         LOG("[RECORD] AirErrorfaultCode: [0x%x] -> [0x%x] \r",BCU_AirErrorfaultCode_LAST,get_BCU_uiAirErrorfaultCode());
+    //         BCU_AirErrorfaultCode_LAST = get_BCU_uiAirErrorfaultCode();
+    //     }
 
-        if (log_flag == 1){
-            char data_str[100] = {0};
-            int offset = 0;
+    //     if (log_flag == 1){
+    //         char data_str[100] = {0};
+    //         int offset = 0;
             
-            for (int i = 0; i < 8; i++) {
-                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
-                                "%02X%s", msg->Data[i], (i < 8) ? " " : "");
-            }
-            LOG("[RECORD] BCU_Air_Data: msg.ID=0x%X, CAN_Data = %s\r\n", msg->ID, data_str);
-        }
-        return;
-    }
+    //         for (int i = 0; i < 8; i++) {
+    //             offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
+    //                             "%02X%s", msg->Data[i], (i < 8) ? " " : "");
+    //         }
+    //         LOG("[RECORD] BCU_Air_Data: msg.ID=0x%X, CAN_Data = %s\r", msg->ID, data_str);
+    //     }
+    //     return;
+    // }
 
     if(msg->ID == 0x180110E4){
         if (BCU_SystemWorkMode_LAST != get_BCU_SystemWorkModeValue()){
@@ -544,7 +544,7 @@ void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
                 offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
                                 "%02X%s", msg->Data[i], (i < 63) ? " " : "");
             }
-            LOG("[RECORD] BCU_Data: msg.ID=%X, CAN_Data = %s\r\n", msg->ID, data_str);
+            LOG("[RECORD] BCU_Data: msg.ID=%X, CAN_Data = %s\r", msg->ID, data_str);
         }
     }
 }

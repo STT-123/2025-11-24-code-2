@@ -100,6 +100,7 @@ unsigned short log_tcu_flag = 0;
 					BatteryCalibration_ModBus_Deal(address, data);
 					usleep(5*1000);
 				}
+				log_tcu_flag = 1;
             }
             else if (address == MDBUS_SD_FROMAT)//SD卡格式化
             {
@@ -329,7 +330,7 @@ static int BatteryCalibration_ModBus_Deal(uint16_t address, uint16_t data)
                           "%02X%s", bms_calibration_msg.Data[i], (i < 64 - 1) ? " " : "");
     }
 
-    LOG("[RECORD] TesterRly_Data, ID = 0x%x ,Data = %s\r\n", bms_calibration_msg.ID, data_str);
+    LOG("[RECORD] TesterRly_Data, ID = 0x%x ,Data = %s\r", bms_calibration_msg.ID, data_str);
 }
 
 static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
@@ -366,7 +367,9 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 
 static void set_ems_bms_reboot()
 {
-	set_OTA_XCPConnect(170);
+	for(int i = 0; i < 3; i++){
+		set_OTA_XCPConnect(170);
+	}
 	log_tcu_flag = 1;
 	CANFDSendFcn_BCU_step();
 	usleep(250 * 1000);

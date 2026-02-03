@@ -271,7 +271,7 @@ void *ota_Upgrade_Task(void *arg)
                                 set_ota_deviceID(CurrentOTADeviceCanID);
                                 LOG("[OTA] Start OTA try %d, CAN ID 0x%x BMU %d\r\n", ReOtaFlag + 1, get_ota_deviceID());
                                 LOG("[OTA] get_ota_deviceID() ==  : %x\r\n", get_ota_deviceID());                  
-                                XCP_OTA(BMUOtaFlag);
+                                XCP_OTA(i+ReOtaFlag);
 
                                 if (xcpstatus.ErrorReg == 0)
                                 {

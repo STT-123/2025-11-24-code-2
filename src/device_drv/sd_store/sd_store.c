@@ -52,7 +52,7 @@ static int mount_sdcard_fat32(void)
     // 1. 检查设备是否存在
     struct stat st;
     if (stat(device, &st) == -1) {
-        LOG("[SD Card] error: device %s not exits\n", device);
+        //LOG("[SD Card] error: device %s not exits\n", device);
         return -1;
     }
     
@@ -991,6 +991,7 @@ int SD_Initialize(void)
         LOG("[SD Card] Clean files ERROR\n");       
     }
     LOG("[SD Card] Clean files completed\n");
+    chdir(USB_MOUNT_POINT);
     usleep(100 * 1000);
     newFileNeeded = true;
     return 0;

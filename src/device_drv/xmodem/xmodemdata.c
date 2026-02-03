@@ -713,12 +713,10 @@ signed char GetOTAFILEInfo(unsigned char *databuf, char *name, int *filesize, in
 int switch_to_root_directory(void) {
     char current_path[PATH_MAX];
 
-
     if (getcwd(current_path, sizeof(current_path)) == NULL) {
         perror("Failed to get current working directory");
         return errno;
     }
-
 
     if (strcmp(current_path, "/") != 0) {
         if (chdir("/") == 0) {

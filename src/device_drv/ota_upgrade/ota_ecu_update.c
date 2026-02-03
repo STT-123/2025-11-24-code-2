@@ -46,8 +46,8 @@ void ECU_OTA(void)
             set_modbus_reg_val(OTAPPROGRESSREGADDR, 100); // 进度100%               
             FinshhECUOtaAndCleanup();// 完成OTA清理工作            
             system("sync");// 确保数据写入磁盘
-            // sleep(5);
-            // system("reboot");
+            sleep(5);
+            system("reboot");
             LOG("[OTA] OTA process completed successfully\n");
         }else{
             LOG("[OTA] can id 0x%x device ota failed, error register val 0x%x!\r\n", get_ota_deviceID(), ecustatus.ErrorReg);
