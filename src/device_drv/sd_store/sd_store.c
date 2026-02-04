@@ -363,6 +363,11 @@ static int AscFileWriteTimeHeader(FILE *file, struct tm *timeinfo)
 // 查找指定CAN ID的历史消息，并与当前消息对比
 static int Drv_check_and_update_message(const CAN_FD_MESSAGE *msg)
 {
+
+    if (!msg) {
+        LOG("[SD Card] ERROR: msg is NULL in Drv_check_and_update_message\n");
+        return 0;
+    }
     static unsigned int old_BMSWorkMode_value = 0;
     for (int i = 0; i < CAN_ID_HISTORY_SIZE; i++)
     {
@@ -536,8 +541,57 @@ static int CompareFolderNames(const void *a, const void *b)
     return strcmp(*(const char **)a, *(const char **)b);
 }
 
-// 删除最旧的文件夹（假设文件夹名为日期字符串）
+
+static int is_valid_date_name(const char *name) {
+    if (strlen(name) != 8) return 0;
+    for (int i = 0; i < 8; i++) {
+        if (name[i] < '0' || name[i] > '9') return 0;
+    }
+    // 可进一步校验年月日有效性（如月份 01-12，日期合理等）
+    return 1;
+}
+
 static void Func_DeleteOldestFolder(void)
+{
+    DIR *dir = opendir(USB_MOUNT_POINT);
+    if (!dir) { perror("opendir"); return; }
+
+    char oldest[256] = ""; // 初始为空
+    struct dirent *entry;
+
+    while ((entry = readdir(dir)) != NULL) {
+        if (strcmp(entry->d_name, ".") == 0 ||
+            strcmp(entry->d_name, "..") == 0 ||
+            strcmp(entry->d_name, "19700101") == 0)
+            continue;
+
+        char fullPath[512];
+        snprintf(fullPath, sizeof(fullPath), "%s/%s", USB_MOUNT_POINT, entry->d_name);
+
+        struct stat st;
+        if (stat(fullPath, &st) == 0 && S_ISDIR(st.st_mode)) {
+            if (!is_valid_date_name(entry->d_name)) {
+                continue; // 跳过非日期文件夹，如 "log"
+            }
+            if (oldest[0] == '\0' || strcmp(entry->d_name, oldest) < 0) {
+                strncpy(oldest, entry->d_name, sizeof(oldest) - 1);
+            }
+        }
+    }
+    closedir(dir);
+
+    if (oldest[0] != '\0') {
+        char path[512];
+        snprintf(path, sizeof(path), "%s/%s", USB_MOUNT_POINT, oldest);
+        LOG("[SD Card] Deleting oldest folder: %s\n", path);
+        Drv_remove_directory(path);
+    }
+}
+
+#if 0
+// 删除最旧的文件夹（假设文件夹名为日期字符串）
+//有BUG，当文件夹太多的时候folders[100]会越界
+void Func_DeleteOldestFolder(void)
 {
     DIR *dir = opendir(USB_MOUNT_POINT);
     struct dirent *entry;
@@ -572,6 +626,7 @@ static void Func_DeleteOldestFolder(void)
         }
     }
 
+    printf("[SD Card] Folder Count: %d\n", folderCount);
     closedir(dir);
 
     if (folderCount > 0)
@@ -593,8 +648,7 @@ static void Func_DeleteOldestFolder(void)
         }
     }
 }
-
-
+#endif
 static void Drv_init_can_id_history(void)
 {
     int i = 0;
@@ -853,19 +907,21 @@ void Drv_write_buffer_to_file(void)
     if (newFileNeeded)// 判断是否需要重新创建一个文件开始写
     {
         CreateAscFilePathWithTime(nowTimeInfo, filePath);// 将时间转换为文件路径
-
         filePath[sizeof(filePath) - 1] = '\0';
-
-        // 重要：创建新文件时，重置基准时间
-        gettimeofday(&first_tv, NULL);  // 设置新的基准时间
-        first_time_captured = 0;
-        LOG("[SD Card] New file created, reset timestamp base to: %ld.%06ld\n", 
-            first_tv.tv_sec, first_tv.tv_usec);
     }
   
     FILE *file = NULL;// 打开目标文件
 
-    if (OpenNowWriteAscFile(filePath, &file) != 0  || file == NULL)
+    if (OpenNowWriteAscFile(filePath, &file) == 0  && file != NULL)
+    {
+        if(newFileNeeded){
+            gettimeofday(&first_tv, NULL);  // 重要：创建新文件时，重置基准时间
+            first_time_captured = 0;
+            LOG("[SD Card] New file created, reset timestamp base to: %ld.%06ld\n", 
+                first_tv.tv_sec, first_tv.tv_usec);
+        }
+    }
+    else
     {
         LOG("[SD Card] ERROR: OpenNowWriteAscFile failed for: %s\n", filePath);
         goto QUIT_FLAG; // 打开失败 直接返回
@@ -1019,7 +1075,7 @@ void checkSDCardCapacity(void)
         usleep(CHECKSD_TRIGGERING_TIME);
     }
     uint64_t total = (uint64_t)stat.f_blocks * (uint64_t)stat.f_frsize;
-    uint64_t free_space = (uint64_t)stat.f_bfree * (uint64_t)stat.f_frsize;
+    uint64_t free_space = (uint64_t)stat.f_bavail  * (uint64_t)stat.f_frsize;
     uint64_t used = total - free_space;
 
     float usage_percent = ((float)used / (float)total) * 100.0f;
@@ -1038,7 +1094,40 @@ void checkSDCardCapacity(void)
     usleep(1000*1000);
 }
 
+void checkRootCapacity(void)
+{
+    struct statvfs stat;
+    if (statvfs("/", &stat) != 0)
+    {
+        LOG("[Root] Failed to get root partition capacity.\n");
+        usleep(CHECKSD_TRIGGERING_TIME);
+        return;
+    }
+    
+    // 使用正确的类型和转换
+    uint64_t total = (uint64_t)stat.f_blocks * (uint64_t)stat.f_frsize;
+    uint64_t free_space = (uint64_t)stat.f_bavail * (uint64_t)stat.f_frsize;
+    uint64_t used = total - free_space;
+    
+    float usage_percent = (total > 0) ? ((float)used / (float)total) * 100.0f : 0.0f;
 
+    if (usage_percent > 60.0f) {
+        LOG("Warning: The root partition usage rate has exceeded 60%%, and the space is tight!");
+    }
+    if (usage_percent > 80.0f) {
+        LOG("Error:   The root partition usage rate has exceeded 80%%, and the space is tight!");
+        set_emcu_fault(SD_FAULT, SET_ERROR);
+    }
+    // 或者用更简单的方法（避免PRIu64）
+    // printf("Simple format:\n");
+    // printf("  Total: %llu bytes (%.2f GB)\n", 
+    //     (unsigned long long)total, total / (1024.0 * 1024 * 1024));
+    // printf("  Free:  %llu bytes (%.2f GB)\n", 
+    //     (unsigned long long)free_space, free_space / (1024.0 * 1024 * 1024));
+    // printf("  Used:  %llu bytes (%.2f GB)\n", 
+    //     (unsigned long long)used, used / (1024.0 * 1024 * 1024));
+    // printf("  Usage: %.2f%%\n", usage_percent);
+}
 static uint8_t CalculateDLC(uint8_t data_length) {
     if (data_length <= 8) {
         return data_length;

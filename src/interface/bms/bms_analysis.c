@@ -609,8 +609,7 @@ uint16_T get_usBatCellTempMin(){
     return BCU_VoltMinCellValue;
 }
 
-// 2. 修改后的 Log_TCU_Data 函数
-void Log_TCU_Data(void)
+static void my_Log_TCU_Data(void)
 {
     char data_str[256] = {0};
     int offset = 0;
@@ -619,307 +618,17 @@ void Log_TCU_Data(void)
         offset += snprintf(data_str + offset, sizeof(data_str) - offset,
                           "%02X%s", CANSendMsg.Data[i], (i < 64 - 1) ? " " : "");
     }
-    LOG("[RECORD] TCU_Data : %s\r", data_str);
+    LOG("[RECORD] TCU_Data : %s\n", data_str);
+}
+// 2. 修改后的 Log_TCU_Data 函数
+void Log_TCU_Data(void)
+{
+    my_Log_TCU_Data();
     start_command_tracking();// 开始指令跟踪
 }
 
-#if 0
 
-void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
-{
-	unsigned char log_flag = 0;
-	static unsigned int BCU_FaultInfoLv1_LAST = 0;
-	static unsigned int BCU_FaultInfoLv2_LAST = 0;
-	static unsigned int BCU_FaultInfoLv3_LAST = 0;
-	static unsigned int BCU_FaultInfoLv4_LAST = 0;
-	static unsigned short BCU_SystemWorkMode_LAST = 0;
-
-	static unsigned int BCU_AirState_LAST = 0;
-	static unsigned int BCU_AirErrorfaultCode_LAST = 0;
-
-    if (!msg) return;
-
-    if(msg->ID == 0x180110E4){
-        if (BCU_SystemWorkMode_LAST != get_BCU_SystemWorkModeValue()){
-            log_flag = 1;
-            LOG("[RECORD] SystemWorkMode: %d -> %d \r",BCU_SystemWorkMode_LAST,get_BCU_SystemWorkModeValue());
-            BCU_SystemWorkMode_LAST = get_BCU_SystemWorkModeValue();
-        }
-
-        if (BCU_FaultInfoLv1_LAST != get_BCU_FaultInfoLv1Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv1: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv1_LAST,get_BCU_FaultInfoLv1Value());
-            BCU_FaultInfoLv1_LAST = get_BCU_FaultInfoLv1Value();
-        }
-
-        if (BCU_FaultInfoLv2_LAST != get_BCU_FaultInfoLv2Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv2: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv2_LAST,get_BCU_FaultInfoLv2Value());
-            BCU_FaultInfoLv2_LAST = get_BCU_FaultInfoLv2Value();
-        }
-
-        if (BCU_FaultInfoLv3_LAST != get_BCU_FaultInfoLv3Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv3: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv3_LAST,get_BCU_FaultInfoLv3Value());
-            BCU_FaultInfoLv3_LAST = get_BCU_FaultInfoLv3Value();
-        }
-
-        if (BCU_FaultInfoLv4_LAST != get_BCU_FaultInfoLv4Value()){
-            log_flag = 1;
-            LOG("[RECORD] FaultInfoLv4: [0x%x] -> [0x%x] \r",BCU_FaultInfoLv4_LAST,get_BCU_FaultInfoLv4Value());
-            BCU_FaultInfoLv4_LAST = get_BCU_FaultInfoLv4Value();
-        }
-
-        // 2. 检查是否需要强制打印（仅针对此 ID）
-        int should_force_log = 0;
-        int current = atomic_load(&log_interrupt_count);
-        if (current > 0) {
-            int prev = atomic_fetch_sub(&log_interrupt_count, 1);
-            if (prev > 0) {
-                should_force_log = 1;
-                // printf("force log 0x180110E4\r\n"); // 调试用
-            } else {
-                // 补偿：其他线程已减到0，我们加回来
-                atomic_fetch_add(&log_interrupt_count, 1);
-            }
-        }
-
-        if (log_flag || should_force_log) {
-
-            char data_str[200] = {0};
-            int offset = 0;
-            
-            for (int i = 0; i < 64; i++) {
-                offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
-                                "%02X%s", msg->Data[i], (i < 63) ? " " : "");
-            }
-            LOG("[RECORD] BCU_Data: msg.ID=%X, CAN_Data = %s\r", msg->ID, data_str);
-        }
-    }
-
-    // if(msg->ID == 0x18FFC13A){
-    //     if (BCU_AirState_LAST != get_BCU_usAirState()){
-    //         log_flag = 1;
-    //         LOG("[RECORD] AirState: %d -> %d \r",BCU_AirState_LAST,get_BCU_usAirState());
-    //         BCU_AirState_LAST = get_BCU_usAirState();
-    //     }
-    //     if(BCU_AirErrorfaultCode_LAST != get_BCU_uiAirErrorfaultCode()){
-    //         log_flag = 1;
-    //         LOG("[RECORD] AirErrorfaultCode: [0x%x] -> [0x%x] \r",BCU_AirErrorfaultCode_LAST,get_BCU_uiAirErrorfaultCode());
-    //         BCU_AirErrorfaultCode_LAST = get_BCU_uiAirErrorfaultCode();
-    //     }
-
-    //     if (log_flag == 1){
-    //         char data_str[100] = {0};
-    //         int offset = 0;
-            
-    //         for (int i = 0; i < 8; i++) {
-    //             offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
-    //                             "%02X%s", msg->Data[i], (i < 8) ? " " : "");
-    //         }
-    //         LOG("[RECORD] BCU_Air_Data: msg.ID=0x%X, CAN_Data = %s\r", msg->ID, data_str);
-    //     }
-    //     return;
-    // }
-}
-#endif
 // 主要的数据记录函数
-
-#if 0
-// 4. 修改后的 Log_Bcu_Data 函数（核心部分）
-void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
-{
-    unsigned char log_flag = 0;
-    static unsigned int BCU_FaultInfoLv1_LAST = 0;
-    static unsigned int BCU_FaultInfoLv2_LAST = 0;
-    static unsigned int BCU_FaultInfoLv3_LAST = 0;
-    static unsigned int BCU_FaultInfoLv4_LAST = 0;
-    static unsigned short BCU_SystemWorkMode_LAST = 0;
-    
-    // 原有的状态变化前缓冲区
-    static int buffer_before_count = 0;
-    static int collecting_post_change = 0;
-    static int post_change_collected = 0;
-    static CAN_FD_MESSAGE buffer_before_change[DATA_BUFFER_SIZE] = {0};
-    static CAN_FD_MESSAGE post_change_frames[DATA_BUFFER_SIZE] = {0};
-
-
-    
-    if (!msg) return;
-    
-    // 检查是否为关心的ID
-    if (msg->ID == 0x180110E4) {
-        // 0. 首先将新帧添加到循环缓冲区
-        add_to_can_buffer(msg);
-        
-        // 1. 检查是否正在跟踪指令（高优先级）
-        if (cmd_track.is_cmd_tracking) {
-            // 收集指令后的数据
-            if (cmd_track.post_frames_collected < DATA_BUFFER_SIZE) {
-                memcpy(&cmd_track.post_frames[cmd_track.post_frames_collected],
-                       msg, sizeof(CAN_FD_MESSAGE));
-                cmd_track.post_frames_collected++;
-                
-                // LOG("[CMD] Collected %d/%d post-command frames\r",
-                //     cmd_track.post_frames_collected, DATA_BUFFER_SIZE);
-                
-                // 收集完成后打印结果
-                if (cmd_track.post_frames_collected >= DATA_BUFFER_SIZE) {
-                    pthread_mutex_lock(&cmd_mutex);
-                    complete_command_tracking_internal();
-                    pthread_mutex_unlock(&cmd_mutex);
-                }
-            }
-            // 注意：指令跟踪期间，不处理状态变化
-            return;
-        }
-        
-        // 2. 如果正在收集状态变化后的数据
-        if (collecting_post_change) {
-            if (post_change_collected < DATA_BUFFER_SIZE) {
-                memcpy(&post_change_frames[post_change_collected], 
-                       msg, sizeof(CAN_FD_MESSAGE));
-                post_change_collected++;
-                
-                // LOG("[RECORD] Collected %d/%d frames after change\r", 
-                //     post_change_collected, DATA_BUFFER_SIZE);
-                
-                // 收集完成
-                if (post_change_collected >= DATA_BUFFER_SIZE) {
-                    LOG("[RECORD] ==== AFTER CHANGE (collected %d frames) ====\r\n", 
-                        post_change_collected);
-                    
-                    for (int i = 0; i < post_change_collected; i++) {
-                        CAN_FD_MESSAGE *frame = &post_change_frames[i];
-                        char data_str[512] = {0};
-                        int offset = 0;
-                        
-                        for (int j = 0; j < frame->DLC; j++) {
-                            offset += snprintf(data_str + offset, sizeof(data_str) - offset, 
-                                            "%02X%s", frame->Data[j], (j < frame->DLC - 1) ? " " : "");
-                        }
-                        
-                        LOG("[RECORD] Frame %d: ID=0x%08X, Data=%s\r", i+1, frame->ID, data_str);
-                    }
-                    LOG("[RECORD] =======================================\r");
-                    
-                    // 重置收集状态
-                    collecting_post_change = 0;
-                    post_change_collected = 0;
-                }
-            }
-            return;
-        }
-        
-        // 3. 检查状态变化
-        unsigned short current_workmode = get_BCU_SystemWorkModeValue();
-        unsigned int current_fault_lv1 = get_BCU_FaultInfoLv1Value();
-        unsigned int current_fault_lv2 = get_BCU_FaultInfoLv2Value();
-        unsigned int current_fault_lv3 = get_BCU_FaultInfoLv3Value();
-        unsigned int current_fault_lv4 = get_BCU_FaultInfoLv4Value();
-        
-        if (BCU_SystemWorkMode_LAST != current_workmode) {
-            LOG("[RECORD] SystemWorkMode: %d -> %d \r", BCU_SystemWorkMode_LAST, current_workmode);
-            log_flag = 1;
-        }
-        if (BCU_FaultInfoLv1_LAST != current_fault_lv1) {
-            LOG("[RECORD] FaultInfoLv1: [0x%x] -> [0x%x] \r", BCU_FaultInfoLv1_LAST, current_fault_lv1);
-            log_flag = 1;
-        }  
-        if (BCU_FaultInfoLv2_LAST != current_fault_lv2) {
-            LOG("[RECORD] FaultInfoLv2: [0x%x] -> [0x%x] \r", BCU_FaultInfoLv2_LAST, current_fault_lv2);
-            log_flag = 1;
-        }
-        if (BCU_FaultInfoLv3_LAST != current_fault_lv3) {
-            LOG("[RECORD] FaultInfoLv3: [0x%x] -> [0x%x] \r", BCU_FaultInfoLv3_LAST, current_fault_lv3);
-            log_flag = 1;
-        }
-        if (BCU_FaultInfoLv4_LAST != current_fault_lv4) {
-            LOG("[RECORD] FaultInfoLv4: [0x%x] -> [0x%x] \r", BCU_FaultInfoLv4_LAST, current_fault_lv4);
-            log_flag = 1;
-        }
-        
-        // 4. 如果检测到状态变化
-        if (log_flag) {
-            // 保存变化前的数据
-            buffer_before_count = 0;
-            CAN_FD_MESSAGE temp_buffer[DATA_BUFFER_SIZE] = {0};
-            int temp_count = 0;
-            
-            if (can_data_buffer.is_full) {
-                for (int i = 1; i <= DATA_BUFFER_SIZE - 1; i++) {
-                    int idx = (can_data_buffer.index + i) % DATA_BUFFER_SIZE;
-                    memcpy(&temp_buffer[temp_count], 
-                          &can_data_buffer.frames[idx], 
-                          sizeof(CAN_FD_MESSAGE));
-                    temp_count++;
-                }
-            } else if (can_data_buffer.count > 1) {
-                for (int i = 0; i < can_data_buffer.count - 1; i++) {
-                    memcpy(&temp_buffer[temp_count], 
-                          &can_data_buffer.frames[i], 
-                          sizeof(CAN_FD_MESSAGE));
-                    temp_count++;
-                }
-            }
-            
-            for (int i = 0; i < temp_count && i < DATA_BUFFER_SIZE; i++) {
-                memcpy(&buffer_before_change[i], 
-                      &temp_buffer[i], 
-                      sizeof(CAN_FD_MESSAGE));
-                buffer_before_count++;
-            }
-            
-            // 打印变化前的数据
-            if (buffer_before_count > 0) {
-                LOG("[RECORD] ==== BEFORE CHANGE (saved %d frames) ====\n", buffer_before_count);
-                for (int i = 0; i < buffer_before_count; i++) {
-                    CAN_FD_MESSAGE *frame = &buffer_before_change[i];
-                    char data_str[512] = {0};
-                    int offset = 0;
-                    
-                    for (int j = 0; j < frame->DLC; j++) {
-                        offset += snprintf(data_str + offset, sizeof(data_str) - offset,
-                                        "%02X%s", frame->Data[j], (j < frame->DLC - 1) ? " " : "");
-                    }
-                    
-                    LOG("[RECORD] Frame %d: ID=0x%08X, Data=%s\r", i+1, frame->ID, data_str);
-                }
-                LOG("[RECORD] =========================================\n");
-            }
-            
-            // 开始收集变化后的数据
-            collecting_post_change = 1;
-            post_change_collected = 0;
-            
-            // 当前帧作为变化后的第1帧
-            memcpy(&post_change_frames[post_change_collected], 
-                   msg, sizeof(CAN_FD_MESSAGE));
-            post_change_collected++;
-            
-            // LOG("[RECORD] Starting to collect %d frames after change...\n", DATA_BUFFER_SIZE);
-            // LOG("[RECORD] Collected 1/%d frames after change\n", DATA_BUFFER_SIZE);
-            // 更新LAST值
-            BCU_SystemWorkMode_LAST = current_workmode;
-            BCU_FaultInfoLv1_LAST = current_fault_lv1;
-            BCU_FaultInfoLv2_LAST = current_fault_lv2;
-            BCU_FaultInfoLv3_LAST = current_fault_lv3;
-            BCU_FaultInfoLv4_LAST = current_fault_lv4;
-            
-            return;
-        }
-        
-        // 5. 更新LAST值（如果没有变化）
-        BCU_SystemWorkMode_LAST = current_workmode;
-        BCU_FaultInfoLv1_LAST = current_fault_lv1;
-        BCU_FaultInfoLv2_LAST = current_fault_lv2;
-        BCU_FaultInfoLv3_LAST = current_fault_lv3;
-        BCU_FaultInfoLv4_LAST = current_fault_lv4;
-    }
-}
-
-#endif
-
 void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
 {
     unsigned char log_flag = 0;
@@ -1029,6 +738,7 @@ void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
         
         // 4. 如果检测到状态变化
         if (log_flag) {
+ 
             // 保存变化前的数据（最新的9帧）
             buffer_before_count = 0;
             
@@ -1041,7 +751,8 @@ void Log_Bcu_Data(const CAN_FD_MESSAGE *msg)
             
             // 打印变化前的数据
             if (buffer_before_count > 0) {
-                LOG("[RECORD] ==== BEFORE CHANGE (saved %d frames) ====\n", buffer_before_count);
+                LOG("[RECORD] ==== BEFORE CHANGE (saved %d frames) ====\r", buffer_before_count);
+                my_Log_TCU_Data();
                 // 从旧到新打印（buffer_before_change中是最新的在索引0）
                 for (int i = buffer_before_count - 1; i >= 0; i--) {
                     CAN_FD_MESSAGE *frame = &buffer_before_change[i];

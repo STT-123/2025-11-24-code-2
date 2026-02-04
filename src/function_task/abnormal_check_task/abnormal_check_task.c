@@ -30,6 +30,7 @@ void *AbnormalDetection(void *arg)
         //     LOG("can't ping ocpp.xcharger.net \r\n");
         // }
         check_and_fix_ip(MODBUS_ETH_NUM);//检测ip地址是否被修改并自动更正
+        checkRootCapacity();//检测系统盘空间是否被耗尽
         sleep(1);
     }
 }

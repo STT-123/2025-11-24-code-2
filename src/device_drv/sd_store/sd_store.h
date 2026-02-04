@@ -68,5 +68,7 @@ void sd_storeInit(void);
 static int find_id_index(uint32_t id);
 int mkdir_log(const char *base_path) ;
 bool clean_directory(const char *mount_point);
-
+static int is_valid_date_name(const char *name);
+static void Func_DeleteOldestFolder(void);
+void checkRootCapacity(void);
 #endif

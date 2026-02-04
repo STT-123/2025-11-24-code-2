@@ -70,6 +70,10 @@ int CheckSinglePHYStatus(const char *ifname)
 
 	while (fgets(line, sizeof(line), fp))
 	{
+        if (strlen(line) >= sizeof(line) - 1) {
+            LOG("[Abnormal] Line too long in /proc/net/dev\n");
+            continue;
+        }
 		// 解析接口统计信息
 		if (sscanf(line, "%31[^:]: %llu %llu %*u %*u %*u %*u %*u %*u %llu %llu",
 				   devname, &stats.rx_bytes, &stats.rx_packets,
@@ -117,8 +121,8 @@ int CheckSinglePHYStatus(const char *ifname)
 
 void PHYlinktate()
 {
-	static struct timespec lastCheckTick = {0};
-	clock_gettime(CLOCK_MONOTONIC, &lastCheckTick); // 记录lastCheckTick初始时间
+	static struct timespec phy_last_check_tick = {0};
+	clock_gettime(CLOCK_MONOTONIC, &phy_last_check_tick); // 记录lastCheckTick初始时间
 	static int PHY_RECOVER_FLAG = 0;
 	static int PHY_ERROR_FLAG = 0;
 
@@ -134,7 +138,7 @@ void PHYlinktate()
 	{
 		if (PHY_RECOVER_FLAG == 1)
 		{
-			if (GetTimeDifference_ms(lastCheckTick) >= RECOVER_REPORT_TIME)
+			if (GetTimeDifference_ms(phy_last_check_tick) >= RECOVER_REPORT_TIME)
 			{
 				set_emcu_fault(PHY_LINK_FAULT, SET_RECOVER);
 				PHY_ERROR_FLAG = 0;
@@ -142,7 +146,7 @@ void PHYlinktate()
 		}
 		else
 		{
-			clock_gettime(CLOCK_MONOTONIC, &lastCheckTick);
+			clock_gettime(CLOCK_MONOTONIC, &phy_last_check_tick);
 			PHY_RECOVER_FLAG = 1;
 			PHY_ERROR_FLAG = 0;
 		}
@@ -151,7 +155,7 @@ void PHYlinktate()
 	{
 		if (PHY_ERROR_FLAG == 1)
 		{
-			if (GetTimeDifference_ms(lastCheckTick) >= FAULT_REPORT_TIME)
+			if (GetTimeDifference_ms(phy_last_check_tick) >= FAULT_REPORT_TIME)
 			{
 				set_emcu_fault(PHY_LINK_FAULT, SET_ERROR);
 				PHY_RECOVER_FLAG = 0;
@@ -159,7 +163,7 @@ void PHYlinktate()
 		}
 		else
 		{
-			clock_gettime(CLOCK_MONOTONIC, &lastCheckTick);
+			clock_gettime(CLOCK_MONOTONIC, &phy_last_check_tick);
 			PHY_ERROR_FLAG = 1;
 			PHY_RECOVER_FLAG = 0;
 		}
@@ -459,31 +463,28 @@ void get_BCU_FaultInfo(uint32_T faultValue_4H, uint32_T faultValue_3H,uint32_T f
 int can_ping_host(const char *hostname, int timeout_sec) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) return -1;
-    
-    struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(80);  // HTTP端口
-    
-    // 解析主机名
-    struct hostent *server = gethostbyname(hostname);
-    if (!server) {
-        close(sockfd);
-        return 0;
-    }
-    memcpy(&addr.sin_addr.s_addr, server->h_addr_list, server->h_length);
-    
-    // 设置超时
-    struct timeval tv;
-    tv.tv_sec = timeout_sec;
-    tv.tv_usec = 0;
-    setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-    setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
-    
-    // 尝试连接
-    int result = connect(sockfd, (struct sockaddr*)&addr, sizeof(addr));
+
+    int result = -1;
+    do {
+        // 所有操作在此块内完成
+        struct sockaddr_in addr;
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(80);
+
+        struct hostent *server = gethostbyname(hostname);
+        if (!server) break;
+
+        memcpy(&addr.sin_addr.s_addr, server->h_addr_list, server->h_length);
+
+        struct timeval tv = { .tv_sec = timeout_sec };
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+        setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+
+        result = (connect(sockfd, (struct sockaddr*)&addr, sizeof(addr)) == 0) ? 1 : 0;
+    } while (0);
+
     close(sockfd);
-    
-    return (result == 0) ? 1 : 0;
+    return result;
 }
 int check_and_fix_ip(const char *if_name)
 {
@@ -498,8 +499,15 @@ int check_and_fix_ip(const char *if_name)
     //LOG("[IP自动修复] 检查接口 %s 的IP状态\n", if_name);
 
 
-	sprintf(expected_ip, "%d.%d.%d.%d", (g_ipsetting.ip >> 24) & 0xFF, (g_ipsetting.ip >> 16) & 0xFF, (g_ipsetting.ip >> 8) & 0xFF, g_ipsetting.ip & 0xFF);
-
+    int len = snprintf(expected_ip, sizeof(expected_ip), "%d.%d.%d.%d",
+                    (g_ipsetting.ip >> 24) & 0xFF,
+                    (g_ipsetting.ip >> 16) & 0xFF,
+                    (g_ipsetting.ip >> 8) & 0xFF,
+                    g_ipsetting.ip & 0xFF);
+    if (len < 0 || (size_t)len >= sizeof(expected_ip)) {
+        LOG("Failed to format IP address\n");
+        return -1;
+    }
     // 检测当前IP
     snprintf(command, sizeof(command), 
              "ip -4 addr show %s 2>/dev/null | grep -oE '([0-9]{1,3}\\.){3}[0-9]{1,3}/' | head -1 | sed 's|/||'", 

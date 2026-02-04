@@ -77,7 +77,7 @@ void insert_data(sqlite3 *db, tBatData *data) {
 void create_limit_trigger(sqlite3 *db) {
     char trigger_sql[512];
 
-    snprintf(trigger_sql, sizeof(trigger_sql),
+    int len  = snprintf(trigger_sql, sizeof(trigger_sql),
         "CREATE TRIGGER IF NOT EXISTS limit_batdata_records "
         "AFTER INSERT ON batdata "
         "BEGIN "
@@ -88,6 +88,11 @@ void create_limit_trigger(sqlite3 *db) {
         "END;",
         MAX_RECORDS
     );
+    
+    if (len < 0 || (size_t)len >= sizeof(trigger_sql)) {
+        LOG("Trigger SQL too long\n");
+        return;
+    }
 
     char *errmsg = NULL;
     int rc = sqlite3_exec(db, trigger_sql, NULL, NULL, &errmsg);

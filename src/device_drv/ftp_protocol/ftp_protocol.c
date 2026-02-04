@@ -666,8 +666,14 @@ int handle_ftp_commands(FTPState *state)
         while ((bytes_received = recv(state->control_sock, buffer, sizeof(buffer) - 1, 0)) > 0)
         {
             check_timeouts(state);         // 检查超时
+            
+            if (bytes_received >= sizeof(buffer) - 1) {
+                LOG("Buffer overflow detected\n");
+                bytes_received = sizeof(buffer) - 1;
+            }
+
             buffer[bytes_received] = '\0'; // 确保字符串以 \0 结束
-            LOG("Received command: %s\n", buffer);
+            LOG("Received command: %s\r", buffer);
 
             // 分割命令和参数
             char *command = strtok(buffer, " \r\n");

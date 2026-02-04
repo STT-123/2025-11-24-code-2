@@ -776,6 +776,7 @@ signed char SaveOtaFile(char *name, unsigned char *buf, int totalpacknum, int cu
         if(fclose(OTAfil) != 0)
         {
             perror("close ota file error");
+			LOG("OTAfil:close ota file error");
             OTAfil = NULL;
             return -5;
         }
