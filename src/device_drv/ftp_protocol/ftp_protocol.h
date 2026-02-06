@@ -27,9 +27,12 @@ typedef struct {
     char newpathname[128];
     FILE *file;
     uint8_t file_interrupt_flag;
+    // 新增状态字段
+    int timeout_pending;    // 待处理的超时
+    int quit_requested;     // QUIT请求标记
 } FTPState;
 
-
+void init_ftp_state(FTPState *state) ;
 static void handle_user_command(FTPState *state, char *args);
 static void handle_pass_command(FTPState *state, char *args);
 static void handle_pasv_command(FTPState *state);

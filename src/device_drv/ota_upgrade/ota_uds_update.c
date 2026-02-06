@@ -6,7 +6,6 @@
 #include "interface/bms/bms_analysis.h"
 #include "interface/log/log.h"
 #include "device_drv/sd_store/sd_store.h"
-extern unsigned short log_tcu_flag;//打印tcu标志位
 flashDataType flashData = {0};
 appDataType appData[SUP_MAX_BLOCK + 1] = {0};
 UDSStatus udsstatus = {0};
@@ -1673,7 +1672,6 @@ void FinishACOtaAndCleanup(void)
 	SBl_index = 0;
 	APP_index = 0;
 	set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
-	log_tcu_flag = 1;
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
 	CANFDSendFcn_BCU_step();
 }

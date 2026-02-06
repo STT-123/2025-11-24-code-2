@@ -29,32 +29,37 @@
 
 // CAN数据帧缓冲区结构
 // 改进的缓冲区结构（保持顺序）
+// ==================== 数据结构定义 ====================
 typedef struct {
-    CAN_FD_MESSAGE frames[DATA_BUFFER_SIZE];  // 存储帧数据
-    int start;                // 最老数据的起始位置
-    int end;                  // 最新数据的结束位置（下一个写入位置）
-    int count;                // 实际存储的帧数
-    int is_full;              // 缓冲区是否已满
+    CAN_FD_MESSAGE frames[DATA_BUFFER_SIZE];
+    int start;
+    int end;
+    int count;
+    int is_full;
 } CanDataBuffer;
 
-
-// 变化后缓冲区（专门存储变化后的10帧）
 typedef struct {
     CAN_FD_MESSAGE frames[DATA_BUFFER_SIZE];
     int count;
-    int is_collecting;  // 是否正在收集
-    int collected_count; // 已收集的帧数
+    int is_collecting;
+    int collected_count;
 } PostChangeBuffer;
 
-// 1. 在Log_Bcu_Data函数外部定义指令跟踪结构
 typedef struct {
-    int is_cmd_tracking;           // 是否正在跟踪指令
-    int pre_frames_collected;      // 已收集的指令前帧数
-    CAN_FD_MESSAGE pre_frames[DATA_BUFFER_SIZE];  // 指令前数据
-    int post_frames_collected;     // 已收集的指令后帧数
-    CAN_FD_MESSAGE post_frames[DATA_BUFFER_SIZE]; // 指令后数据
+    int is_cmd_tracking;
+    int pre_frames_collected;
+    CAN_FD_MESSAGE pre_frames[DATA_BUFFER_SIZE];
+    int post_frames_collected;
+    CAN_FD_MESSAGE post_frames[DATA_BUFFER_SIZE];
 } CommandTracking;
-
+// --- 新增：TCU 发送缓冲区 ---
+typedef struct {
+    CAN_FD_MESSAGE frames[DATA_BUFFER_SIZE];
+    int start;
+    int end;
+    int count;
+    int is_full;
+} TcuSendBuffer;
 
 
 void Set_BCU_Voltage(float voltage);
@@ -183,13 +188,15 @@ uint16_T get_usBatCellVoltMax();
 uint16_T get_usBatCellVoltMin();
 uint16_T get_usBatCellTempMax();
 uint16_T get_usBatCellTempMin();
-void Log_TCU_Data(void);
 void Log_Bcu_Data(const CAN_FD_MESSAGE *msg);
 /*========================================*/
-void init_can_buffer(void);
+void init_can_buffer(void) ;
 static void add_to_can_buffer(const CAN_FD_MESSAGE *msg);
-static void start_command_tracking(void);
-static void save_pre_command_frames(void);
-static void complete_command_tracking_internal(void);
+static void get_latest_frames(CAN_FD_MESSAGE *output, int n);
+void record_tcu_send_frame(void);
+static void get_latest_tcu_frames(CAN_FD_MESSAGE *output, int n);
+static void print_bcu_frame(const CAN_FD_MESSAGE *frame, int seq);
+static void print_tcu_frame(const CAN_FD_MESSAGE *frame, int seq) ;
+static void complete_change_recording(void);
 
 #endif

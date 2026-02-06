@@ -7,7 +7,6 @@
 #include "modbus_defines.h"
 extern unsigned short g_ota_flag;
 pthread_mutex_t modbus_reg_mutex = PTHREAD_MUTEX_INITIALIZER;//所有写modbusBuff寄存器的时候都会调用加锁
-unsigned short log_tcu_flag = 0;
 // modbus接收数据处理，只处理06的写入操作
  void modbus_write_reg_deal(modbus_t *ctx, const uint8_t *query, int req_length)
 {
@@ -32,22 +31,24 @@ unsigned short log_tcu_flag = 0;
         // 判断地址范围
         if ((address >= REGISTERS_START_ADDRESS) && (address < (REGISTERS_START_ADDRESS + REGISTERS_NB)))
         {
+			// printf("get_ota_UpDating = %d\r\n",get_ota_UpDating);
             // 开关机操作
-            if ((address == MDBUS_BATTERY_CTL) && (get_ota_OTAStart() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
+            if ((address == MDBUS_BATTERY_CTL) && (get_ota_UpDating() == 0)) // 过滤，自己需要判断是否在升级来进行自主上下电
             {
                 if (data == 0)
                 {
+					// printf("111get_ota_UpDating = %d\r\n",get_ota_UpDating);
 					set_TCU_PowerUpCmd(BMS_POWER_ON);
 
                 }
                 else if (data == 1)
                 {
+					// printf("222get_ota_UpDating = %d\r\n",get_ota_UpDating);
                     set_TCU_PowerUpCmd(BMS_POWER_OFF);
                 }
 
 				if(data != last_data_power){
 					LOG("[ModbusTcp] last_data_power = %d\r\n",data);
-					log_tcu_flag = 1;
 					last_data_power = data;
 				}
 				
@@ -86,7 +87,6 @@ unsigned short log_tcu_flag = 0;
 				if(data != last_data_ecomode){
 					LOG("[ModbusTcp] last_data_ecomode = %d\r\n",data);
 					last_data_ecomode = data;
-					log_tcu_flag = 1;
 				}
             }
             else if ((address == MDBUS_OFFGRID_STA) || (address == MDBUS_VOLCAL_MODE) || (address == MDBUS_VOLCAL_VALUE))//离网、屏蔽、电压校准
@@ -100,7 +100,6 @@ unsigned short log_tcu_flag = 0;
 					BatteryCalibration_ModBus_Deal(address, data);
 					usleep(5*1000);
 				}
-				log_tcu_flag = 1;
             }
             else if (address == MDBUS_SD_FROMAT)//SD卡格式化
             {
@@ -265,7 +264,6 @@ static int rtc_Modbus_Deal(uint16_t address, uint16_t data)
 			usleep(1 * 1000);
 		}
 		set_TCU_TimeCalFlg(0); // RTC设置完毕标志位为0
-		log_tcu_flag = 1;
 		return 1; // 完成
 	}
 	else
@@ -346,7 +344,6 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 		if(data != last_data_offgrid){
 			LOG("[ModbusTcp] last_data_offgrid = %d\r\n",data);
 			last_data_offgrid = data;
-			log_tcu_flag = 1;
 		}
 	}
 	else if (address == MDBUS_VOLCAL_MODE) //电压校准模式
@@ -354,14 +351,12 @@ static int VoltageCalibration_ModBus_Deal(uint16_t address, uint16_t data)
 		HighVoltType = data;
 		set_TCU_HighVoltType(HighVoltType);//电压校准模式
 		LOG("[ModbusTcp] HighVoltType %d\r\n",data);
-		log_tcu_flag = 1;
 	}
 	else if (address == MDBUS_VOLCAL_VALUE)//电压校准数值
 	{
 		HighVoltValue = data;
 		set_TCU_HighVoltValue(HighVoltValue);//电压校准数值
 		LOG("[ModbusTcp] HighVoltValue %d\r\n",data);
-		log_tcu_flag = 1;
 	}	
 }
 
@@ -370,7 +365,6 @@ static void set_ems_bms_reboot()
 	for(int i = 0; i < 3; i++){
 		set_OTA_XCPConnect(170);
 	}
-	log_tcu_flag = 1;
 	CANFDSendFcn_BCU_step();
 	usleep(250 * 1000);
 	LOG("\r\n\r\n  ******* ECU cmd Reset  *******  r\n\r\n");

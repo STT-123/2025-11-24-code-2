@@ -11,7 +11,6 @@ static void *ftp_service_thread_func(void *arg)
     int port = *(int *)arg;
     int server_sock;
     struct sockaddr_in server_addr;
-    FTPState state = {0};
     int opt = 1;
     struct timeval timeout;
 
@@ -51,7 +50,8 @@ static void *ftp_service_thread_func(void *arg)
 
     while (1)
     {
-        memset(&state, 0, sizeof(state));
+        FTPState state = {0};
+        init_ftp_state(&state);
         // Accept client connections
         state.client_addr_len = sizeof(state.client_addr);
         state.control_sock = accept(server_sock, (struct sockaddr *)&state.client_addr, &state.client_addr_len);
@@ -81,19 +81,10 @@ static void *ftp_service_thread_func(void *arg)
         snprintf(response, sizeof(response), "220 %s ready.\r\n", FTP_VERSION);
         send_response(state.control_sock, response);
 
-        // Handle FTP commands
-        // printf("succeeful to accept connection\n");
         int result = handle_ftp_commands(&state);
-
-        if (result == 0 || result < 0)
-        {
+        // 主线程只需要处理连接级别的清理
+        if (state.control_sock >= 0) {
             close(state.control_sock);
-            close(state.data_sock);
-            // 如果有打开的文件（比如 STOR 中断），也应关闭
-            if (state.file) {
-                fclose(state.file);
-                state.file = NULL;
-            }
         }
 
         close(state.control_sock);

@@ -5,6 +5,36 @@
 #define BUFFER_SIZE 2920 // 2048 网络传输包mtu限制改为1460得倍数
 #define TIMEOUT_SECONDS 300000
 pthread_mutex_t ftp_file_io_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+// 安全关闭文件的辅助函数
+static void safe_close_file(FILE **file_ptr) {
+    if (file_ptr && *file_ptr) {
+        fclose(*file_ptr);
+        *file_ptr = NULL;
+    }
+}
+
+// 安全关闭socket的辅助函数
+static void safe_close_socket(int *sock_fd) {
+    if (sock_fd && *sock_fd >= 0) {
+        close(*sock_fd);
+        *sock_fd = -1;
+    }
+}
+
+// 统一的FTP状态清理函数
+static void cleanup_ftp_state(FTPState *state) {
+    if (!state) return;
+    safe_close_socket(&state->data_sock);
+    safe_close_socket(&state->control_sock);
+    safe_close_file(&state->file);
+    state->logged_in = 0;
+    state->last_activity = 0;
+    state->timeout_pending = 0;
+    state->quit_requested = 0;
+    state->path[0] = '\0';
+}
+
 void send_response(int sock, const char *message)
 {
     send(sock, message, strlen(message), 0);
@@ -16,17 +46,25 @@ void update_last_activity(FTPState *state)
     state->last_activity = time(NULL);
 }
 
-// 检查是否超时
-void check_timeouts(FTPState *state)
-{
+
+// 改进的超时检查函数
+// 改进的超时检查，增加优雅关闭机制
+// 添加详细的超时信息
+void check_timeouts(FTPState *state) {
+    if (!state) return;
+    
     time_t current_time = time(NULL);
-    if ((current_time - state->last_activity) > TIMEOUT_SECONDS)
-    {
-        close(state->control_sock);
-        close(state->data_sock);
-        state->control_sock = -1;
-        state->data_sock = -1;
-        LOG("Connection timed out.\n");
+    time_t time_diff = current_time - state->last_activity;
+    
+    if (time_diff > TIMEOUT_SECONDS) {    
+        // 发送超时通知
+        if (state->control_sock >= 0) {
+            send(state->control_sock, "421 Service not available, closing control connection.\r\n", 54, 0);
+        }
+        state->timeout_pending = 1;
+    }
+    else {
+        // 可选：添加调试信息
     }
 }
 
@@ -293,128 +331,140 @@ bool get_ftp_read_file_flag()
     return ftp_read_flag;
 }
 
-static void handle_retr_command(FTPState *state, char *filename)
-{
-
-
-    int client_data_sock = accept(state->data_sock,
-                                  (struct sockaddr *)&state->client_addr,
-                                  &state->client_addr_len);
-    if (client_data_sock < 0)
-    {
-        LOG("Failed to accept data connection: %s\n", strerror(errno));
-        send_response(state->control_sock, "425 Can't open data connection.\r\n");
-        return;
-    }
-
-    send_response(state->control_sock, "150 Opening data connection.\r\n");
-
-    LOG("Accepted data connection, socket fd: %d\n", client_data_sock);
+// 在所有涉及文件IO的函数中添加完整的锁保护
+static void handle_retr_command(FTPState *state, char *filename) {
+    int client_data_sock = -1;
+    int result = -1;
     
-    // set_ftp_read_file_flag(true); // 设置标志位阻止写文件
-    pthread_mutex_lock(&ftp_file_io_mutex);  // ← 加锁，避免和sd卡写文件冲突
-    LOG("state->path: '%s'\n", state->path);
-    LOG("filename: '%s'\n", filename);
-
-    char filebuff[512] = {0};
-    snprintf(filebuff, sizeof(filebuff), "%s/%s", state->path, filename);
-    LOG("load file path: %s\n", filebuff);
-
-    state->file = fopen(filebuff, "rb");
-    if (!state->file)
-    {
-        LOG("Failed to open file: %s\n", strerror(errno));
-        send_response(state->control_sock, "550 File not found.\r\n");
-        close(client_data_sock);
-        close(state->data_sock);      // ← 添加这行
-        state->data_sock = -1;        // ← 添加这
-        return;
-    }
-
-    char buffer[BUFFER_SIZE];
-    size_t bytes_read;
-
-    while ((bytes_read = fread(buffer, 1, sizeof(buffer), state->file)) > 0)
-    {
-        update_last_activity(state);
-
-        if (send(client_data_sock, buffer, bytes_read, 0) < 0)
-        {
-            LOG("Failed to send data: %s\n", strerror(errno));
+    pthread_mutex_lock(&ftp_file_io_mutex);
+    
+    do {
+        // 接受数据连接
+        client_data_sock = accept(state->data_sock,
+                                (struct sockaddr *)&state->client_addr,
+                                &state->client_addr_len);
+        if (client_data_sock < 0) {
+            LOG("Failed to accept data connection: %s\n", strerror(errno));
+            send_response(state->control_sock, "425 Can't open data connection.\r\n");
             break;
         }
 
-        //usleep(1000);
-    }
+        send_response(state->control_sock, "150 Opening data connection.\r\n");
 
-    if (state->file) {
-        fclose(state->file);
-        state->file = NULL;  // ←←← 关键修复：防止 double fclose
-    }
-    close(client_data_sock);
-    close(state->data_sock);
-    state->data_sock = -1;
-    pthread_mutex_unlock(&ftp_file_io_mutex);  // ← 解锁
-    // set_ftp_read_file_flag(false);
+        // 构建文件路径并验证
+        char filepath[512] = {0};
+        if (strlen(state->path) + strlen(filename) + 2 > sizeof(filepath)) {
+            send_response(state->control_sock, "550 Path too long.\r\n");
+            break;
+        }
+        
+        snprintf(filepath, sizeof(filepath), "%s/%s", state->path, filename);
+        LOG("Loading file: %s\n", filepath);
 
-    send_response(state->control_sock, "226 Transfer complete.\r\n");
+        // 打开文件
+        state->file = fopen(filepath, "rb");
+        if (!state->file) {
+            LOG("Failed to open file: %s\n", strerror(errno));
+            send_response(state->control_sock, "550 File not found.\r\n");
+            break;
+        }
+
+        // 传输文件数据
+        char buffer[BUFFER_SIZE];
+        size_t bytes_read;
+        result = 0;
+
+        while ((bytes_read = fread(buffer, 1, sizeof(buffer), state->file)) > 0) {
+            update_last_activity(state);
+            
+            if (send(client_data_sock, buffer, bytes_read, 0) < 0) {
+                LOG("Failed to send data: %s\n", strerror(errno));
+                result = -1;
+                break;
+            }
+        }
+        
+    } while(0);
+
+    // 清理资源
+    safe_close_file(&state->file);
+    safe_close_socket(&client_data_sock);
+    safe_close_socket(&state->data_sock);
+    
+    pthread_mutex_unlock(&ftp_file_io_mutex);
+
+    // 发送最终响应
+    if (result == 0) {
+        send_response(state->control_sock, "226 Transfer complete.\r\n");
+    } else {
+        send_response(state->control_sock, "426 Connection closed; transfer aborted.\r\n");
+    }
 }
 
-static void handle_stor_command(FTPState *state, char *filename)
-{
+static void handle_stor_command(FTPState *state, char *filename) {
+    int client_data_sock = -1;
+    FILE *file = NULL;
+    int result = -1;
+    
     send_response(state->control_sock, "150 Opening data connection.\r\n");
 
-    int client_data_sock = accept(state->data_sock, (struct sockaddr *)&state->client_addr, &state->client_addr_len);
-    if (client_data_sock < 0)
-    {
-        LOG("Failed to accept data connection: %s\n", strerror(errno));
-        send_response(state->control_sock, "425 Can't open data connection.\r\n");
-        close(state->data_sock);
-        return;
-    }
-
-    char filepath[512] = {0};
-    snprintf(filepath, sizeof(filepath), "%s/%s", state->path, filename);
-
-    FILE *file = fopen(filepath, "wb");
-    if (!file)
-    {
-        LOG("Failed to create file: %s\n", strerror(errno));
-        send_response(state->control_sock, "550 Failed to create file.\r\n");
-        close(client_data_sock);
-        close(state->data_sock);
-        return;
-    }
-
-    char buffer[BUFFER_SIZE];
-    ssize_t bytes_received;
-
-    while ((bytes_received = recv(client_data_sock, buffer, sizeof(buffer), 0)) > 0)
-    {
-        update_last_activity(state);
-
-        size_t bytes_written = fwrite(buffer, 1, bytes_received, file);
-        if (bytes_written != bytes_received)
-        {
-            LOG("Failed to write data to file: %s\n", strerror(errno));
-            send_response(state->control_sock, "426 Connection closed; transfer aborted.\r\n");
-            fclose(file);
-            state->file = NULL; 
-            close(client_data_sock);
-            close(state->data_sock);
-            return;
+    do {
+        // 接受数据连接
+        client_data_sock = accept(state->data_sock, 
+                                (struct sockaddr *)&state->client_addr, 
+                                &state->client_addr_len);
+        if (client_data_sock < 0) {
+            LOG("Failed to accept data connection: %s\n", strerror(errno));
+            send_response(state->control_sock, "425 Can't open data connection.\r\n");
+            break;
         }
-    }
 
-    if (state->file) {
-        fclose(state->file);
-        state->file = NULL;  
-    }
-    close(client_data_sock);
-    close(state->data_sock);
-    state->data_sock = -1;
+        // 构建文件路径并验证
+        char filepath[512] = {0};
+        if (strlen(state->path) + strlen(filename) + 2 > sizeof(filepath)) {
+            send_response(state->control_sock, "550 Path too long.\r\n");
+            break;
+        }
+        
+        snprintf(filepath, sizeof(filepath), "%s/%s", state->path, filename);
 
-    send_response(state->control_sock, "226 Transfer complete.\r\n");
+        // 创建文件
+        file = fopen(filepath, "wb");
+        if (!file) {
+            LOG("Failed to create file: %s\n", strerror(errno));
+            send_response(state->control_sock, "550 Failed to create file.\r\n");
+            break;
+        }
+
+        // 接收并写入数据
+        char buffer[BUFFER_SIZE];
+        ssize_t bytes_received;
+        result = 0;
+
+        while ((bytes_received = recv(client_data_sock, buffer, sizeof(buffer), 0)) > 0) {
+            update_last_activity(state);
+
+            size_t bytes_written = fwrite(buffer, 1, bytes_received, file);
+            if (bytes_written != bytes_received) {
+                LOG("Failed to write data to file: %s\n", strerror(errno));
+                result = -1;
+                break;
+            }
+        }
+        
+    } while(0);
+
+    // 清理资源
+    safe_close_file(&file);
+    safe_close_socket(&client_data_sock);
+    safe_close_socket(&state->data_sock);
+
+    // 发送最终响应
+    if (result == 0) {
+        send_response(state->control_sock, "226 Transfer complete.\r\n");
+    } else {
+        send_response(state->control_sock, "426 Connection closed; transfer aborted.\r\n");
+    }
 }
 
 static void handle_mget_command(FTPState *state, char *args)
@@ -519,66 +569,74 @@ static void handle_cdup_command(FTPState *state)
     }
 }
 
-static void handle_cwd_command(FTPState *state, const char *args)
-{
+// 路径安全检查函数
+static int is_safe_path(const char *path) {
+    // 检查NULL指针
+    if (!path) return 0;
+    
+    // 检查路径是否以允许的前缀开始
+    if (strncmp(path, USB_MOUNT_POINT, strlen(USB_MOUNT_POINT)) != 0) {
+        return 0;
+    }
+    
+    // 检查路径中是否包含危险字符序列
+    if (strstr(path, "..") != NULL) {
+        return 0;
+    }
+    
+    return 1;
+}
+
+// 改进的CWD命令处理
+static void handle_cwd_command(FTPState *state, const char *args) {
     update_last_activity(state);
-    if (args == NULL || strlen(args) == 0)
-    {
+    
+    if (!args || strlen(args) == 0) {
         send_response(state->control_sock, "501 Syntax error in parameters or arguments.\r\n");
         return;
     }
 
     char target_path[512] = {0};
 
-   
-    if (args[0] == '/') { // 处理绝对路径：CWD /xxx → 映射到 USB_MOUNT_POINT/xxx
-        
-        if (strcmp(args, "/") == 0) // 特殊情况：CWD / 应该进入根（即 USB_MOUNT_POINT）
-        {
+    // 处理绝对路径
+    if (args[0] == '/') {
+        if (strcmp(args, "/") == 0) {
             strncpy(target_path, USB_MOUNT_POINT, sizeof(target_path) - 1);
-        } else 
-        {                           // 拼接：/mnt/sda + /19691231 → /mnt/sda/19691231
+        } else {
+            // 显式拼接 USB_MOUNT_POINT 和 args
             snprintf(target_path, sizeof(target_path), "%s%s", USB_MOUNT_POINT, args);
         }
-    } 
-    else 
-    { // 相对路径：基于当前工作目录
-       
+    } else {
+        // 处理相对路径
         snprintf(target_path, sizeof(target_path), "%s/%s", state->path, args);
     }
 
-    // 【可选但推荐】安全检查：防止路径穿越（如 /../etc/passwd）
-    // 简单方法：确保最终路径以 USB_MOUNT_POINT 开头
-    if (strncmp(target_path, USB_MOUNT_POINT, strlen(USB_MOUNT_POINT)) != 0) {
-        LOG("CWD rejected: path traversal attempt? (%s)\n", target_path);
+    // 安全检查
+    if (!is_safe_path(target_path)) {
+        LOG("CWD rejected: unsafe path (%s)\n", target_path);
         send_response(state->control_sock, "550 Access denied.\r\n");
         return;
     }
 
     // 尝试切换目录
-    if (chdir(target_path) == 0) 
-    {
-        // 成功：更新 state->path
-        if (getcwd(state->path, sizeof(state->path)) != NULL) 
-        {
+    if (chdir(target_path) == 0) {
+        if (getcwd(state->path, sizeof(state->path)) != NULL) {
             state->path[sizeof(state->path) - 1] = '\0';
             LOG("Changed to directory: %s\n", state->path);
             send_response(state->control_sock, "250 Directory changed.\r\n");
-        } 
-        else 
-        {
-            // getcwd 失败（极少见），回退到安全目录
+        } else {
+            // 回退到安全目录
             chdir(USB_MOUNT_POINT);
-            strcpy(state->path, USB_MOUNT_POINT);
+            strncpy(state->path, USB_MOUNT_POINT, sizeof(state->path) - 1);
             send_response(state->control_sock, "550 Internal error.\r\n");
         }
-    }
-    else 
-    {
+    } else {
         LOG("Failed to change directory: %s (target_path=%s)\n", strerror(errno), target_path);
         send_response(state->control_sock, "550 Failed to change directory.\r\n");
     }
 }
+
+
 static void handle_type_command(FTPState *state, char *args)
 {
     if (args && strcmp(args, "A") == 0)
@@ -633,206 +691,422 @@ static void handle_size_command(FTPState *state, char *filename)
     snprintf(response, sizeof(response), "213 %ld\r\n", (long)st.st_size);
     send_response(state->control_sock, response);
 }
-static void handle_quit_command(FTPState *state)
-{
-    // 先发响应
-    send(state->control_sock, "221 Goodbye.\r\n", 16, 0);
 
-    // 关闭控制连接
-    close(state->control_sock);
-
-    // 👇 关键：关闭未使用的 data socket（如果存在）
-    if (state->data_sock >= 0) {
-        close(state->data_sock);
-        state->data_sock = -1;
+// 改进的QUIT命令处理
+static void handle_quit_command(FTPState *state) {
+    // 先发送响应
+    if (state->control_sock >= 0) {
+        send(state->control_sock, "221 Goodbye.\r\n", 14, 0);
     }
-
-    // 如果有打开的文件（比如 STOR 中断），也应关闭
-    if (state->file) {
-        fclose(state->file);
-        state->file = NULL;
-    }
+    
+    // 标记准备退出，但不立即清理
+    state->quit_requested = 1;
+    
+    // 等待一小段时间确保响应发送完成
+    usleep(100000); // 100ms
 }
 
-int handle_ftp_commands(FTPState *state)
-{
+void init_ftp_state(FTPState *state) {
+    if (!state) return;
+    
+    state->control_sock = -1;
+    state->data_sock = -1;
+    state->file = NULL;
+    state->logged_in = 0;
+    state->last_activity = time(NULL);
+    state->path[0] = '\0';
+    state->timeout_pending = 0;
+    state->quit_requested = 0;
+}
+
+int handle_ftp_commands(FTPState *state) {
+    if (!state) return -1;
+    
     char buffer[BUFFER_SIZE];
     ssize_t bytes_received;
     update_last_activity(state);
 
-    for (;;)
-    {
-        // 使用非阻塞的 recv 来避免阻塞
-        while ((bytes_received = recv(state->control_sock, buffer, sizeof(buffer) - 1, 0)) > 0)
-        {
-            check_timeouts(state);         // 检查超时
+    while (1) {
+        // 检查是否有待处理的超时
+        if (state->timeout_pending) {
+            LOG("Processing pending timeout\n");
+            cleanup_ftp_state(state);
+            return -3; // 超时退出
+        }
+        
+        // 检查超时（但不立即清理）
+        check_timeouts(state);
+        
+        // 检查socket有效性
+        if (state->control_sock < 0) {
+            LOG("Control socket closed\n");
+            return -4;
+        }
+        
+        // 设置较短的接收超时
+        struct timeval timeout;
+        timeout.tv_sec = 60;  // 1秒超时
+        timeout.tv_usec = 0;
+        
+        if (setsockopt(state->control_sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
+            LOG("Failed to set socket timeout: %s\n", strerror(errno));
+        }
+        
+        bytes_received = recv(state->control_sock, buffer, sizeof(buffer) - 1, 0);// 接收命令
+        
+        if (bytes_received > 0) {
+            // 重置超时标记
+            state->timeout_pending = 0;
+            update_last_activity(state);
             
-            if (bytes_received >= sizeof(buffer) - 1) {
-                LOG("Buffer overflow detected\n");
-                bytes_received = sizeof(buffer) - 1;
-            }
+            buffer[bytes_received] = '\0';
+            LOG("Received command: %s", buffer);
 
-            buffer[bytes_received] = '\0'; // 确保字符串以 \0 结束
-            LOG("Received command: %s\r", buffer);
-
-            // 分割命令和参数
+            // 命令处理逻辑...
             char *command = strtok(buffer, " \r\n");
             char *args = strtok(NULL, "\r\n");
 
-            // 处理 FTP 命令
-            if (strcmp(command, "USER") == 0) //用户名
+            if (command) 
             {
-                handle_user_command(state, args);
-            }
-            else if (strcmp(command, "PASS") == 0)//密码
-            {
-                handle_pass_command(state, args);
-            }
-            else if (strcmp(command, "SIZE") == 0)
-            {
-                handle_size_command(state, args);
-            } 
-            else if (strcmp(command, "PASV") == 0)//主动传输
-            {
-                handle_pasv_command(state);
-            }
-            else if (strcmp(command, "PORT") == 0)
-            {
-                handle_port_command(state, args);
-            }
-            else if (strcmp(command, "LIST") == 0)
-            {
-                if (state->logged_in)
+                //处理 FTP 命令
+                if (strcmp(command, "USER") == 0) //用户名
                 {
-                    handle_list_command(state, args);
+                    handle_user_command(state, args);
+                }
+                else if (strcmp(command, "PASS") == 0)//密码
+                {
+                    handle_pass_command(state, args);
+                }
+                else if (strcmp(command, "SIZE") == 0)
+                {
+                    handle_size_command(state, args);
+                } 
+                else if (strcmp(command, "PASV") == 0)//主动传输
+                {
+                    handle_pasv_command(state);
+                }
+                else if (strcmp(command, "PORT") == 0)
+                {
+                    handle_port_command(state, args);
+                }
+                else if (strcmp(command, "LIST") == 0)
+                {
+                    if (state->logged_in)
+                    {
+                        handle_list_command(state, args);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "RETR") == 0)//下载文件
+                {
+                    if (state->logged_in)
+                    {
+                        handle_retr_command(state, args);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "STOR") == 0)//上传指令
+                {
+                    if (state->logged_in)
+                    {
+                        handle_stor_command(state, args);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "MGET") == 0)
+                {
+                    if (state->logged_in)
+                    {
+                        handle_mget_command(state, args);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "PWD") == 0)//列出目录
+                {
+                    if (state->logged_in)
+                    {
+                        handle_pwd_command(state);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "CWD") == 0)//cd导航到目标目录
+                {
+                    if (state->logged_in)
+                    {
+                        handle_cwd_command(state, args);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "TYPE") == 0)//决定文件格式
+                {
+                    handle_type_command(state, args);
+                }
+                else if (strcmp(command, "SYST") == 0)
+                {
+                    handle_syst_command(state);
+                }
+                else if (strcmp(command, "NLST") == 0)
+                {
+                    if (state->logged_in)
+                    {
+                        handle_list_command(state, args);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "CDUP") == 0)
+                {
+                    if (state->logged_in)
+                    {
+                        handle_cdup_command(state);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
+                }
+                else if (strcmp(command, "QUIT") == 0)
+                {
+                    if (state->logged_in)
+                    {
+                        handle_quit_command(state);
+                    }
+                    else
+                    {
+                        send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    }
                 }
                 else
                 {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+                    send_response(state->control_sock, "502 Command not implemented.\r\n");
                 }
-            }
-            else if (strcmp(command, "RETR") == 0)//下载文件
-            {
-                if (state->logged_in)
-                {
-                    handle_retr_command(state, args);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "STOR") == 0)//上传指令
-            {
-                if (state->logged_in)
-                {
-                    handle_stor_command(state, args);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "MGET") == 0)
-            {
-                if (state->logged_in)
-                {
-                    handle_mget_command(state, args);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "PWD") == 0)//列出目录
-            {
-                if (state->logged_in)
-                {
-                    handle_pwd_command(state);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "CWD") == 0)//cd导航到目标目录
-            {
-                if (state->logged_in)
-                {
-                    handle_cwd_command(state, args);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "TYPE") == 0)//决定文件格式
-            {
-                handle_type_command(state, args);
-            }
-            else if (strcmp(command, "SYST") == 0)
-            {
-                handle_syst_command(state);
-            }
-            else if (strcmp(command, "NLST") == 0)
-            {
-                if (state->logged_in)
-                {
-                    handle_list_command(state, args);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "CDUP") == 0)
-            {
-                if (state->logged_in)
-                {
-                    handle_cdup_command(state);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else if (strcmp(command, "QUIT") == 0)
-            {
-                if (state->logged_in)
-                {
-                    handle_quit_command(state);
-                }
-                else
-                {
-                    send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
-                }
-            }
-            else
-            {
-                send_response(state->control_sock, "502 Command not implemented.\r\n");
-            }
-        }
 
-        if (bytes_received == 0)
-        {
-            close(state->control_sock);
-            close(state->data_sock);
-            return 0; // 客户端断开连接
-        }
-        else if (bytes_received < 0)
-        {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
-            {
-                close(state->control_sock);
-                close(state->data_sock);
-                return -1; // 非阻塞错误
+                // 在命令处理后检查是否需要退出
+                if (state->quit_requested) {
+                    LOG("Client requested quit\n");
+                    break; // 退出 while(1) 循环
+                }
+
             }
-            else
-            {
-                close(state->control_sock);
-                close(state->data_sock);
+        }
+        else if (bytes_received == 0) {
+            LOG("Client disconnected\n");
+            cleanup_ftp_state(state);
+            return 0; // 客户端正常断开
+        }
+        else {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                // 超时，继续循环检查
+                continue;
+            } else if (errno == EBADF) {
+                LOG("Bad file descriptor detected\n");
+                cleanup_ftp_state(state);
+                return -5; // 文件描述符错误
+            } else {
+                LOG("recv error: %s\n", strerror(errno));
+                cleanup_ftp_state(state);
                 return -2; // 其他错误
             }
         }
     }
 }
+
+// int handle_ftp_commands(FTPState *state)
+// {
+//     char buffer[BUFFER_SIZE];
+//     ssize_t bytes_received;
+//     update_last_activity(state);
+
+//     for (;;)
+//     {
+//         // 使用非阻塞的 recv 来避免阻塞
+//         while ((bytes_received = recv(state->control_sock, buffer, sizeof(buffer) - 1, 0)) > 0)
+//         {
+//             check_timeouts(state);         // 检查超时
+            
+//             buffer[bytes_received] = '\0'; // 确保字符串以 \0 结束
+//             LOG("Received command: %s\r", buffer);
+
+//             // 分割命令和参数
+//             char *command = strtok(buffer, " \r\n");
+//             char *args = strtok(NULL, "\r\n");
+
+//             // 处理 FTP 命令
+//             if (strcmp(command, "USER") == 0) //用户名
+//             {
+//                 handle_user_command(state, args);
+//             }
+//             else if (strcmp(command, "PASS") == 0)//密码
+//             {
+//                 handle_pass_command(state, args);
+//             }
+//             else if (strcmp(command, "SIZE") == 0)
+//             {
+//                 handle_size_command(state, args);
+//             } 
+//             else if (strcmp(command, "PASV") == 0)//主动传输
+//             {
+//                 handle_pasv_command(state);
+//             }
+//             else if (strcmp(command, "PORT") == 0)
+//             {
+//                 handle_port_command(state, args);
+//             }
+//             else if (strcmp(command, "LIST") == 0)
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_list_command(state, args);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "RETR") == 0)//下载文件
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_retr_command(state, args);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "STOR") == 0)//上传指令
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_stor_command(state, args);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "MGET") == 0)
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_mget_command(state, args);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "PWD") == 0)//列出目录
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_pwd_command(state);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "CWD") == 0)//cd导航到目标目录
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_cwd_command(state, args);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "TYPE") == 0)//决定文件格式
+//             {
+//                 handle_type_command(state, args);
+//             }
+//             else if (strcmp(command, "SYST") == 0)
+//             {
+//                 handle_syst_command(state);
+//             }
+//             else if (strcmp(command, "NLST") == 0)
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_list_command(state, args);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "CDUP") == 0)
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_cdup_command(state);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else if (strcmp(command, "QUIT") == 0)
+//             {
+//                 if (state->logged_in)
+//                 {
+//                     handle_quit_command(state);
+//                 }
+//                 else
+//                 {
+//                     send_response(state->control_sock, "530 Please login with USER and PASS.\r\n");
+//                 }
+//             }
+//             else
+//             {
+//                 send_response(state->control_sock, "502 Command not implemented.\r\n");
+//             }
+//         }
+
+//         if (bytes_received == 0)
+//         {
+//             close(state->control_sock);
+//             close(state->data_sock);
+//             return 0; // 客户端断开连接
+//         }
+//         else if (bytes_received < 0)
+//         {
+//             if (errno == EAGAIN || errno == EWOULDBLOCK)
+//             {
+//                 close(state->control_sock);
+//                 close(state->data_sock);
+//                 return -1; // 非阻塞错误
+//             }
+//             else
+//             {
+//                 close(state->control_sock);
+//                 close(state->data_sock);
+//                 return -2; // 其他错误
+//             }
+//         }
+//     }
+// }
+
+

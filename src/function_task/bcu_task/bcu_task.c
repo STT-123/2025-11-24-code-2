@@ -11,7 +11,6 @@
 
 pthread_t BCURecDel_TASKHandle = 0;
 extern struct timespec start_tick;
-extern unsigned short log_tcu_flag;//打印tcu标志位
 void *bcu_DealTask(void *arg)
 {
     struct canfd_frame canfd_revframe = {0};//linux标准can fd结构
@@ -32,10 +31,7 @@ void *bcu_DealTask(void *arg)
         {
             if (call_count == 0) {
                 CANFDSendFcn_BCU_step();
-                if(log_tcu_flag == 1){
-                    Log_TCU_Data();
-                    log_tcu_flag = 0;
-                }
+                record_tcu_send_frame();
             }
             call_count = (call_count + 1) % 25;
 

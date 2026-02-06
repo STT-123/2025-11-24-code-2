@@ -10,8 +10,6 @@
 #define APP_PATH  "/opt/xcharge"  
 
 ECUStatus ecustatus = {0};
-extern unsigned short log_tcu_flag ;
-
 
 void ECU_OTA(void)
 {
@@ -78,7 +76,6 @@ void FinshhECUOtaAndCleanup(void)
 	set_ota_UpDating(0);//1130(升级结束)
 	ecustatus.CANStartOTA = 0;
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
-    log_tcu_flag = 1;
     LOG("[OTA] OTA finished, cleaning up...\n");
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
     CANFDSendFcn_BCU_step();

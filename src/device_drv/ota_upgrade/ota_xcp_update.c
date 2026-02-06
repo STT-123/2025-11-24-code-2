@@ -10,7 +10,6 @@
 
 XCPStatus xcpstatus = {0};
 unsigned int OTA_RecvPacketCount = 0;
-extern unsigned short log_tcu_flag ;
 signed char XcpSendConnectCMD(unsigned int id, unsigned char xcpobjectid)
 {
 	CAN_MESSAGE CanMes;
@@ -906,7 +905,6 @@ void FinshhBCUBMUOtaAndCleanup(void)
 	memset(&xcpstatus,0,sizeof(xcpstatus));
     set_OTA_XCPConnect(0);//删除跳转到BOOT的条件,OTA_XCPConnect为0xFF才会跳转到BOOT
     set_TCU_PowerUpCmd(BMS_POWER_DEFAULT);
-    log_tcu_flag = 1;
 	set_modbus_reg_val(OTASTATUSREGADDR, OTAIDLE);
     CANFDSendFcn_BCU_step();
 }
